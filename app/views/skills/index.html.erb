@@ -1,0 +1,9 @@
+<h2>Skills</h2>
+
+<%= render 'form' %>
+
+<% @skills.each do |skill| %>
+  <p>
+  <%= skill[:name] %> : <%= link_to 'Remove Skill', {:action => 'delete', :id => skill[:id]} %>
+  </p>
+<% end %>

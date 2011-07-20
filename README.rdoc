@@ -1,3 +1,3 @@
-= tutor_scheduler_plugin
+= scheduler
 
 Description goes here

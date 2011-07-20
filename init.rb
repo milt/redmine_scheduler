@@ -1,10 +1,10 @@
 require 'redmine'
 
-Redmine::Plugin.register :redmine_tutor_scheduler_plugin do
-  name 'Redmine Tutor Scheduler Plugin plugin'
-  author 'Author name'
-  description 'This is a plugin for Redmine'
+Redmine::Plugin.register :redmine_scheduler do
+  name 'Redmine Scheduler plugin'
+  author 'Milton Reder'
+  description 'This is a plugin for Redmine that allows unauthenticated users to book shift time.'
   version '0.0.1'
-  url 'http://example.com/path/to/plugin'
-  author_url 'http://example.com/about'
+  url 'http://'
+  author_url 'http://digitalmedia.jhu.edu'
 end
