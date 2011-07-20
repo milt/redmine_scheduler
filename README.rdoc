@@ -14,6 +14,6 @@ installation:
 
 Currently, the skills_users join table has a model associated with it. This is probably not the way to do things, but until the join stuff is sorted out you will have to edit the "inflections" file of the redmine app, located at [redmine app]/config/initializers/inflections.rb and add:
 
-ActiveSupport::Inflector.Inflections do |inflect|
-    inflect.irregular 'skill_user', 'skills_users'
-end
+    ActiveSupport::Inflector.Inflections do |inflect|
+        inflect.irregular 'skill_user', 'skills_users'
+    end
