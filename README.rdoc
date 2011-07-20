@@ -1,3 +1,19 @@
 = scheduler
 
-Description goes here
+A simple skill-based lab coach/tutor scheduling plugin for redmine
+
+You'll need:
+
+1. A suitable working installation of redmine
+
+installation:
+
+1. Copy directory to [redmine app, ie. /usr/share/redmine/], as your redmine user
+2. Run: export RAILS_ENV="production" if you haven't already.
+3. Run: rake db:migrate_plugins
+
+Currently, the skills_users join table has a model associated with it. This is probably not the way to do things, but until the join stuff is sorted out you will have to edit the "inflections" file of the redmine app, located at [redmine app]/config/initializers/inflections.rb and add:
+
+ActiveSupport::Inflector.Inflections do |inflect|
+    inflect.irregular 'skill_user', 'skills_users'
+end
