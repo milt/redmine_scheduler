@@ -4,8 +4,7 @@ class SkillsController < ApplicationController
   def index
     @skills = Skill.all
     @users = User.all
-    @skills_users = SkillUser.all
-  end
+	end
   
   def assign
   end
