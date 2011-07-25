@@ -33,4 +33,4 @@ module IssuePatch
 end
 
 # Add module to Issue
-Issue.send(:include, IssuePatch)
+#Issue.send(:include, IssuePatch)

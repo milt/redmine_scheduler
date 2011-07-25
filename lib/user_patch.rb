@@ -34,4 +34,4 @@ module UserPatch
 end
 
 # Add module to User
-User.send(:include, UserPatch)
+#User.send(:include, UserPatch)
