@@ -1,4 +1,4 @@
-class CreateSkillsUsers < ActiveRecord::Migration
+class CreateSkillUserJoinTable < ActiveRecord::Migration
   def self.up
     create_table :skills_users, :id => false do |t|
       t.integer :skill_id
