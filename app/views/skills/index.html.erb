@@ -16,5 +16,6 @@
     <% user.skills.each do |skill| %>
       <%= skill[:name] %>,
     <% end %>
+  <%= link_to 'Edit', {:action => 'assign', :id => user[:id]} %>
   </p>
 <% end %>

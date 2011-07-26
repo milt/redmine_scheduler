@@ -1,1 +1,7 @@
-<h2>Skills#assign</h2>
+<h2>Assigned skills for <%= @user[:name]%></h2>
+
+<% @user.skills.each do |skill| %>
+  <p>
+  <%= skill[:name] %> : <%= link_to 'Remove Skill', {:action => 'delete', :id => skill[:id]} %>
+  </p>
+<% end %>

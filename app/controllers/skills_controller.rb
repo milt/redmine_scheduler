@@ -7,6 +7,7 @@ class SkillsController < ApplicationController
 	end
   
   def assign
+    @user = User.find(params[:id])
   end
   
   
