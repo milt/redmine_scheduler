@@ -7,3 +7,14 @@
   <%= skill[:name] %> : <%= link_to 'Remove Skill', {:action => 'delete', :id => skill[:id]} %>
   </p>
 <% end %>
+
+<h3>Skill Assignments</h3>
+
+<% @users.each do |user| %>
+  <p>
+  <b><%= user[:login] %></b>
+    <% user.skills.each do |skill| %>
+      <%= skill[:name] %>,
+    <% end %>
+  </p>
+<% end %>
