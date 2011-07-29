@@ -1,7 +1,7 @@
 require_dependency 'issue'
 
 # Patches Redmine's Issues dynamically.  Adds a relationship 
-# Issue +has_and_belongs_to_many+ to Timeslot
+# Issue +has_many+ to Timeslot
 module IssuePatch
   def self.included(base) # :nodoc:
     base.extend(ClassMethods)
@@ -11,7 +11,7 @@ module IssuePatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
-      has_many :timeslots, :dependent => :destroy
+      has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
 
     end
 
