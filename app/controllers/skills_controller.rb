@@ -44,4 +44,11 @@ class SkillsController < ApplicationController
     redirect_to :action => 'index'
   end
   
+  def unlink
+    @skill = Skill.find(params[:id])
+    @user = User.find(params[:user_id])
+    @user.skills.delete(@skill)
+    redirect_to :action => 'index'
+  end
+  
 end

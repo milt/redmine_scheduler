@@ -2,6 +2,6 @@
 
 <% @user.skills.each do |skill| %>
   <p>
-  <%= skill[:name] %> : <%= link_to 'Remove Skill', {:action => 'delete', :id => skill[:id]} %>
+  <%= skill[:name] %> : <%= link_to 'Remove Skill', {:action => 'unlink', :id => skill[:id], :user_id => @user[:id]} %>
   </p>
 <% end %>
