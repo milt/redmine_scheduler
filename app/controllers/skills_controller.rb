@@ -48,7 +48,7 @@ class SkillsController < ApplicationController
     @skill = Skill.find(params[:id])
     @user = User.find(params[:user_id])
     @user.skills.delete(@skill)
-    redirect_to :action => 'assign'
+    redirect_to :action => 'assign', :user_id => @user[:id]
   end
   
 end
