@@ -21,7 +21,6 @@ class SkillsController < ApplicationController
     end
   end
   
-  
   def new
     @skill = Skill.new
   end
