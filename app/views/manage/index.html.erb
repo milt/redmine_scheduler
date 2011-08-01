@@ -3,6 +3,6 @@
 <br>
 <ul>
 	<% @allshifts.each do |shift| %>
-		<li>ID:<%= shift[:id] %> - <%= shift[:assigned_to] %></li>
+		<li>ID:<%= shift[:id] %> - <%= User.find(shift[:assigned_to_id]) %> - <%= shift[:subject] %></li>
 	<% end %>
 </ul>
