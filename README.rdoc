@@ -5,6 +5,7 @@ A simple skill-based lab coach/tutor scheduling plugin for redmine
 You'll need:
 
 1. A suitable working installation of redmine
+2. A tracker called 'Lab Coach Shift'
 
 installation:
 
