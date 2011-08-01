@@ -5,3 +5,7 @@ Delete <%= @skill[:name] %> ?
 <%= link_to 'Dereet!', {:action => 'destroy', :id => @skill[:id]} %>
 <br>
 The following Users are tagged with this skill:
+<br>
+<% @skill.users.each do |user| %>
+  <%= user[:login] %>,
+<% end %>
