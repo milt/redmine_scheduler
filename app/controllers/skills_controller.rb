@@ -8,6 +8,17 @@ class SkillsController < ApplicationController
   
   def assign
     @user = User.find(params[:user_id])
+    @skills = Skill.all
+    @assigned = []
+    @unassigned = []
+
+    @skills.each do |skill|
+      if @user.skills.exists?(skill)
+        @assigned << skill
+      else
+        @unassigned << skill
+      end
+    end
   end
   
   
@@ -42,6 +53,13 @@ class SkillsController < ApplicationController
     @skill = Skill.find(params[:id])
     @skill.destroy
     redirect_to :action => 'index'
+  end
+  
+  def link
+    @skill = Skill.find(params[:id])
+    @user = User.find(params[:user_id])
+    @user.skills << @skill
+    redirect_to :action => 'assign', :user_id => @user[:id]
   end
   
   def unlink
