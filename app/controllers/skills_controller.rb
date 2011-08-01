@@ -25,7 +25,7 @@ class SkillsController < ApplicationController
   def new
     @skill = Skill.new
   end
-  
+
   def create
     @skill = Skill.new(params[:skill])
 
@@ -35,9 +35,9 @@ class SkillsController < ApplicationController
           format.html { redirect_to :action => "index" }
           format.xml  { render :xml => @skill, :status => :created,
                       :location => @skill }
-        else
+        else                                               
           flash[:warning] = 'There is already a skill of that name!'
-          format.html { render :action => "new" }
+          format.html { redirect_to :action => "index" }
           format.xml  { render :xml => @skill.errors,
                       :status => :unprocessable_entity }
         end
