@@ -1,1 +1,8 @@
 <h2>Manage#index</h2>
+<h3>All Lab Coach Shifts:</h3>
+<br>
+<ul>
+	<% @allshifts.each do |shift| %>
+		<li>ID:<%= shift[:id] %> - <%= shift[:assigned_to] %></li>
+	<% end %>
+</ul>
