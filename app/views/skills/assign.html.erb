@@ -12,3 +12,5 @@
   <%= skill[:name] %> : <%= link_to 'Add', {:action => 'link', :id => skill[:id], :user_id => @user[:id]} %>
   </p>
 <% end %>
+<br>
+<%= link_to 'Back', {:action => 'index'} %>
