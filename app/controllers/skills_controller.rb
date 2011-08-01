@@ -44,14 +44,10 @@ class SkillsController < ApplicationController
      end
   end
   
-  def delete
-    @skill = Skill.find(params[:id])
-
-  end
-  
   def destroy
     @skill = Skill.find(params[:id])
     @skill.destroy
+    flash[:notice] = 'Skill deleted.'
     redirect_to :action => 'index'
   end
   
@@ -59,6 +55,7 @@ class SkillsController < ApplicationController
     @skill = Skill.find(params[:id])
     @user = User.find(params[:user_id])
     @user.skills << @skill
+    flash[:notice] = 'Skill assigned.'
     redirect_to :action => 'assign', :user_id => @user[:id]
   end
   
@@ -66,6 +63,7 @@ class SkillsController < ApplicationController
     @skill = Skill.find(params[:id])
     @user = User.find(params[:user_id])
     @user.skills.delete(@skill)
+    flash[:notice] = 'Skill unassigned.'
     redirect_to :action => 'assign', :user_id => @user[:id]
   end
   

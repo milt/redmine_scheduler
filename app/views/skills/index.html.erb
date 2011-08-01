@@ -4,7 +4,7 @@
 
 <% @skills.each do |skill| %>
   <p>
-  <%= skill[:name] %> : <%= link_to 'Remove Skill', {:action => 'delete', :id => skill[:id]} %>
+  <%= skill[:name] %> : <%= link_to 'Delete Skill', {:action => 'destroy', :id => skill[:id]}, :confirm => 'Delete skill?' %>
   </p>
 <% end %>
 
