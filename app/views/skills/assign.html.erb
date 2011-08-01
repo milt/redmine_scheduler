@@ -2,13 +2,13 @@
 
 <% @assigned.each do |skill| %>
   <p>
-  <%= skill[:name] %> : <%= link_to 'Remove Skill', {:action => 'unlink', :id => skill[:id], :user_id => @user[:id]} %>
+  <%= skill[:name] %> : <%= link_to 'Remove', {:action => 'unlink', :id => skill[:id], :user_id => @user[:id]} %>
   </p>
 <% end %>
 <br>
 <h2>Unassigned Skills</h2>
 <% @unassigned.each do |skill| %>
   <p>
-  <%= skill[:name] %> : <%= link_to 'Add Skill', {:action => 'link', :id => skill[:id], :user_id => @user[:id]} %>
+  <%= skill[:name] %> : <%= link_to 'Add', {:action => 'link', :id => skill[:id], :user_id => @user[:id]} %>
   </p>
 <% end %>
