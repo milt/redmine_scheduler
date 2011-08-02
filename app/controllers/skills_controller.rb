@@ -9,17 +9,8 @@ class SkillsController < ApplicationController
   def assign
     @user = User.find(params[:user_id])
     @skills = Skill.all
-    @assigned = []
-    @unassigned = []
-
-    @skills.each do |skill|
-      if @user.skills.exists?(skill)
-        @assigned << skill
-      else
-        @unassigned << skill
-      end
-    end
-  end
+    @assigned = @skills.select {|skill| @user.skills.exists?(skill)}
+    @unassigned = @skills.reject {|skill| @user.skills.exists?(skill)}
   
   def new
     @skill = Skill.new
