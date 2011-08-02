@@ -4,14 +4,15 @@ class SkillsController < ApplicationController
   def index
     @skills = Skill.all
     @users = User.all
-	end
+  end
   
   def assign
     @user = User.find(params[:user_id])
     @skills = Skill.all
     @assigned = @skills.select {|skill| @user.skills.exists?(skill)}
     @unassigned = @skills.reject {|skill| @user.skills.exists?(skill)}
-  
+  end
+
   def new
     @skill = Skill.new
   end
