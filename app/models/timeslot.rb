@@ -1,4 +1,4 @@
 class Timeslot < ActiveRecord::Base
-  belongs_to :issues
+  belongs_to :issue
   has_one :booking
 end
