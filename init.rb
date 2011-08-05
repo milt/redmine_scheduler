@@ -3,6 +3,7 @@ require 'redmine'
 # Patches to the redmine core for User, Issue HABTM relationships
 require 'issue_patch'
 require 'user_patch'
+require_dependency 'redmine_scheduler/hooks'
 
 Redmine::Plugin.register :redmine_scheduler do
   name 'Redmine Scheduler plugin'
