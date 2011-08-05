@@ -1,3 +1,3 @@
 class Booking < ActiveRecord::Base
-  has_many :timeslots
+  belongs_to :timeslot
 end
