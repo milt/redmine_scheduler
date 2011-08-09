@@ -3,6 +3,9 @@ class BookingController < ApplicationController
 
 
   def index
+    @timeslots = Timeslot.all
+    @unbooked = @timeslots.select {|timeslot| timeslot.booking.nil?}
+    
   end
 
   def book

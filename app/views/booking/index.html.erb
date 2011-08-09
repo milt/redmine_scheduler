@@ -1,1 +1,7 @@
-<h2>Booking#index</h2>
+<h2>Booking</h2>
+
+<% @unbooked.each do |timeslot| %>
+  <p>
+  <%= timeslot[:id] %> : <%= timeslot[:slot_time] %>
+  </p>
+<% end %>
