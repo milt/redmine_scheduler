@@ -12,8 +12,7 @@ module IssuePatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
-      safe_attributes 'start_time',
-        'end_time'
+      safe_attributes 'start_time', 'end_time'
     end
 
   end
