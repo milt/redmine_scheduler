@@ -38,12 +38,12 @@
 <% end %>
 <p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_start_date') if @issue.leaf? %></p>
 <p><%= f.text_field :due_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_due_date') if @issue.leaf? %></p>
-<p><%= f.text_field :start_time, :size => 10, :disabled => !@issue.leaf? %></p>
-<p><%= f.text_field :end_time, :size => 10, :disabled => !@issue.leaf? %></p>
 <p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
 <% if @issue.leaf? && Issue.use_field_for_done_ratio? %>
 <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
 <% end %>
+<p><%= f.select :start_time, ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).to_a.select {|a| (a.min.eql?(0) | a.min.eql?(30)) & a.sec.eql?(0)}).collect {|b| b.strftime("%I:%M %P")} %></p>
+<p><%= f.select :end_time, ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).to_a.select {|a| (a.min.eql?(0) | a.min.eql?(30)) & a.sec.eql?(0)}).collect {|b| b.strftime("%I:%M %P")} %></p>
 </div>
 
 <div style="clear:both;"> </div>
