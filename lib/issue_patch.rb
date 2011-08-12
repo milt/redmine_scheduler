@@ -14,6 +14,10 @@ module IssuePatch
       has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
       safe_attributes 'start_time', 'end_time'
       
+      def timelist
+        ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).to_a.select {|a| (a.min.eql?(0) | a.min.eql?(30)) & a.sec.eql?(0)}).collect {|b| b.strftime("%I:%M %P")}
+      end
+            
       def start_time=(time)
           write_attribute :start_time, (time)
       end
