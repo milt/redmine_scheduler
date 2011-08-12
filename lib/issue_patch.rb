@@ -13,6 +13,18 @@ module IssuePatch
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
       safe_attributes 'start_time', 'end_time'
+      
+      def start_time=(time)
+          write_attribute :start_time, (time)
+      end
+      
+      def end_time=(time)
+          write_attribute :end_time, (time)
+      end
+      
+      def shift_duration
+        (start_time && end_time) ? end_time - start_time : 0
+      end
     end
 
   end
