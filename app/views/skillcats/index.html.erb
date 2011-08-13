@@ -1,0 +1,9 @@
+<h2>Skillcats#index</h2>
+
+<%= render 'form' %>
+
+<% @skillcats.each do |skillcat| %>
+  <p>
+  <%= skillcat[:name] %> : <%= link_to 'Delete Skill Category', {:action => 'destroy', :id => skillcat[:id]}, :confirm => 'Delete skill category?' %>
+  </p>
+<% end %>
