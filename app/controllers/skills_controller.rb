@@ -3,7 +3,8 @@ class SkillsController < ApplicationController
 
   def index
     @skills = Skill.all
-    @users = User.all
+    @users = User.all.select {|u| u.id > 2 }
+    @skillcats = Skillcat.all
   end
 
   def edit
