@@ -8,6 +8,20 @@ class Hooks < Redmine::Hook::ViewListener
   end
   
   def controller_issues_edit_after_save(context={})
-
+    # If the duration changes, delete timeslots as appropriate
+    if context[:issue].tracker.name == 'Lab Coach Shift'
+      unless context[:issue].timeslots.all.count == context[:issue].shift_duration_index
+        until context[:issue].timeslots.all.count == context[:issue].shift_duration_index
+          sort = context[:issue].timeslots.all.sort_by {|t| t[:slot_time]}
+          if context[:issue].timeslots.all.count > context[:issue].shift_duration_index
+            sort.last.destroy
+          elsif context[:issue].timeslots.all.count < context[:issue].shift_duration_index
+            context[:issue].timeslots << Timeslot.create(:slot_time => (sort.last[:slot_time] + 1))
+          else
+          end
+        end
+      end
+    else
+    end
   end
 end
