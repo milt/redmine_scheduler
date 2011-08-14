@@ -1,4 +1,5 @@
 class Hooks < Redmine::Hook::ViewListener
+  
   def controller_issues_new_after_save(context={})
     # If the issue is on the Lab Coach tracker, make a timeslot
     if context[:issue].tracker.name == 'Lab Coach Shift'
@@ -8,7 +9,9 @@ class Hooks < Redmine::Hook::ViewListener
   end
   
   def controller_issues_edit_after_save(context={})
-    # If the duration changes, delete timeslots as appropriate
+    #context[:issue].start_time = context[:issue].start_time.change(:year => context[:issue].start_date.year, :month => context[:issue].start_date.month, :day => context[:issue].start_date.day)
+    #context[:issue].end_time = context[:issue].end_time.change(:year => context[:issue].start_date.year, :month => context[:issue].start_date.month, :day => context[:issue].start_date.day)
+    # If the duration changes, create or delete timeslots as appropriate
     if context[:issue].tracker.name == 'Lab Coach Shift'
       unless context[:issue].timeslots.all.count == context[:issue].shift_duration_index
         until context[:issue].timeslots.all.count == context[:issue].shift_duration_index
