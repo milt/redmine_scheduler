@@ -9,7 +9,7 @@
 		  <strong><%= skill.name %></strong> : <%= link_to 'Edit', {:action => 'edit', :id => skill[:id]} %>, <%= link_to 'Delete Skill', {:action => 'destroy', :id => skill[:id]}, :confirm => 'Delete skill? All associated users will lose it.' %>
 		    <ul>
 			  <% skill.users.each do |user| %>
-			    <li><%= user[:login]%> : <%= link_to 'Assignments...', {:action => 'assign', :user_id => user[:id]} %></li>
+			    <li><%= link_to user[:login], {:action => 'assign', :user_id => user[:id]} %></li>
 			  <% end %>
 			</ul>
 		  </li>
