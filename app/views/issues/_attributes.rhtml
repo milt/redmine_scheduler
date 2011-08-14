@@ -39,8 +39,8 @@
 <p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_start_date') if @issue.leaf? %></p>
 <p><%= f.text_field :due_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_due_date') if @issue.leaf? %></p>
 <p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
-<p><%= f.select :start_time, @issue.timelist %></p>
-<p><%= f.select :end_time, @issue.timelist %></p>
+<p><%= f.select :start_time, @issue.timelist, :selected => @issue.shift_start_index %></p>
+<p><%= f.select :end_time, @issue.timelist, :selected => @issue.shift_end_index %></p>
 <% if @issue.leaf? && Issue.use_field_for_done_ratio? %>
 <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
 <% end %>

@@ -1,10 +1,10 @@
 <h2>Skills</h2>
 
-<%= render 'form' %>
+<%= render 'form' %> <%= link_to 'Edit Skill Categories', {:controller => 'skillcats', :action => 'index'} %>
 
 <% @skills.each do |skill| %>
   <p>
-  <%= skill[:name] %> : <%= link_to 'Delete Skill', {:action => 'destroy', :id => skill[:id]}, :confirm => 'Delete skill?' %>
+  <strong><%= skill.name %></strong> ( <%= skill.skillcat.name %> ) : <%= link_to 'Edit', {:action => 'edit', :id => skill[:id]} %>, <%= link_to 'Delete Skill', {:action => 'destroy', :id => skill[:id]}, :confirm => 'Delete skill? All associated users will lose it.' %>
   </p>
 <% end %>
 

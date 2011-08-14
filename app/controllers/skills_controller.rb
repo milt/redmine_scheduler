@@ -5,6 +5,26 @@ class SkillsController < ApplicationController
     @skills = Skill.all
     @users = User.all
   end
+
+  def edit
+    @skill = Skill.find(params[:id])
+  end
+
+  def update
+    @skill = Skill.find(params[:id])
+    
+    respond_to do |format|
+      if @skill.update_attributes(params[:skill])
+        flash[:notice] = 'Skill was successfully updated.'
+        format.html { redirect_to :action => 'index' }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @post.errors,
+  	                :status => :unprocessable_entity }
+      end
+    end
+  end
   
   def assign
     @user = User.find(params[:user_id])

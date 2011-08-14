@@ -1,0 +1,5 @@
+<% form_for(@skill) do |f| %>
+  <%= f.text_field :name, :value => @skill.name %>
+  <%= f.select :skillcat_id, Skillcat.all.collect {|s| [ s.name, s.id ]}, :selected => @skill.skillcat_id %>
+  <%= submit_tag "Update" %>
+<% end %>

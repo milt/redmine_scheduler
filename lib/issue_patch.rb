@@ -15,7 +15,7 @@ module IssuePatch
       safe_attributes 'start_time', 'end_time'
       
       def timelist
-        ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).select {|a| (a.min.eql?(0) | a.min.eql?(30)) & a.sec.eql?(0)}).collect {|b| b.strftime("%I:%M %P")}
+        ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).select {|a| (a.min.eql?(0) | a.min.eql?(30)) & a.sec.eql?(0)}).collect {|b| b.strftime("%I:%M %P")}        
       end
             
       def start_time=(time)
@@ -26,9 +26,6 @@ module IssuePatch
           write_attribute :end_time, (time)
       end
       
-      def shift_duration
-        (start_time && end_time) ? end_time - start_time : 0
-      end
     end
 
   end
@@ -38,7 +35,17 @@ module IssuePatch
   end
 
   module InstanceMethods
-
+      def shift_duration
+        ((start_time && end_time) ? end_time - start_time : 0)/60/60
+      end
+      
+      def shift_start_index
+        (start_time.hour * 2) + (start_time.min/30)
+      end
+      
+      def shift_end_index
+        (end_time.hour * 2) + (end_time.min/30)
+      end
   end
 end
 
