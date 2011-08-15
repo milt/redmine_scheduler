@@ -1,16 +1,13 @@
-<h2>Manage#index</h2>
+<h2>Manage Lab Coaching</h2>
 <h3>All Lab Coach Shifts:</h3>
 <br>
 <ul>
 	<% @allshifts.each do |shift| %>
-		<li>ID:<%= shift[:id] %> - <%= User.find(shift[:assigned_to_id]) %> - <%= shift[:subject] %></li>
+		<li><%= format_date(shift.start_date) %> - <%= shift.assigned_to.firstname %> - <%= shift.subject %></li>
+	    <ul>
+          <% shift.timeslots.each do |slot| %>
+		    <li><%= format_time(slot.start_time) %> - <%= format_time(slot.end_time) %></li>
+	      <% end %>
+	    </ul>
 	<% end %>
 </ul>
-<br>
-<h3>All Timeslots</h3>
-<ul>
-	<% @alltimeslots.each do |timeslot| %>
-		<li>ID:<%= timeslot[:id] %> - <%= timeslot[:slot_time] %></li>
-	<% end %>
-</ul>
-

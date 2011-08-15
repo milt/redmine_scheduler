@@ -13,8 +13,8 @@ module IssuePatch
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
       safe_attributes 'start_time', 'end_time'
-      alias_method_chain :validate, :shift_times
-      
+      alias_method_chain :validate, :shift_times      
+
     end
 
   end
@@ -56,7 +56,7 @@ module IssuePatch
       if self.end_time and self.start_time and self.end_time < self.start_time
         errors.add :due_date, :greater_than_start_date
       end
-    end
+    end  
   end
 end
 
