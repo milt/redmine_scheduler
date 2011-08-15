@@ -1,8 +1,8 @@
 class Hooks < Redmine::Hook::ViewListener
   
   def controller_issues_new_before_save(context={})
-    s_time = Time.parse(context[:params][:issue][:start_time])
-    e_time = Time.parse(context[:params][:issue][:end_time])
+    s_time = DateTime.parse(context[:params][:issue][:start_time])
+    e_time = DateTime.parse(context[:params][:issue][:end_time])
     s_date = Date.parse(context[:params][:issue][:start_date])
     context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min) #s_time.change(:year => s_date.year, :month => s_date.month, :day => s_date.day, :hour => s_time.hour, :min => s_time.min)
     context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min) #e_time.change(:year => s_date.year, :month => s_date.month, :day => s_date.day, :hour => e_time.hour, :min => e_time.min)
@@ -16,11 +16,11 @@ class Hooks < Redmine::Hook::ViewListener
   end
 
   def controller_issues_edit_before_save(context={})
-    s_time = Time.parse(context[:params][:issue][:start_time])
-    e_time = Time.parse(context[:params][:issue][:end_time])
+    s_time = DateTime.parse(context[:params][:issue][:start_time])
+    e_time = DateTime.parse(context[:params][:issue][:end_time])
     s_date = Date.parse(context[:params][:issue][:start_date])
-    context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min) #s_time.change(:year => s_date.year, :month => s_date.month, :day => s_date.day, :hour => s_time.hour, :min => s_time.min)
-    context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min) #e_time.change(:year => s_date.year, :month => s_date.month, :day => s_date.day, :hour => e_time.hour, :min => e_time.min)
+    context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
+    context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
   end
 
   def controller_issues_edit_after_save(context={})
