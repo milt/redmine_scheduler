@@ -1,0 +1,5 @@
+<ul>
+<% @allskills.each do |skill| %>
+  <li><%= skill.name %> <%= link_to 'Add', :action => 'checkskill', :skill_id => skill[:id] %> <%= link_to 'Remove', :action => 'uncheckskill', :skill_id => skill[:id] %></li>
+<% end %>
+</ul>	

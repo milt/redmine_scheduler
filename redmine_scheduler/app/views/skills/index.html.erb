@@ -1,0 +1,29 @@
+<h2>Skills</h2>
+
+<%= render 'form' %> <%= link_to 'Edit Categories', {:controller => 'skillcats', :action => 'index'} %>
+  <% @skillcats.each do |skillcat| %>
+    <h3><%= skillcat.name %></h3>
+      <ul>
+		<% skillcat.skills.each do |skill| %>
+		  <li>
+		  <strong><%= skill.name %></strong> : <%= link_to 'Edit', {:action => 'edit', :id => skill[:id]} %>, <%= link_to 'Delete', {:action => 'destroy', :id => skill[:id]}, :confirm => 'Delete skill? All associated users will lose it.' %>
+		    <ul>
+			  <% skill.users.each do |user| %>
+			    <li><%= link_to user[:login], {:action => 'assign', :user_id => user[:id]} %></li>
+			  <% end %>
+			</ul>
+		  </li>
+		<% end %>
+    </ul>
+  <% end %>
+<h3>Skill Assignments by User</h3>
+
+<% @users.each do |user| %>
+  <p>
+    <b><%= user[:login] %></b>
+      <% user.skills.each do |skill| %>
+        <%= skill[:name] %>,
+      <% end %>
+    <%= link_to 'Assignments...', {:action => 'assign', :user_id => user[:id]} %>
+  </p>
+<% end %>
