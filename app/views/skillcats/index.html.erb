@@ -4,7 +4,7 @@
 
 <% @skillcats.each do |skillcat| %>
   <p>
-  <strong><%= skillcat[:name] %></strong> : <%= link_to 'Delete Skill Category', {:action => 'destroy', :id => skillcat[:id]}, :confirm => 'Delete skill category?' %>
+  <strong><%= skillcat[:name] %></strong> : <%= skillcat[:descr] %> : <%= link_to 'Delete Skill Category', {:action => 'destroy', :id => skillcat[:id]}, :confirm => 'Delete skill category?' %>
   </p>
 <% end %>
 

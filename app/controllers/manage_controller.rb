@@ -3,9 +3,10 @@ class ManageController < ApplicationController
 
 
   def index
-    @allshifts = Tracker.find_by_name('Lab Coach Shift').issues.all.sort_by {|i| i[:start_time]}
-    @alltimeslots = Timeslot.all.sort_by {|t| [t.issue[:start_time], t[:slot_time]]}
+    @allshifts = Tracker.find_by_name('Lab Coach Shift').issues.sort_by(&:start_time).reject {|t| t.start_date < Date.today}
+    @alltimeslots = Timeslot.all
     @allbookings = Booking.all
+    @selected = []
   end
 
   def schedule

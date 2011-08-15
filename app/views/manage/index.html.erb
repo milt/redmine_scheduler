@@ -1,13 +1,15 @@
 <h2>Manage Lab Coaching</h2>
-<h3>All Lab Coach Shifts:</h3>
+<h3>Scheduled Lab Coach Shifts</h3>
 <br>
 <ul>
 	<% @allshifts.each do |shift| %>
-		<li><%= format_date(shift.start_date) %> - <%= shift.assigned_to.firstname %> - <%= shift.subject %></li>
-	    <ul>
-          <% shift.timeslots.each do |slot| %>
-		    <li><%= format_time(slot.start_time) %> - <%= format_time(slot.end_time) %></li>
+		<li><h4><%= format_date(shift.start_date) %> - <%= shift.assigned_to.firstname %></h4></li>
+      <table>
+	    <tr>
+          <% shift.timeslots.all.sort_by(&:slot_time).each do |slot| %>
+		    <td>[<%= slot.start_time.strftime('%I:%M %P') %>]</td>
 	      <% end %>
-	    </ul>
+	    </tr>
+	  </table>
 	<% end %>
 </ul>
