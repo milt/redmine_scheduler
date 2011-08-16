@@ -1,5 +1,8 @@
-<ul>
-<% @allskills.each do |skill| %>
-  <li><%= skill.name %> <%= link_to 'Add', :action => 'checkskill', :skill_id => skill[:id] %> <%= link_to 'Remove', :action => 'uncheckskill', :skill_id => skill[:id] %></li>
-<% end %>
-</ul>	
+<%= form_tag({:controller => "booking", :action => "index"}, :method => "post", :class => "nifty_form") %>
+
+	<% @skills.each do |skill| %>
+		<%= label_tag skill.name %>
+	  	<%= check_box_tag 'skill_ids[]', skill.id, @filter.include?(skill.id.to_s) %>
+	<% end %>
+
+<%= submit_tag 'Update' %>
