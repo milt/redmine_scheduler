@@ -8,7 +8,10 @@ class SkillsController < ApplicationController
   end
 
   def edit
-    @skill = Skill.find(params[:id])
+    @skill = Skill.find(params[:id])    
+    @users = User.all.select {|u| u.id > 2 }
+    @assigned = @users.select {|user| @skill.users.exists?(user)}
+    @unassigned = @users.reject {|user| @skill.users.exists?(user)}
   end
 
   def update

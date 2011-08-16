@@ -8,4 +8,19 @@
 
 <p>Make your desired changes and click "Update" to commit them. Note that this skill will automatically update in the per user assignment list.</p>
 
+<h3>Assigned Users</h3>
+<% @assigned.each do |user| %>
+  <p>
+  <%= user[:firstname] %> <%= user[:lastname] %> : <%= link_to 'Remove', {:action => 'unlink', :id => @skill[:id], :user_id => user[:id]} %>
+  </p>
+<% end %>
+<br>
+<h3>Unassigned Users</h3>
+<% @unassigned.each do |user| %>
+  <p>
+  <%= user[:firstname] %> <%= user[:lastname] %> : <%= link_to 'Add', {:action => 'link', :id => @skill[:id], :user_id => user[:id]} %>
+  </p>
+<% end %>
+<br>
 <%= link_to 'Cancel and return to Skill Index', { :action => 'index' } %>
+
