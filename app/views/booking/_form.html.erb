@@ -1,0 +1,7 @@
+<% form_for :booking, @booking, :url => { :action => "book", :timeslot_id => @timeslot[:id] }, :html => {:class => "nifty_form"} do |f| %>
+  <p><%= f.text_field :name %></p>
+  <p><%= f.text_field :phone %></p>
+  <p><%= f.text_field :email %></p>
+  <p><%= f.text_area :project_desc %></p>
+  <p><%= submit_tag "Create" %></p>
+<% end %>

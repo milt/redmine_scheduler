@@ -23,10 +23,43 @@ class BookingController < ApplicationController
           @selslots << slot
         end
       end
-    end
-      
+    end      
   end
   
-  def book
+  def new
+    begin
+      @timeslot = Timeslot.find(params[:timeslot_id])
+    rescue
+      flash[:warning] = 'Could not find timeslot. Maybe someone else got it first?'
+      redirect_to :action => "index"
+    end
   end
+  
+  
+  def book
+    begin
+      @timeslot = Timeslot.find(params[:timeslot_id])
+    rescue
+      flash[:warning] = 'Could not find timeslot. Maybe someone else got it first?'
+      redirect_to :action => "index"
+    end
+    
+    @booking = @timeslot.build_booking(params[:booking])
+    
+    respond_to do |format|
+      if @booking.save
+         flash[:notice] = 'Booking was successfully created.'
+         format.html { redirect_to :action => "index" }
+         format.xml  { render :xml => @booking, :status => :created,
+                     :location => @booking }
+      else                                               
+         flash[:warning] = 'Invalid Options... Try again!'
+         format.html { redirect_to :action => "index" }
+         format.xml  { render :xml => @booking.errors,
+                     :status => :unprocessable_entity }
+      end
+    end
+  end
+  
+  
 end
