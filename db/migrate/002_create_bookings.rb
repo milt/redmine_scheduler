@@ -1,7 +1,7 @@
 class CreateBookings < ActiveRecord::Migration
   def self.up
     create_table :bookings do |t|
-      t.column :timeslot_id, :string
+      t.column :timeslot_id, :integer
       t.column :name, :string
       t.column :phone, :string
       t.column :email, :string
