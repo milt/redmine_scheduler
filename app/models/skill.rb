@@ -2,6 +2,17 @@ class Skill < ActiveRecord::Base
   has_and_belongs_to_many :users, :uniq => true
   belongs_to :skillcat
   validates_uniqueness_of :name
+  validates_presence_of :name, :skillcat_id
+  validates_length_of :name, :maximum => 127
+  
+  def shifts
+    skillissues = []
+    self.users.each do |user|
+      usrissues = Issue.all.select {|i| (i.tracker.name == 'Lab Coach Shift') || (i.assigned_to_id == user.id) }
+      usrissues.collect {|ui| skillissues << ui }
+    end
+    return skillissues
+  end
   
   def timeslots
     slots = []

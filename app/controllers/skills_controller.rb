@@ -1,6 +1,8 @@
 class SkillsController < ApplicationController
   unloadable
 
+  #before_filter :find_project, :authorize, :only => :index
+  
   def index
     @skills = Skill.all
     @users = User.all.select {|u| u.id > 2 }
@@ -12,22 +14,6 @@ class SkillsController < ApplicationController
     @users = User.all.select {|u| u.id > 2 }
     @assigned = @users.select {|user| @skill.users.exists?(user)}
     @unassigned = @users.reject {|user| @skill.users.exists?(user)}
-  end
-
-  def update
-    @skill = Skill.find(params[:id])
-    
-    respond_to do |format|
-      if @skill.update_attributes(params[:skill])
-        flash[:notice] = 'Skill was successfully updated.'
-        format.html { redirect_to :action => 'index' }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @post.errors,
-  	                :status => :unprocessable_entity }
-      end
-    end
   end
   
   def assign
@@ -51,12 +37,28 @@ class SkillsController < ApplicationController
           format.xml  { render :xml => @skill, :status => :created,
                       :location => @skill }
         else                                               
-          flash[:warning] = 'There is already a skill of that name!'
+          flash[:warning] = 'Invalid Options... Try again!'
           format.html { redirect_to :action => "index" }
           format.xml  { render :xml => @skill.errors,
                       :status => :unprocessable_entity }
         end
      end
+  end
+  
+  def update
+    @skill = Skill.find(params[:id])
+    
+    respond_to do |format|
+      if @skill.update_attributes(params[:skill])
+        flash[:notice] = 'Skill was successfully updated.'
+        format.html { redirect_to :action => 'index' }
+        format.xml  { head :ok }
+      else
+        format.html { render :action => "edit" }
+        format.xml  { render :xml => @post.errors,
+  	                :status => :unprocessable_entity }
+      end
+    end
   end
   
   def destroy
@@ -82,4 +84,10 @@ class SkillsController < ApplicationController
     redirect_to :action => 'assign', :user_id => @user[:id]
   end
   
+  #private
+  
+  #def find_project
+  #  # @project variable must be set before calling the authorize filter
+  #  @project = Project.find(params[:project_id])
+  #end
 end
