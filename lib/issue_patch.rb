@@ -56,7 +56,26 @@ module IssuePatch
       if self.end_time and self.start_time and self.end_time < self.start_time
         errors.add :due_date, :greater_than_start_date
       end
-    end  
+    end
+    
+    def open_slots?
+      if ((self.timeslots.detect {|t| t.open? }).present?) && (self.start_time > DateTime.now)
+        return true
+      else
+        return false
+      end
+    end
+    
+    def open_slots
+      self.timeslots.select {|t| t.open?}
+    end
+    
+    def is_labcoach_shift?
+      unless self.tracker.name == 'Lab Coach Shift'
+        return false
+      end
+        return true
+    end
   end
 end
 

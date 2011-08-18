@@ -13,20 +13,32 @@ class BookingController < ApplicationController
     
     @timeslots = Timeslot.all
     @skills = Skill.all
-    @selskills= @skills.select {|s| @filter.include?(s.id.to_s)}
-    #@unbooked = @timeslots.select {|t| t.booking.nil? && (t.slot_date > Date.today)}
-    @selslots = []
+    @selskills = @skills.select {|s| @filter.include?(s.id.to_s)}
+    @allshifts = Issue.all.select {|i| i.is_labcoach_shift? }
     
-    
+    @selshifts = []
     @selskills.each do |skill|
-      skill.timeslots.each do |slot|
-        if slot.open?
-          unless @selslots.include?(slot)
-            @selslots << slot
+      skill.shifts.each do |shift|
+        if shift.open_slots?
+          unless @selshifts.include?(shift)
+            @selshifts << shift
           end
         end
       end
-    end      
+    end
+    
+    #build an array of open slots for the user to choose from. This is ultimate ass and should be moved or at least refactored.
+    # @selslots = []
+    # @selskills.each do |skill|
+    #   skill.timeslots.each do |slot|
+    #     if slot.open?
+    #       unless @selslots.include?(slot)
+    #         @selslots << slot
+    #       end
+    #     end
+    #   end
+    # end
+  
   end
   
   def new
@@ -63,9 +75,14 @@ class BookingController < ApplicationController
       redirect_to :action => "index"
     end
     
-    if @timeslot.booking.present?
-      flash[:warning] = 'This shift has already been booked. Please select another.'
-      redirect_to :action => "index"
+    unless @timeslot.open?
+      if @timeslot.booking.present?
+        flash[:warning] = 'This shift has already been booked. Please select another.'
+        redirect_to :action => "index"
+      else
+        flash[:warning] = 'It is too late to book this shift. Please select another.'
+        redirect_to :action => "index"
+      end
     end
   end
   

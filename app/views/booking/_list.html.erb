@@ -1,5 +1,10 @@
+<% @selshifts.sort_by(&:start_time).each do |shift| %>
+<p>
+	<%= shift.assigned_to.firstname %> <%= shift.assigned_to.lastname %> - <%= shift.start_date.strftime('%A, %B %d')%>
 <ul>
-<% @selslots.sort_by(&:start_time).each do |slot| %>
-  <li><%= slot.start_time.strftime('%a %b %d - %I:%M %P') %> - <%= slot.coach.firstname %> <%= slot.coach.lastname %></li> <%= link_to 'Book Timeslot...', {:action => 'new', :timeslot_id => slot[:id]} %>
-<% end %>
+	<% shift.open_slots.sort_by(&:start_time).each do |slot| %>
+  		<li><%= slot.start_time.strftime('%l:%M %P') %> <%= link_to 'Book Timeslot...', {:action => 'new', :timeslot_id => slot[:id]} %></li>
+	<% end %>
 </ul>
+</p>
+<% end %>

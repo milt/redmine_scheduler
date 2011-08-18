@@ -8,7 +8,7 @@ class Skill < ActiveRecord::Base
   def shifts
     skillissues = []
     self.users.each do |user|
-      usrissues = Issue.all.select {|i| (i.tracker.name == 'Lab Coach Shift') || (i.assigned_to_id == user.id) }
+      usrissues = Issue.all.select {|i| i.is_labcoach_shift? && (i.assigned_to_id == user.id) }
       usrissues.collect {|ui| skillissues << ui }
     end
     return skillissues
