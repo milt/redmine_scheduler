@@ -14,7 +14,6 @@ Redmine::Plugin.register :redmine_scheduler do
   author_url 'http://digitalmedia.jhu.edu'
 
   permission :view_skills, :skills => :index
-  permission :book_coach, :booking => :index
   permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] } 
   menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Book Lab Coach'
   menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'

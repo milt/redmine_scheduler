@@ -13,8 +13,16 @@ class Timeslot < ActiveRecord::Base
   def slot_date
     self.issue.start_date
   end
+  
   def coach
     self.issue.assigned_to
   end
   
+  def open?
+    if self.booking.present? || ( self.start_time < DateTime.now )
+      return false
+    else
+      return true
+    end
+  end
 end

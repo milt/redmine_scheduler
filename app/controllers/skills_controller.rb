@@ -1,17 +1,15 @@
 class SkillsController < ApplicationController
   unloadable
 
-  #before_filter :find_project, :authorize, :only => :index
+  before_filter :find_users, :only => [:index, :edit]
   
   def index
     @skills = Skill.all
-    @users = User.all.select {|u| u.id > 2 }
     @skillcats = Skillcat.all
   end
 
   def edit
     @skill = Skill.find(params[:id])    
-    @users = User.all.select {|u| u.id > 2 }
     @assigned = @users.select {|user| @skill.users.exists?(user)}
     @unassigned = @users.reject {|user| @skill.users.exists?(user)}
   end
@@ -84,10 +82,9 @@ class SkillsController < ApplicationController
     redirect_to :action => 'assign', :user_id => @user[:id]
   end
   
-  #private
+  private
   
-  #def find_project
-  #  # @project variable must be set before calling the authorize filter
-  #  @project = Project.find(params[:project_id])
-  #end
+  def find_users
+    @users = User.all.select {|u| u.id > 2 }
+  end
 end

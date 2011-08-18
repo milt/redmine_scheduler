@@ -2,3 +2,7 @@
 en:
   field_start_time: "Start Time"
   field_end_time: "End Time"
+  helpers:
+    label:
+      booking:
+        project_desc: "Project Description"

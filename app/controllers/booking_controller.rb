@@ -1,6 +1,7 @@
 class BookingController < ApplicationController
   unloadable
 
+  before_filter :find_open_slot, :only => [:new, :book]
 
   def index
     #check for incoming search parameters, and instantiate an empty array if there are none.
@@ -13,36 +14,27 @@ class BookingController < ApplicationController
     @timeslots = Timeslot.all
     @skills = Skill.all
     @selskills= @skills.select {|s| @filter.include?(s.id.to_s)}
-    @unbooked = @timeslots.select {|t| t.booking.nil? && (t.slot_date > Date.today)}
+    #@unbooked = @timeslots.select {|t| t.booking.nil? && (t.slot_date > Date.today)}
     @selslots = []
     
     
     @selskills.each do |skill|
       skill.timeslots.each do |slot|
-        unless @selslots.include?(slot)
-          @selslots << slot
+        if slot.open?
+          unless @selslots.include?(slot)
+            @selslots << slot
+          end
         end
       end
     end      
   end
   
   def new
-    begin
-      @timeslot = Timeslot.find(params[:timeslot_id])
-    rescue
-      flash[:warning] = 'Could not find timeslot. Maybe someone else got it first?'
-      redirect_to :action => "index"
-    end
+    
   end
   
   
   def book
-    begin
-      @timeslot = Timeslot.find(params[:timeslot_id])
-    rescue
-      flash[:warning] = 'Could not find timeslot. Maybe someone else got it first?'
-      redirect_to :action => "index"
-    end
     
     @booking = @timeslot.build_booking(params[:booking])
     
@@ -61,5 +53,20 @@ class BookingController < ApplicationController
     end
   end
   
+  private
+  
+  def find_open_slot
+    begin
+      @timeslot = Timeslot.find(params[:timeslot_id])
+    rescue
+      flash[:warning] = 'Could not find timeslot.'
+      redirect_to :action => "index"
+    end
+    
+    if @timeslot.booking.present?
+      flash[:warning] = 'This shift has already been booked. Please select another.'
+      redirect_to :action => "index"
+    end
+  end
   
 end
