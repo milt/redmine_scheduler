@@ -13,10 +13,12 @@ class BookingController < ApplicationController
     
     @timeslots = Timeslot.all
     @skills = Skill.all
+    @skillcats = Skillcat.all
     @selskills = @skills.select {|s| @filter.include?(s.id.to_s)}
     @allshifts = Issue.all.select {|i| i.is_labcoach_shift? }
-    
     @selshifts = []
+    @selusers = []
+    
     @selskills.each do |skill|
       skill.shifts.each do |shift|
         if shift.open_slots?
@@ -25,20 +27,12 @@ class BookingController < ApplicationController
           end
         end
       end
-    end
-    
-    #build an array of open slots for the user to choose from. This is ultimate ass and should be moved or at least refactored.
-    # @selslots = []
-    # @selskills.each do |skill|
-    #   skill.timeslots.each do |slot|
-    #     if slot.open?
-    #       unless @selslots.include?(slot)
-    #         @selslots << slot
-    #       end
-    #     end
-    #   end
-    # end
-  
+      skill.users.each do |user|
+        unless @selusers.include?(user)
+          @selusers << user
+        end
+      end
+    end  
   end
   
   def new
@@ -58,7 +52,7 @@ class BookingController < ApplicationController
                      :location => @booking }
       else                                               
          flash[:warning] = 'Invalid Options... Try again!'
-         format.html { redirect_to :action => "index" }
+         format.html { redirect_to :action => "new", :timeslot_id => params[:timeslot_id]}
          format.xml  { render :xml => @booking.errors,
                      :status => :unprocessable_entity }
       end
@@ -70,19 +64,18 @@ class BookingController < ApplicationController
   def find_open_slot
     begin
       @timeslot = Timeslot.find(params[:timeslot_id])
+      unless @timeslot.open?
+        if @timeslot.booking.present?
+          flash[:warning] = 'This shift has already been booked. Please select another.'
+          redirect_to :action => "index"
+        else
+          flash[:warning] = 'It is too late to book this shift. Please select another.'
+          redirect_to :action => "index"
+        end
+      end
     rescue
       flash[:warning] = 'Could not find timeslot.'
       redirect_to :action => "index"
-    end
-    
-    unless @timeslot.open?
-      if @timeslot.booking.present?
-        flash[:warning] = 'This shift has already been booked. Please select another.'
-        redirect_to :action => "index"
-      else
-        flash[:warning] = 'It is too late to book this shift. Please select another.'
-        redirect_to :action => "index"
-      end
     end
   end
   

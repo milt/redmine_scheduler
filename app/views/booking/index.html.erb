@@ -2,3 +2,7 @@
 
 <%= render 'checkform' %>
 <%= render 'list' %>
+
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'booking', :plugin => 'redmine_scheduler' %>
+<% end %>

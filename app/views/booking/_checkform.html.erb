@@ -1,8 +1,18 @@
 <%= form_tag({:controller => "booking", :action => "index"}, :method => "post", :class => "nifty_form") %>
 
-	<% @skills.each do |skill| %>
-		<%= label_tag skill.name %>
-	  	<%= check_box_tag 'skill_ids[]', skill.id, @filter.include?(skill.id.to_s) %>
-	<% end %>
+<div id="skillbar">
+<table>
+<tr id="skillcats">
+<% @skillcats.each do |skillcat| %>
+<td id="skillcat">
+  <p id="skillcat_name"><%= skillcat.name %></p>
+  <% skillcat.skills.each do |skill| %>
+	<p id="skill"><%= check_box_tag 'skill_ids[]', skill.id, @filter.include?(skill.id.to_s) %><%= label_tag skill.name %></p>
+  <% end %>
+</td>
+<% end %>
+</tr>
+</table>
+</div>
 
 <%= submit_tag 'Update' %>

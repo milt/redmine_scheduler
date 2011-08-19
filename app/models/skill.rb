@@ -4,6 +4,7 @@ class Skill < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_presence_of :name, :skillcat_id
   validates_length_of :name, :maximum => 127
+  default_scope :order => 'name ASC'
   
   def shifts
     skillissues = []
