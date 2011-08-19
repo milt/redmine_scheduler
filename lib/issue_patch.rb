@@ -80,6 +80,21 @@ module IssuePatch
       end
         return true
     end
+    def is_frontdesk_shift?
+      unless self.tracker.name == 'Front Desk Shift'
+        return false
+      end
+        return true
+    end
+    
+    def is_shift?
+      if self.is_labcoach_shift? || self.is_frontdesk_shift?
+        return true
+      else
+        return false
+      end
+    end
+    
   end
 end
 
