@@ -95,6 +95,9 @@ module IssuePatch
       end
     end
     
+    def create_timeslots
+      self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
+    end
   end
 end
 
