@@ -4,8 +4,9 @@ A simple skill-based lab coach/tutor scheduling plugin for redmine
 
 You'll need:
 
-1. A suitable working installation of redmine
-2. A tracker called 'Lab Coach Shift'
+1. A suitable working installation of redmine 1.2.0
+2. A tracker called 'Lab Coach Shift', and another called 'Front Desk Shift'
+
 
 installation:
 

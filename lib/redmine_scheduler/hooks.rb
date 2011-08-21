@@ -4,6 +4,7 @@ class Hooks < Redmine::Hook::ViewListener
     s_time = DateTime.parse(context[:params][:issue][:start_time])
     e_time = DateTime.parse(context[:params][:issue][:end_time])
     s_date = Date.parse(context[:params][:issue][:start_date])
+    context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift?
     context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
     context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
     if context[:issue].is_shift?
@@ -17,14 +18,22 @@ class Hooks < Redmine::Hook::ViewListener
     else
       r_ends = ""
     end
-    if r_ends.present? && (r_ends > Date.today)
+    if r_ends.present? && (r_ends > context[:issue].start_date)
       #Get delta between ticket creation and repeat end
-      d_delt = (r_ends - Date.today)/(1.week)
-      d_delt.to_i.times do |rep|
-        i = Issue.new
-        i.copy_from(context[:issue])
-        i.write_attribute(:start_date, (i.start_date + rep.week))
-        i.save
+      d_delt = ((r_ends - context[:issue].start_date).to_i)/7
+      d_delt.times do |rep|
+          i = Issue.new
+          i.copy_from(context[:issue])
+          i.start_date = context[:issue].start_date + (rep + 1).week
+          i.due_date = context[:issue].due_date + (rep + 1).week
+          i.start_time = context[:issue].start_time + (rep + 1).week
+          i.end_time = context[:issue].end_time + (rep + 1).week
+          i.subject = User.find(i.assigned_to_id).firstname + i.start_time.strftime(' %l:%M -') + i.end_time.strftime('%l:%M %p - ') + i.start_date.strftime('%a, %b %d')
+          i.description = "Created by repeater"
+          i.save
+          if context[:issue].is_labcoach_shift?
+            i.create_timeslots
+          end
       end
     end
     # If the issue is on the Lab Coach tracker, make shift_duration x timeslots numbering from 0
@@ -37,6 +46,7 @@ class Hooks < Redmine::Hook::ViewListener
     s_time = DateTime.parse(context[:params][:issue][:start_time])
     e_time = DateTime.parse(context[:params][:issue][:end_time])
     s_date = Date.parse(context[:params][:issue][:start_date])
+    context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift?
     context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
     context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
     if context[:issue].is_shift?

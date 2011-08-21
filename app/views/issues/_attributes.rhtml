@@ -9,7 +9,10 @@
 
 <p><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}), {:required => true}, :disabled => !@issue.leaf? %></p>
 <p><%= f.select :assigned_to_id, (@issue.assignable_users.collect {|m| [m.name, m.id]}), :include_blank => true %></p>
+<% if (params[:action] == "new") && @issue.is_shift? %>
 <p>Repeats weekly until <%= text_field_tag 'repeat_ends' %><%= calendar_for('repeat_ends') if @issue.leaf?%></p>
+<p><em>Please use caution with this field!</em>
+<% end %>
 <% unless @project.issue_categories.empty? %>
 <p><%= f.select :category_id, (@project.issue_categories.collect {|c| [c.name, c.id]}), :include_blank => true %>
 <%= prompt_to_remote(image_tag('add.png', :style => 'vertical-align: middle;'),
@@ -38,7 +41,11 @@
 <%= javascript_tag "observeParentIssueField('#{auto_complete_issues_path(:id => @issue, :project_id => @project) }')" %>
 <% end %>
 <p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_start_date') if @issue.leaf? %></p>
+<% unless @issue.is_shift? %>
 <p><%= f.text_field :due_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_due_date') if @issue.leaf? %></p>
+<% else %>
+<p>(Shifts don't have due dates)</p>
+<% end %>
 <p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
 <% if @issue.is_labcoach_shift? %>
 <p><%= f.select :start_time, @issue.timelist_lc, :selected => (@issue.start_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,12)).to_time %></p>
