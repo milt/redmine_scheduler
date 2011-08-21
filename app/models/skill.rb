@@ -6,10 +6,10 @@ class Skill < ActiveRecord::Base
   validates_length_of :name, :maximum => 127
   default_scope :order => 'name ASC'
   
-  def shifts
+  def shifts(cutoff)
     skillissues = []
     self.users.each do |user|
-      usrissues = Issue.all.select {|i| i.is_labcoach_shift? && (i.assigned_to_id == user.id) }
+      usrissues = Issue.all.select {|i| (i.is_labcoach_shift? && (i.start_date <= cutoff)) && (i.assigned_to_id == user.id) }
       usrissues.collect {|ui| skillissues << ui }
     end
     return skillissues

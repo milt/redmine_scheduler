@@ -11,28 +11,29 @@ class BookingController < ApplicationController
       @filter = params[:skill_ids]
     end
     
-    @timeslots = Timeslot.all
+    #@timeslots = Timeslot.all
     @skills = Skill.all
     @skillcats = Skillcat.all
     @selskills = @skills.select {|s| @filter.include?(s.id.to_s)}
-    @allshifts = Issue.all.select {|i| i.is_labcoach_shift? }
+    #@allshifts = Issue.all.select {|i| i.is_labcoach_shift? && (i.start_date <= (Date.today + 14))}
     @selshifts = []
     @selusers = []
+    @seldates = []
+    cutoff = Date.today + 28
     
     @selskills.each do |skill|
-      skill.shifts.each do |shift|
+      skill.shifts(cutoff).each do |shift|
         if shift.open_slots?
           unless @selshifts.include?(shift)
             @selshifts << shift
+            @selusers << shift.assigned_to unless @selusers.include?(shift.assigned_to)
+            @seldates << shift.start_date unless @seldates.include?(shift.start_date)
           end
         end
       end
-      skill.users.each do |user|
-        unless @selusers.include?(user)
-          @selusers << user
-        end
-      end
-    end  
+    end
+    @seldates = @seldates.sort
+    @selusers = @selusers.sort_by(&:firstname)
   end
   
   def new

@@ -1,1 +1,10 @@
 td.skillcat {vertical-align: top;}
+table.results
+tr.names
+td.name
+tr.date_row
+td.date_title
+td.shift_cell
+table.shift_table
+tr.timeslot_row
+td.timeslot_cell

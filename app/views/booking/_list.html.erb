@@ -1,10 +1,24 @@
-<% @selshifts.sort_by(&:start_time).each do |shift| %>
-<p>
-	<h3><%= shift.assigned_to.firstname %> <%= shift.assigned_to.lastname %></h3><strong><%= shift.start_date.strftime('%A, %B %d')%></strong>
-    <table>
-      <% shift.open_slots.sort_by(&:start_time).each do |slot| %>
-  		  <tr><td><%= slot.start_time.strftime('%l:%M %P') %></td><td><%= link_to 'Book Timeslot...', {:action => 'new', :timeslot_id => slot[:id]} %><td></tr>
-	  <% end %>
-	</table>
-</p>
-<% end %>
+<table id="results">
+<tr id="names">
+	<td>Name:</td>
+	<% @selusers.each do |user| %>
+		<td id="name"><%= user.firstname %></td>
+	<% end %>
+</tr>
+<% @seldates.each do |date| %>
+<tr id="date_row">
+	<td id="date_title"><%= date.strftime('%A,') %><br><%= date.strftime('%B %d') %></td>
+	<% @selusers.each do |user| %>
+	  <td id="shift_cell">
+		<% (@selshifts.select {|s| (s.start_date == date) && (s.assigned_to == user)}).sort_by(&:start_time).each do |shift| %>
+			<table id="shift_table">
+					<% shift.open_slots.sort_by(&:start_time).each do |slot| %>
+			  		  <tr id="timeslot_row"><td id="timeslot_cell"><%= link_to slot.start_time.strftime("[%l:%M %P]"), {:action => 'new', :timeslot_id => slot[:id]} %></td></tr>
+				    <% end %>
+			</table>
+		<% end %>
+	  </td>
+	<% end %>
+</tr>
+<% end %>	
+</table>
