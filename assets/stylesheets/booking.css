@@ -1,10 +1,87 @@
-td.skillcat {vertical-align: top;}
-table.results
-tr.names
-td.name
-tr.date_row
-td.date_title
-td.shift_cell
-table.shift_table
-tr.timeslot_row
-td.timeslot_cell
+table#results {
+    
+}
+
+td.shift_cell {
+    background-color: #F7F7F7;
+    border: 2px solid #FFFFFF;
+    padding: 0px;
+    vertical-align: top;
+}
+
+tr.date_row {
+     background-color: #507AAA;
+}
+
+table.shift_table {
+    background-color: #FFFFEE;
+    width: 100%;
+    text-align: center;
+}
+
+td.date_title {
+     border: 2px solid #FFFFFF;
+     color: white;
+}
+
+div#skillbar {
+    
+}
+
+td.skillcat {
+    vertical-align: top;
+}
+
+p.skillcat_name {
+    
+}
+
+p.shift_coach {
+	background-color: #D4D4D4;
+	color: #FFFFFF;
+	text-align: center;
+}
+
+
+td.name_cell {
+	vertical-align: top;
+	text-align: center;
+	border: 2px solid #FFFFFF;
+	background-color: #507AAA;
+	border-spacing: 0px;
+    padding: 0px;
+}
+
+td.skill_name {
+}
+
+
+table.user_table {
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+	border-spacing: 0px;
+}
+
+p.user_table_title {
+	width: 100%;
+	color: #FFFFFF;
+	background-color: #2C4056;
+}
+
+td.skill_name {
+	color: #FFFFFF;
+	background-color: #507AAA;
+}
+
+td#name_heading {
+	color: #FFFFFF;
+	background-color: #2C4056;
+	vertical-align: top;
+	text-align: center;
+	border: 2px solid #FFFFFF;
+	border-spacing: 0px;
+    padding: 0px;
+}

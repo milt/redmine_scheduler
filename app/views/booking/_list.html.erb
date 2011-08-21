@@ -1,19 +1,27 @@
 <table id="results">
 <tr id="names">
-	<td>Name:</td>
+	<td id="name_heading">Staff Member:</td>
 	<% @selusers.each do |user| %>
-		<td id="name"><%= user.firstname %></td>
+		<td class="name_cell">
+        <p class="user_table_title"><%= user.firstname %></p>		  
+		  <table class="user_table">
+			  <% user.skills.each do |skill| %>
+	            <tr><td class="skill_name"><%= skill.name %></td></tr>
+			  <% end %>
+		  </table>	
+		</td>
 	<% end %>
 </tr>
 <% @seldates.each do |date| %>
-<tr id="date_row">
-	<td id="date_title"><%= date.strftime('%A,') %><br><%= date.strftime('%B %d') %></td>
+<tr class="date_row">
+	<td class="date_title"><%= date.strftime('%A,') %><br><%= date.strftime('%B %d') %></td>
 	<% @selusers.each do |user| %>
-	  <td id="shift_cell">
+	  <td class="shift_cell">
+		<p class="shift_coach"><%= user.firstname %></p>
 		<% (@selshifts.select {|s| (s.start_date == date) && (s.assigned_to == user)}).sort_by(&:start_time).each do |shift| %>
-			<table id="shift_table">
+			<table class="shift_table">
 					<% shift.open_slots.sort_by(&:start_time).each do |slot| %>
-			  		  <tr id="timeslot_row"><td id="timeslot_cell"><%= link_to slot.start_time.strftime("[%l:%M %P]"), {:action => 'new', :timeslot_id => slot[:id]} %></td></tr>
+			  		  <tr class="timeslot_row"><td class="timeslot_cell"><%= link_to slot.start_time.strftime("[%l:%M %P]"), {:action => 'new', :timeslot_id => slot[:id]} %></td></tr>
 				    <% end %>
 			</table>
 		<% end %>
