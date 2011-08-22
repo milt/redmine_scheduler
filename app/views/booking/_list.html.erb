@@ -1,6 +1,8 @@
+<% unless @filter == []%>
 <table id="results">
+<col id="date_col" />
 <tr id="names">
-	<td id="name_heading">Staff Member:</td>
+	<td id="name_heading_cell"><p id="name_heading">Staff Member:</p></td>
 	<% @selusers.each do |user| %>
 		<td class="name_cell">
         <p class="user_table_title"><%= user.firstname %></p>		  
@@ -20,8 +22,12 @@
 		<p class="shift_coach"><%= user.firstname %></p>
 		<% (@selshifts.select {|s| (s.start_date == date) && (s.assigned_to == user)}).sort_by(&:start_time).each do |shift| %>
 			<table class="shift_table">
-					<% shift.open_slots.sort_by(&:start_time).each do |slot| %>
-			  		  <tr class="timeslot_row"><td class="timeslot_cell"><%= link_to slot.start_time.strftime("[%l:%M %P]"), {:action => 'new', :timeslot_id => slot[:id]} %></td></tr>
+					<% shift.timeslots.sort_by(&:start_time).each do |slot| %>
+					  <% if slot.open? %>
+			  		    <tr class="timeslot_row"><td class="timeslot_cell"><%= link_to slot.start_time.strftime("[%l:%M %P]"), {:action => 'new', :timeslot_id => slot[:id]} %></td></tr>
+			          <% else %>
+                        <tr class="timeslot_row"><td class="timeslot_cell_booked"><%= slot.start_time.strftime("[%l:%M %P]") %></td></tr>
+			          <% end %>
 				    <% end %>
 			</table>
 		<% end %>
@@ -30,3 +36,6 @@
 </tr>
 <% end %>	
 </table>
+<% else %>
+  <p id="nosearch_text">Please select the topics you would like help with above, and click "Update" to find a staff member's availability.</p>
+<% end %>

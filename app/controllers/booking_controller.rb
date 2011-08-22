@@ -19,7 +19,7 @@ class BookingController < ApplicationController
     @selshifts = []
     @selusers = []
     @seldates = []
-    cutoff = Date.today + 28
+    cutoff = Date.today + 14
     
     @selskills.each do |skill|
       skill.shifts(cutoff).each do |shift|

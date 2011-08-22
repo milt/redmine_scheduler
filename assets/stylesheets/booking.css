@@ -1,5 +1,9 @@
 table#results {
-    
+    width: 100%;
+}
+
+col#date_col {
+	width: 9%;
 }
 
 td.shift_cell {
@@ -19,9 +23,14 @@ table.shift_table {
     text-align: center;
 }
 
+td.timeslot_cell_booked {
+	color: red;
+}
+
 td.date_title {
      border: 2px solid #FFFFFF;
      color: white;
+     text-align: center;
 }
 
 div#skillbar {
@@ -76,12 +85,17 @@ td.skill_name {
 	background-color: #507AAA;
 }
 
-td#name_heading {
+td#name_heading_cell {
+	background-color: #507AAA;
 	color: #FFFFFF;
-	background-color: #2C4056;
 	vertical-align: top;
 	text-align: center;
 	border: 2px solid #FFFFFF;
 	border-spacing: 0px;
     padding: 0px;
+}
+
+p#name_heading {
+	background-color: #2C4056;
+
 }
