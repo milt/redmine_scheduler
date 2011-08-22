@@ -1,13 +1,13 @@
 class Hooks < Redmine::Hook::ViewListener
   
   def controller_issues_new_before_save(context={})
-    s_time = DateTime.parse(context[:params][:issue][:start_time])
-    e_time = DateTime.parse(context[:params][:issue][:end_time])
-    s_date = Date.parse(context[:params][:issue][:start_date])
-    context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift?
-    context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
-    context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
     if context[:issue].is_shift?
+      s_time = DateTime.parse(context[:params][:issue][:start_time])
+      e_time = DateTime.parse(context[:params][:issue][:end_time])
+      s_date = Date.parse(context[:params][:issue][:start_date])
+      context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift?
+      context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
+      context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
       context[:issue].write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).firstname + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!"
     end      
   end
@@ -43,13 +43,13 @@ class Hooks < Redmine::Hook::ViewListener
   end
 
   def controller_issues_edit_before_save(context={})
-    s_time = DateTime.parse(context[:params][:issue][:start_time])
-    e_time = DateTime.parse(context[:params][:issue][:end_time])
-    s_date = Date.parse(context[:params][:issue][:start_date])
-    context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift?
-    context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
-    context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
     if context[:issue].is_shift?
+      s_time = DateTime.parse(context[:params][:issue][:start_time])
+      e_time = DateTime.parse(context[:params][:issue][:end_time])
+      s_date = Date.parse(context[:params][:issue][:start_date])
+      context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift?
+      context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
+      context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
       if context[:params][:issue][:assigned_to].present?
         context[:issue].write_attribute :subject, context[:params][:issue][:assigned_to] + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d')
       else
@@ -69,4 +69,7 @@ class Hooks < Redmine::Hook::ViewListener
       context[:issue].create_timeslots
     end        
   end
+  
+    render_on :view_issues_form_details_bottom,
+              :partial => 'hooks/redmine_scheduler/hello'
 end

@@ -20,10 +20,12 @@
     <th class="status"><%=l(:field_status)%>:</th><td class="status"><%= @issue.status.name %></td>
     <th class="start-date"><%=l(:field_start_date)%>:</th><td class="start-date"><%= format_date(@issue.start_date) %></td>
 </tr>
+<% if @issue.is_shift? %>
 <tr>
     <th class="start-time"><%=l(:field_start_time)%>:</th><td class="start-time"><%= @issue.start_time.strftime(fmt='%I:%M %p') %></td>
     <th class="end-time"><%=l(:field_end_time)%>:</th><td class="end-time"><%= @issue.end_time.strftime(fmt='%I:%M %p') %></td>
 </tr>
+<% end %>
 <tr>
     <th class="priority"><%=l(:field_priority)%>:</th><td class="priority"><%= @issue.priority.name %></td>
     <th class="due-date"><%=l(:field_due_date)%>:</th><td class="due-date"><%= format_date(@issue.due_date) %></td>
