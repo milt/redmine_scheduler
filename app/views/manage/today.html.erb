@@ -1,0 +1,10 @@
+<% if @todayshifts.empty? %>
+<p>You don't have any shifts scheduled for today. If you believe that this is an error, please talk to Deborah!</p>
+<% else %>
+<p>You have the following shift or shifts scheduled today. To begin logging time, please click on the link for the shift, and then use the timer controls in the upper right corner.</p>
+<ul>
+	<% @todayshifts.each do |shift| %>
+		<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></li>
+	<% end %>
+</ul>
+<% end %>
