@@ -10,6 +10,7 @@ class ManageController < ApplicationController
   end
 
   def today
+    @allshiftstoday = Issue.all.select {|i| i.start_date == Date.today }
     @todayshifts = Issue.all.select {|i| (i.assigned_to == User.current) && (i.start_date == Date.today) }
   end
 

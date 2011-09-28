@@ -8,3 +8,9 @@
 	<% end %>
 </ul>
 <% end %>
+<p>All scheduled shifts for today (use these links if you are covering someone else's shift!)</p>
+<ul>
+	<% @allshiftstoday.each do |shift| %>
+		<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></li>
+	<% end %>
+</ul>
