@@ -25,4 +25,11 @@ class Timeslot < ActiveRecord::Base
       return true
     end
   end
+  def booked?
+    if self.booking.present? || ( self.start_time < DateTime.now )
+      return true
+    else
+      return false
+    end
+  end
 end

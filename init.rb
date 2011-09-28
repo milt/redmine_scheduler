@@ -15,7 +15,8 @@ Redmine::Plugin.register :redmine_scheduler do
 
   permission :view_skills, :skills => :index
   permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] } 
-  #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Book Lab Coach'
   menu :application_menu, :manage, { :controller => 'manage', :action => 'today' }, :caption => "Today's Shifts"
+  menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
+  menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
   menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'
 end
