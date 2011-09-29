@@ -1,0 +1,20 @@
+<h3>Cancelled</h3>
+<table>
+  <tr>
+    <th><%= link_to 'Date & Time', {:action => 'index', :sort_c_col => 0} %></th>
+    <th>Staff Member</th>
+    <th><%= link_to 'Patron', {:action => 'index', :sort_c_col => 2} %></th>
+    <th>Shift</th>
+    <th>Actions</th>
+  </tr>
+  <% @cancelled.each do |booking| %>
+	  <tr>
+		<td><%= format_time(booking.apt_time) %></td>
+		<td>(none)</td>
+		<td><%= booking.name %></td>
+		<td>(none)</td>
+		<td><%= link_to 'Details', {:action => 'show', :booking_id => booking[:id]} %></td>
+	  </tr>
+  <% end %>
+</table>
+<hr>

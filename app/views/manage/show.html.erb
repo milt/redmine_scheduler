@@ -4,8 +4,10 @@
 <h3>Time:</h3>
 <p><%= format_time(@booking.apt_time) %></p>
 
+<% unless @booking.timeslot_id.nil? %>
 <h3>Staff Member:</h3>
 <p><%= @booking.timeslot.coach.firstname %></p>
+<% end %>
 
 <h3>Patron Name:</h3>
 <p><%= @booking.name %></p>
@@ -19,4 +21,4 @@
 <h3>Project Description:</h3>
 <p><%= @booking.project_desc %></p>
 <br>
-<%= link_to 'Back to List', {:action => 'index'} %>, <%= link_to 'Cancel', {:action => 'cancel', :booking_id => @booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.' %>
+<%= link_to 'Back to List', {:action => 'index'} %>, <%= (link_to 'Cancel', {:action => 'cancel', :booking_id => @booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.') unless @booking.cancelled? %>
