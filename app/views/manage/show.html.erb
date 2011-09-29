@@ -1,0 +1,21 @@
+<h2>Booking <%= @booking.id %></h2>
+
+<h3>Time:</h3>
+<p><%= format_time(@booking.apt_time) %></p>
+
+<h3>Staff Member:</h3>
+<p><%= @booking.timeslot.coach.firstname %></p>
+
+<h3>Patron Name:</h3>
+<p><%= @booking.name %></p>
+
+<h3>Patron Phone:</h3>
+<p><%= @booking.phone %></p>
+
+<h3>Patron Email:</h3>
+<p><%= @booking.email %></p>
+
+<h3>Project Description:</h3>
+<p><%= @booking.project_desc %></p>
+<br>
+<%= link_to 'Back to List', {:action => 'index'} %>, <%= link_to 'Cancel', {:action => 'cancel', :booking_id => @booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.' %>

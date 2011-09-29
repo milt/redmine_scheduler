@@ -1,8 +1,21 @@
 <h2>Manage Lab Coach Bookings</h2>
-<br>
-<ul>
-	<% @bookedtimeslots.each do |timeslot| %>
-	  <li><h4><%= format_date(timeslot.issue.start_date) %> - <%= timeslot.issue.assigned_to.firstname %> - <%= timeslot.start_time.strftime('%I:%M %P') %></h4></li>
-	<% end %>
-</ul>
+
+<table>
+  <tr>
+    <th><%= link_to 'Date & Time', {:action => 'index', :sort_col => 0} %></th>
+    <th><%= link_to 'Staff Member', {:action => 'index', :sort_col => 1} %></th>
+    <th><%= link_to 'Patron', {:action => 'index', :sort_col => 2} %></th>
+    <th><%= link_to 'Shift', {:action => 'index', :sort_col => 3} %></th>
+    <th>Actions</th>
+  </tr>
+  <% @booked.each do |booking| %>
+	  <tr>
+		<td><%= format_time(booking.apt_time) %></td>
+		<td><%= booking.timeslot.coach.firstname %></td>
+		<td><%= booking.name %></td>
+		<td><%= booking.timeslot.issue_id %></td>
+		<td><%= link_to 'Details', {:action => 'show', :booking_id => booking[:id]} %> - <%= link_to 'Cancel', {:action => 'cancel', :booking_id => booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.' %></td>
+	  </tr>
+  <% end %>
+</table>
 

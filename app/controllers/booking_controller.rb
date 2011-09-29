@@ -44,6 +44,7 @@ class BookingController < ApplicationController
   def book
     
     @booking = @timeslot.build_booking(params[:booking])
+    @booking.apt_time = @timeslot.start_time
     
     respond_to do |format|
       if @booking.save
