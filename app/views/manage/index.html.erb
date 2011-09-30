@@ -1,5 +1,5 @@
 <%= render 'nav' %>
 <h2>Manage Lab Coach Bookings</h2>
-<%= render 'booked' unless @booked.empty? %>
 <%= render 'orph' unless @orphaned.empty? %>
+<%= render 'booked' unless @booked.empty? %>
 <%= render 'cancelled' unless @cancelled.empty? %>

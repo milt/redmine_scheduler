@@ -1,0 +1,7 @@
+  <% @orphaned.each do |booking| %>
+    <h3>Reschedule Booking?</h3>
+    <div>
+	  <p>Original Time/Date: <%= format_time(booking.apt_time) %> | Patron Name: <%= booking.name %> | <%= link_to 'Attach', {:controller => 'booking', :action => 'rebook', :booking_id => booking[:id], :timeslot_id => @timeslot[:id]}, :confirm => 'Reschedule?' %></p>
+      <p><%= booking.project_desc %></p>
+	</div>
+  <% end %>

@@ -1,7 +1,7 @@
 class BookingController < ApplicationController
   unloadable
 
-  before_filter :find_open_slot, :only => [:new, :book]
+  before_filter :find_open_slot, :only => [:new, :book, :rebook]
 
   def index
     #check for incoming search parameters, and instantiate an empty array if there are none.
@@ -37,7 +37,8 @@ class BookingController < ApplicationController
   end
   
   def new
-    
+    #temporary, for "re-attaching" Bookings to a new shift while this is being used lab-only.
+    @orphaned = Booking.all.select {|b| (b.timeslot_id.nil? && b.cancelled.nil?) && (b.apt_time > DateTime.now)}
   end
   
   
@@ -49,6 +50,26 @@ class BookingController < ApplicationController
     respond_to do |format|
       if @booking.save
          flash[:notice] = 'Booking was successfully created.'
+         format.html { redirect_to :action => "index" }
+         format.xml  { render :xml => @booking, :status => :created,
+                     :location => @booking }
+      else                                               
+         flash[:warning] = 'Invalid Options... Try again!'
+         format.html { redirect_to :action => "new", :timeslot_id => params[:timeslot_id]}
+         format.xml  { render :xml => @booking.errors,
+                     :status => :unprocessable_entity }
+      end
+    end
+  end
+  
+  def rebook
+    @booking = Booking.find(params[:booking_id])
+    @timeslot.booking = @booking
+    @booking.apt_time = @timeslot.start_time
+    
+    respond_to do |format|
+      if @booking.save
+         flash[:notice] = 'Booking was successfully rescheduled.'
          format.html { redirect_to :action => "index" }
          format.xml  { render :xml => @booking, :status => :created,
                      :location => @booking }
