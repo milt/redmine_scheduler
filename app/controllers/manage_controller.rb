@@ -2,14 +2,16 @@ class ManageController < ApplicationController
   unloadable
 
   def index
-    #@allshifts = Tracker.find_by_name('Lab Coach Shift').issues.sort_by(&:start_time).reject {|t| t.start_date < Date.today}
-    #@bookedtimeslots = Timeslot.all.select {|t| t.booked? }
     allbookings = Booking.all.select {|b| b.apt_time > DateTime.now}
     @booked = allbookings.select {|b| b.timeslot_id.present?}
     nullified = allbookings.select {|b| b.timeslot_id.nil?}
     @orphaned = nullified.select {|b| b.cancelled.nil?}
+    if @orphaned.present?
+      flash[:warning] = 'There are ' + @orphaned.count.to_s + ' bookings to be rescheduled! Please address these to make this message go away!'
+    end
     @cancelled = nullified.select {|b| b.cancelled == true}
     
+    #bodgy sort handlin! sort_col is for active bookings, sort_o_col is for orphaned bookings, sort_c_col is for cancelled bookings.
     if params[:sort_col].present?
       case params[:sort_col].to_i
       when 0
@@ -59,6 +61,9 @@ class ManageController < ApplicationController
 
   def cancel
     @booking = Booking.find(params[:booking_id])
+    unless @booking.timeslot_id.nil?
+      @booking.project_desc = "[Original Staff Member: " + @booking.timeslot.coach.firstname + "] " + @booking.project_desc
+    end
     @booking.timeslot_id = nil
     @booking.cancelled = true
     

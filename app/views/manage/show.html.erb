@@ -1,24 +1,34 @@
 <%= render 'nav'%>
-<h2>Booking <%= @booking.id %></h2>
+<table>
+  <tr>
+    <th>Booking #:</th><td><%= @booking.id %></td>
+  </tr>
 
-<h3>Time:</h3>
-<p><%= format_time(@booking.apt_time) %></p>
+  <tr>
+    <th>Time:</th><td><%= format_time(@booking.apt_time) %></td>
+  </tr>
 
-<% unless @booking.timeslot_id.nil? %>
-<h3>Staff Member:</h3>
-<p><%= @booking.timeslot.coach.firstname %></p>
-<% end %>
+	<% unless @booking.timeslot_id.nil? %>
+	  <tr>
+	    <th>Staff Member:</th><td><%= @booking.timeslot.coach.firstname %></td>
+	  </tr>
+	<% end %>
 
-<h3>Patron Name:</h3>
-<p><%= @booking.name %></p>
+  <tr>
+	<th>Patron Name:</th><td><%= @booking.name %></td>
+  </tr>
 
-<h3>Patron Phone:</h3>
-<p><%= @booking.phone %></p>
+  <tr>
+	<th>Patron Phone:</th><td><%= @booking.phone %></td>
+  </tr>
 
-<h3>Patron Email:</h3>
-<p><%= @booking.email %></p>
+  <tr>
+	<th>Patron Email:</th><td><%= @booking.email %></td>
+  </tr>
 
-<h3>Project Description:</h3>
-<p><%= @booking.project_desc %></p>
+  <tr>
+	<th>Project Description:</th><td><%= @booking.project_desc %></td>
+  </tr>
+</table>
 <br>
-<%= link_to 'Back to List', {:action => 'index'} %>, <%= (link_to 'Cancel', {:action => 'cancel', :booking_id => @booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.') unless @booking.cancelled? %>
+<%= link_to 'Back to List', {:action => 'index'} %> | <%= (link_to 'Cancel', {:action => 'cancel', :booking_id => @booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.') unless @booking.cancelled? %>

@@ -98,6 +98,37 @@ module IssuePatch
     def create_timeslots
       self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
     end
+    
+    def recreate_timeslots
+      #find timeslots on current shift with bookings, destroy others.
+      cache = []
+      self.timeslots.each do |slot|
+        if slot.booked?
+          cache << slot
+        else
+          slot.destroy
+        end
+      end
+      
+      #for each slot_time index, check to see if there is a matching time among the cached timeslots. If none, make a new slot. If there is one, change it's slot time to the proper index and remove from the cache.
+      self.shift_duration_index.times do |i|
+        match = cache.detect {|s| s.booking.apt_time == (self.start_time + (i * 30).minutes)}
+        if match.nil?
+          self.timeslots << Timeslot.create(:slot_time => i)
+        else
+          cache = cache.reject {|s| s.id == match.id}
+          match.slot_time = i
+          match.save
+        end
+      end
+      
+      #destroy the remaining slots, orphaning their bookings. Could put better stuff here later.
+      cache.each do |slot|
+        slot.destroy
+      end
+      
+    end
+        
   end
 end
 

@@ -60,13 +60,7 @@ class Hooks < Redmine::Hook::ViewListener
 
   def controller_issues_edit_after_save(context={})
     if context[:issue].is_labcoach_shift?
-      context[:issue].timeslots.each do |slot|
-        if slot.booking.present?
-          slot.booking.cancel
-        end
-        slot.destroy
-      end
-      context[:issue].create_timeslots
+      context[:issue].recreate_timeslots
     end        
   end
   
