@@ -48,8 +48,8 @@
 <% end %>
 <p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
 <% if @issue.is_labcoach_shift? %>
-<p><%= f.select :start_time, @issue.timelist_lc, :selected => (@issue.start_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,12)).to_time %></p>
-<p><%= f.select :end_time, @issue.timelist_lc, :selected => (@issue.end_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,12)).to_time %></p>
+<p><%= f.select :start_time, @issue.timelist_lc, :selected => (@issue.start_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
+<p><%= f.select :end_time, @issue.timelist_lc, :selected => (@issue.end_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
 <% elsif @issue.tracker.name == "Front Desk Shift" %>
 <p><%= f.select :start_time, @issue.timelist_fd, :selected => (@issue.start_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
 <p><%= f.select :end_time, @issue.timelist_fd, :selected => (@issue.end_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
