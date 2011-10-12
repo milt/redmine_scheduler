@@ -14,7 +14,7 @@
 		<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></li>
 		<% shift.booked_slots.each do |slot| %>
 		  <ul>
-			<li><%= slot.booking.apt_time %> - <%= slot.booking.name %> <%= link_to 'Details...', {:action => 'show', :booking_id => slot.booking[:id]} %></li>
+			<li><%= format_time(slot.booking.apt_time) %> : <%= slot.booking.name %> <%= link_to 'Details...', {:action => 'show', :booking_id => slot.booking[:id]} %></li>
 		  </ul>
 		<% end %>
 	<% end %>
