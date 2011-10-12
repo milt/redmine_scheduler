@@ -5,10 +5,10 @@ require 'issue_patch'
 require 'user_patch'
 require_dependency 'redmine_scheduler/hooks'
 
-Dispatcher.to_prepare :redmine_todos_scrum_plugin_model_patches do
-  Project.send(:include, IssuePatch)
-  User.send(:include, UserPatch)
-end
+#Dispatcher.to_prepare :redmine_todos_scrum_plugin_model_patches do
+#  Project.send(:include, IssuePatch)
+#  User.send(:include, UserPatch)
+#end
 
 Redmine::Plugin.register :redmine_scheduler do
   name 'Redmine Scheduler plugin'
