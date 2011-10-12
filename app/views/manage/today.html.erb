@@ -1,6 +1,6 @@
 <%= render 'nav' %>
 <h2>Today's Shifts</h2>
-<% if @todayshifts.empty? %>
+<% if @todayshifts.empty? && @todaylcshifts.empty? %>
 <p>You don't have any shifts scheduled for today. If you believe that this is an error, please talk to Deborah!</p>
 <% else %>
 <p>You have the following shift or shifts scheduled today. To begin logging time, please click on the link for the shift, and then use the timer controls in the upper right corner.</p>
