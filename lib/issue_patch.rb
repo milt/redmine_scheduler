@@ -74,6 +74,10 @@ module IssuePatch
       self.timeslots.select {|t| t.open?}
     end
     
+    def booked_slots
+      self.timeslots.reject {|t| t.open?}
+    end
+    
     def is_labcoach_shift?
       unless self.tracker.name == 'Lab Coach Shift'
         return false
