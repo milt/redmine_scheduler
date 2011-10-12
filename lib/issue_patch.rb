@@ -75,7 +75,7 @@ module IssuePatch
     end
     
     def booked_slots
-      self.timeslots.reject {|t| t.open?}
+      self.timeslots.select {|t| t.booked?}
     end
     
     def is_labcoach_shift?
