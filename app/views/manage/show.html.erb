@@ -31,4 +31,4 @@
   </tr>
 </table>
 <br>
-<%= link_to 'Back to List', {:action => 'index'} %> | <%= (link_to 'Cancel', {:action => 'cancel', :booking_id => @booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.') unless @booking.cancelled? %>
+<%= link_to 'See All Bookings', {:action => 'index'} %> | <%= (link_to 'Cancel Booking', {:action => 'cancel', :booking_id => @booking[:id]}, :confirm => 'Are you sure? Patron will not be notified.') unless @booking.cancelled? %>
