@@ -19,14 +19,14 @@ class Timeslot < ActiveRecord::Base
   end
   
   def open?
-    if self.booking.present? || ( self.start_time < DateTime.now )
+    if self.booking.present? && ( self.start_time < DateTime.now )
       return false
     else
       return true
     end
   end
   def booked?
-    if self.booking.present? || ( self.start_time < DateTime.now )
+    if self.booking.present? && ( self.start_time < DateTime.now )
       return true
     else
       return false
