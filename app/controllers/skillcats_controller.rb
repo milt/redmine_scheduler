@@ -1,9 +1,9 @@
-class SkillcatsController < ApplicationController
+class SkillcatsController < ApplicationController #management of skill categories. pretty boring
   unloadable
 
 
-  def index
-    @skillcats = Skillcat.all
+  def index #index of skill cats
+    @skillcats = Skillcat.all #find all skill categories
   end
 
   def new

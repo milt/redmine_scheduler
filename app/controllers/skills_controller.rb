@@ -1,31 +1,31 @@
-class SkillsController < ApplicationController
+class SkillsController < ApplicationController #define skills, assign them to users
   unloadable
 
-  before_filter :find_users, :only => [:index, :edit]
+  before_filter :find_users, :only => [:index, :edit] #finds users for skill assignment
   
-  def index
+  def index #index and manage skills
     @skills = Skill.all
     @skillcats = Skillcat.all
   end
 
-  def edit
+  def edit #edit users assigned to a given skill
     @skill = Skill.find(params[:id])    
     @assigned = @users.select {|user| @skill.users.exists?(user)}
     @unassigned = @users.reject {|user| @skill.users.exists?(user)}
   end
   
-  def assign
+  def assign #assign a skill to a given user
     @user = User.find(params[:user_id])
     @skills = Skill.all
     @assigned = @skills.select {|skill| @user.skills.exists?(skill)}
     @unassigned = @skills.reject {|skill| @user.skills.exists?(skill)}
   end
 
-  def new
+  def new #new skill on bad params
     @skill = Skill.new
   end
 
-  def create
+  def create #make a new skill from user input
     @skill = Skill.new(params[:skill])
 
       respond_to do |format|
@@ -43,7 +43,7 @@ class SkillsController < ApplicationController
      end
   end
   
-  def update
+  def update #edit a skill from user input
     @skill = Skill.find(params[:id])
     
     respond_to do |format|
@@ -66,7 +66,7 @@ class SkillsController < ApplicationController
     redirect_to :action => 'index'
   end
   
-  def link
+  def link #link a given skill to a given user
     @skill = Skill.find(params[:id])
     @user = User.find(params[:user_id])
     @user.skills << @skill
@@ -74,7 +74,7 @@ class SkillsController < ApplicationController
     redirect_to :action => 'assign', :user_id => @user[:id]
   end
   
-  def unlink
+  def unlink #unlink a given skill from a given user
     @skill = Skill.find(params[:id])
     @user = User.find(params[:user_id])
     @user.skills.delete(@skill)
@@ -84,7 +84,7 @@ class SkillsController < ApplicationController
   
   private
   
-  def find_users
+  def find_users #find the users who aren't system users
     @users = User.all.select {|u| u.id > 2 }
   end
 end

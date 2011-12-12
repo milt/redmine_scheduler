@@ -1,17 +1,17 @@
-class ManageController < ApplicationController
+class ManageController < ApplicationController #handles the management/rebooking of lab coach shifts. catch-all for staff functions. needs to be separated from the booking controller when we open up to patrons.
   unloadable
 
   def index
-    allbookings = Booking.all.select {|b| b.apt_time > DateTime.now}
-    @booked = allbookings.select {|b| b.timeslot_id.present?}
-    nullified = allbookings.select {|b| b.timeslot_id.nil?}
-    @orphaned = nullified.select {|b| b.cancelled.nil?}
+    allbookings = Booking.all.select {|b| b.apt_time > DateTime.now} #all scheduled bookings in the future
+    @booked = allbookings.select {|b| b.timeslot_id.present?} #all valid bookings
+    nullified = allbookings.select {|b| b.timeslot_id.nil?} #all nullified bookings
+    @orphaned = nullified.select {|b| b.cancelled.nil?} #all nullified bookings that weren't cancelled, must be rescheduled
     if @orphaned.present?
       flash[:warning] = 'There are ' + @orphaned.count.to_s + ' bookings to be rescheduled! Please address these to make this message go away!'
     end
-    @cancelled = nullified.select {|b| b.cancelled == true}
+    @cancelled = nullified.select {|b| b.cancelled == true} #intentionally cancelled bookings
     
-    #bodgy sort handlin! sort_col is for active bookings, sort_o_col is for orphaned bookings, sort_c_col is for cancelled bookings.
+    #Nightmare table sort! needs.. fire. sort_col is for active bookings, sort_o_col is for orphaned bookings, sort_c_col is for cancelled bookings.
     if params[:sort_col].present?
       case params[:sort_col].to_i
       when 0
@@ -50,18 +50,18 @@ class ManageController < ApplicationController
     end
   end
 
-  def today
+  def today #the "My shifts today page"
     @allshiftstoday = Issue.all.select {|i| (i.start_date == Date.today) && i.is_frontdesk_shift? }
     @todayshifts = @allshiftstoday.select {|i| i.assigned_to == User.current}
     @alllcshiftstoday = Issue.all.select {|i| (i.start_date == Date.today) && i.is_labcoach_shift? }
     @todaylcshifts = @alllcshiftstoday.select {|i| i.assigned_to == User.current}
   end
   
-  def show
+  def show #view a single booking
     @booking = Booking.find(params[:booking_id])
   end
 
-  def cancel
+  def cancel #cancel a booking (won't reschedule)
     @booking = Booking.find(params[:booking_id])
     unless @booking.timeslot_id.nil?
       @booking.project_desc = "[Original Staff Member: " + @booking.timeslot.coach.firstname + "] " + @booking.project_desc
