@@ -1,7 +1,6 @@
 require_dependency 'user'
 
-# Patches Redmine's Users dynamically.  Adds a relationship 
-# User +has_and_belongs_to_many+ Skill
+# Patches Redmine's Users dynamically.  Adds a relationship User +has_and_belongs_to_many+ Skill. 
 module UserPatch
   def self.included(base) # :nodoc:
     base.extend(ClassMethods)

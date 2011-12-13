@@ -1,9 +1,8 @@
 require_dependency 'issue'
 
-# Patches Redmine's Issues dynamically.  Adds a relationship 
-# Issue +has_many+ to Timeslot
+# Patches Redmine's Issue model dynamically.  Adds a relationship Issue +has_many+ to Timeslot. this is a module, hence it has a slightly different order.
 module IssuePatch
-  def self.included(base) # :nodoc:
+  def self.included(base) # :nodoc: add the indicated methods to Issue. not sure what :nodoc: did but it is off now
     base.extend(ClassMethods)
 
     base.send(:include, InstanceMethods)
@@ -12,27 +11,27 @@ module IssuePatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
-      safe_attributes 'start_time', 'end_time'
-      alias_method_chain :validate, :shift_times      
+      safe_attributes 'start_time', 'end_time' #since our migration adds start_time and end_time to issues for use as shifts, we need to mark these as safe for editing.
+      alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
 
     end
 
   end
 
-  module ClassMethods
+  module ClassMethods #we don't currently have any class methods for Issues
 
   end
 
-  module InstanceMethods
-    def timelist_lc
+  module InstanceMethods #methods to run on shifts. as is, we can run them on all issues which is not good.
+    def timelist_lc #generate a list of valid times for lab coach shifts to start. This shouldn't be here, but this is where it worked. clean up
       ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).select {|a| (a.min.eql?(15) | a.min.eql?(45)) & a.sec.eql?(0)}).collect {|t| [t.strftime("%I:%M %P"), t]}
     end
     
-    def timelist_fd
+    def timelist_fd #generate a list of valid times for front desk coach shifts to start. This shouldn't be here, but this is where it worked. clean up
       ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).select {|a| (a.min.eql?(15) | a.min.eql?(45)) & a.sec.eql?(0)}).collect {|t| [t.strftime("%I:%M %P"), t]}
     end
           
-    def start_time=(time)
+    def start_time=(time) #this method and the one below are used to write to the fields with the older write_attribute method. this is bad, and maybe is not necessary, need to look at it
         write_attribute :start_time, (time)
     end
     
@@ -40,29 +39,30 @@ module IssuePatch
         write_attribute :end_time, (time)
     end
     
-    def shift_duration
+    def shift_duration #get the duration of a shift
       ((start_time && end_time) ? end_time - start_time : 0)/60/60
     end
     
-    def shift_start_index
+    # a thought occurs, it doesn't seem that this differentiates between LC and FD shifts, which maybe it should?
+    def shift_start_index #integer expressing shift start time as one of 48 1/2 hr increments in a day
       (start_time.hour * 2) + (start_time.min/30)
     end
     
-    def shift_end_index
+    def shift_end_index #same for end
       (end_time.hour * 2) + (end_time.min/30)
     end
 
-    def shift_duration_index
+    def shift_duration_index #duration in 1/2 hr increments
       shift_end_index - shift_start_index
     end
     
-    def validate_with_shift_times
+    def validate_with_shift_times # see alias_method_chain above
       if self.end_time and self.start_time and self.end_time < self.start_time
         errors.add :due_date, :greater_than_start_date
       end
     end
     
-    def open_slots?
+    def open_slots? #does this shift have open timeslots?
       if ((self.timeslots.detect {|t| t.open? }).present?) && (self.start_time > DateTime.now)
         return true
       else
@@ -70,28 +70,28 @@ module IssuePatch
       end
     end
     
-    def open_slots
+    def open_slots #list open slots on this shift
       self.timeslots.select {|t| t.open?}
     end
     
-    def booked_slots
+    def booked_slots #list booked slots on this shift
       self.timeslots.select {|t| t.booked?}
     end
     
-    def is_labcoach_shift?
+    def is_labcoach_shift? #is this an LC shift?
       unless self.tracker.name == 'Lab Coach Shift'
         return false
       end
         return true
     end
-    def is_frontdesk_shift?
+    def is_frontdesk_shift? #is this a FD shift?
       unless self.tracker.name == 'Front Desk Shift'
         return false
       end
         return true
     end
     
-    def is_shift?
+    def is_shift? #is this a shift at all?
       if self.is_labcoach_shift? || self.is_frontdesk_shift?
         return true
       else
@@ -99,34 +99,33 @@ module IssuePatch
       end
     end
     
-    def create_timeslots
+    def create_timeslots #generate timeslots for this shift
       self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
     end
     
-    def recreate_timeslots
-      #find timeslots on current shift with bookings, destroy others.
-      cache = []
-      self.timeslots.each do |slot|
-        if slot.booked?
+    def recreate_timeslots #when a shift changes time dimensions and is saved (see hook), any timeslots associated with it must be checked and updated. Right now, only timeslots with bookings are kept, otherwise new ones are made
+      cache = [] #make an empty array to cache timeslots we are keeping
+      self.timeslots.each do |slot| #for each timeslot on this shift,
+        if slot.booked? # if the timeslot has a booking associated, hold on to it
           cache << slot
         else
-          slot.destroy
+          slot.destroy # if not, destroy it
         end
       end
       
-      #for each slot_time index, check to see if there is a matching time among the cached timeslots. If none, make a new slot. If there is one, change it's slot time to the proper index and remove from the cache.
-      self.shift_duration_index.times do |i|
-        match = cache.detect {|s| s.booking.apt_time == (self.start_time + (i * 30).minutes)}
-        if match.nil?
+      #for each slot_time index, check to see if there is a matching time among the cached (booked) timeslots. If none, make a new slot. If there is one, change it's slot time to the proper index and remove from the cache.
+      self.shift_duration_index.times do |i| #for each 30 min interval in the updated and saved shift
+        match = cache.detect {|s| s.booking.apt_time == (self.start_time + (i * 30).minutes)} #detect whether any slots in the cache fall within the new shift times
+        if match.nil? #if none match, make a new slot
           self.timeslots << Timeslot.create(:slot_time => i)
-        else
-          cache = cache.reject {|s| s.id == match.id}
-          match.slot_time = i
-          match.save
+        else #if there is a match
+          cache = cache.reject {|s| s.id == match.id} #remove it from the cache
+          match.slot_time = i #set its slot time to the current index
+          match.save #save the timeslot, preserving the booking at the correct apt_time
         end
       end
       
-      #destroy the remaining slots, orphaning their bookings. Could put better stuff here later.
+      #destroy the remaining slots in the cache, orphaning their bookings. Put better stuff here later, but for now it shows up in the Manage controller.
       cache.each do |slot|
         slot.destroy
       end
