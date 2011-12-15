@@ -24,11 +24,23 @@ module IssuePatch
 
   module InstanceMethods #methods to run on shifts. as is, we can run them on all issues which is not good.
     def timelist_lc #generate a list of valid times for lab coach shifts to start. This shouldn't be here, but this is where it worked. clean up
-      ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).select {|a| (a.min.eql?(15) | a.min.eql?(45)) & a.sec.eql?(0)}).collect {|t| [t.strftime("%I:%M %P"), t]}
+      timelist = []
+      t = Time.local(0,1,1,0,15)
+      47.times do
+        timelist = timelist << t.strftime("%I:%M %P")
+        t = t + 30.minutes
+      end
+      return timelist
     end
     
     def timelist_fd #generate a list of valid times for front desk coach shifts to start. This shouldn't be here, but this is where it worked. clean up
-      ((Time.local(0,1,1,0)..Time.local(0,1,1,23,59)).select {|a| (a.min.eql?(15) | a.min.eql?(45)) & a.sec.eql?(0)}).collect {|t| [t.strftime("%I:%M %P"), t]}
+      timelist = []
+      t = Time.local(0,1,1,0,15)
+      47.times do
+        timelist = timelist << t.strftime("%I:%M %P")
+        t = t + 30.minutes
+      end
+      return timelist
     end
           
     def start_time=(time) #this method and the one below are used to write to the fields with the older write_attribute method. this is bad, and maybe is not necessary, need to look at it
