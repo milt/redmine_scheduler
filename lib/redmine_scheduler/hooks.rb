@@ -66,12 +66,6 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
     end        
   end
   
-  #def controller_timelog_edit_before_save(context={})
-    #if context[:time_entry].issue.is_shift?
-      #context[:time_entry].write_attribute :spent_on, context[:time_entry].issue.start_date
-    #end
-  #end
-  
     render_on :view_issues_form_details_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
               :partial => 'hooks/redmine_scheduler/hello'
 end

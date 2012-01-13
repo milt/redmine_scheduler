@@ -1,6 +1,8 @@
 class ManageController < ApplicationController #handles the management/rebooking of lab coach shifts. catch-all for staff functions. needs to be separated from the booking controller when we open up to patrons.
   unloadable
-
+  include ManageHelper
+  require 'prawn'
+  
   def index
     allbookings = Booking.all.select {|b| b.apt_time > DateTime.now} #all scheduled bookings in the future
     @booked = allbookings.select {|b| b.timeslot_id.present?} #all valid bookings
@@ -86,4 +88,30 @@ class ManageController < ApplicationController #handles the management/rebooking
 
   def schedule
   end
+  
+  def generate_timesheet
+    name = User.current.firstname
+    wage = "12.00"
+    number = "7111992"
+    current = Date.today.to_s
+    beginning = "1/11/2011"
+    ending = "1/13/2011"
+    hours = "30"
+    
+    #respond_to do |format|
+      #format.html
+      #format.pdf { render :pdf => generate_timesheet_pdf(name, wage) }
+    #end
+    
+    send_data (generate_timesheet_pdf(name, wage, number, current, beginning, ending, hours),
+      :filename => "foo.pdf",
+      :type => "application/pdf")
+  end
+  
+  def timesheets #does this work? -MAD
+    
+  end
+  
+  private
+  
 end
