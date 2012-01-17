@@ -109,6 +109,45 @@ class ManageController < ApplicationController #handles the management/rebooking
   end
   
   def timesheets #does this work? -MAD
+    if params[:date].present? #look for a year and set the current one if not present.
+      @year = params[:date][:year]
+    else
+      @year = Time.current.year.to_s
+    end
+    
+    #Find first monday
+    days = []
+    dcount = 0
+    7.times do
+      days << (Date.new(@year.to_i) + dcount.days)
+      dcount += 1
+    end
+    yearstart = days.detect {|day| day.wday == 1 }
+    
+    @weeks = []
+    c = 0
+    52.times do
+      @weeks << [(yearstart + c.weeks).strftime("Week of %B %d"), (c + 1)]
+      c += 1
+    end
+    if params[:tweek].present?
+      @tweek = params[:tweek]
+    else
+      @tweek = 1
+    end
+
+    @weekof = yearstart + (@tweek.to_i - 1).weeks
+    usrtiments = TimeEntry.all.select {|t| t.user == User.current }
+    @seltiments = usrtiments.select {|t| (t.tyear == @year.to_i) && (t.tweek == @tweek.to_i) }
+    @entsbyday = []
+    daycount = 0
+    7.times do
+      day = (@weekof + daycount.days)
+      @entsbyday << @seltiments.select {|t| t.spent_on == day}
+      daycount += 1
+    end
+    
+    @totalhours = @seltiments.inject(0) {|sum,x| sum + x.hours}
     
   end
   

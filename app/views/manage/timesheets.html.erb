@@ -1,2 +1,33 @@
 <%= render 'nav' %>
 <h2>Your Timecards</h2>
+
+<% form_tag do %>
+<%= select_year Date.new(@year.to_i) %>
+<%= select_tag(:tweek, options_for_select(@weeks, @weeks[@tweek.to_i - 1])) %>
+<%= submit_tag "Update" %>
+<% end %>
+<br>
+
+<ul>
+	<% count = 0 %>
+	<% 7.times do %>
+	  <% day = (@weekof + count.days) %>
+	  <% ents = @entsbyday[count] %>
+	  <li><%= day.strftime("%A - %D") %></li>
+	  <ul>
+		  <% ents.each do |ent| %>
+		    <li><%= ent.user.firstname %>
+                <%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => ent, :project_id => nil},
+			                                       :title => l(:button_edit) %>
+			    <%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => ent, :project_id => nil},
+			                                         :confirm => l(:text_are_you_sure),
+			                                         :method => :delete,
+			                                         :title => l(:button_delete) %>
+			</li>
+          <% end %>
+	  </ul>
+	  <% count += 1 %>
+	<% end %>
+</ul>
+<br>
+<h3>TOTAL HOURS WORKED: <%= @totalhours %></h3>
