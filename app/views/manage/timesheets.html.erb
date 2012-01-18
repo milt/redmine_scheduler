@@ -13,7 +13,7 @@
 	<% 7.times do %>
 	  <% day = (@weekof + count.days) %>
 	  <% ents = @entsbyday[count] %>
-	  <li><%= day.strftime("%A - %D") %></li>
+	  <li><%= day.strftime("%A - %D") %><%= ents.inject(0) {|sum, x| sum + x.hours} %></li>
 	  <ul>
 		  <% ents.each do |ent| %>
 		    <li><%= ent.user.firstname %>
@@ -31,3 +31,5 @@
 </ul>
 <br>
 <h3>TOTAL HOURS WORKED: <%= @totalhours %></h3>
+</br>
+<%= link_to "Generate Timesheet", {:controller => 'manage', :action => 'generate_timesheet', :weekof => @weekof} %>

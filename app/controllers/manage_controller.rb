@@ -90,25 +90,41 @@ class ManageController < ApplicationController #handles the management/rebooking
   end
   
   def generate_timesheet
+    @weekof = Date.parse(params[:weekof])
     name = User.current.firstname
-    wage = "12.00"
-    number = "7111992"
-    current = Date.today.to_s
-    beginning = "1/11/2011"
-    ending = "1/13/2011"
-    hours = "30"
+    #wage = params[:wage]
+    wage = ""
+    current = Date.today
+    beginning = params[:weekof]
+
+    usrtiments = TimeEntry.all.select {|t| t.user == User.current }
+    #entsbyday = []
+    #daycount = 0
+    #7.times do
+    #  day = (@weekof + daycount.days)
+    #  entsbyday << usrtiments.select {|t| t.spent_on == day}
+    #  daycount += 1
+    #end
+
+    @mon = (usrtiments.select {|t| t.spent_on == @weekof}).inject(0) {|sum, x| sum + x.hours}
+    @tue = (usrtiments.select {|t| t.spent_on == (@weekof + 1)}).inject(0) {|sum, x| sum + x.hours}
+    @wed = (usrtiments.select {|t| t.spent_on == (@weekof + 2)}).inject(0) {|sum, x| sum + x.hours}
+    @thu = (usrtiments.select {|t| t.spent_on == (@weekof + 3)}).inject(0) {|sum, x| sum + x.hours}
+    @fri = (usrtiments.select {|t| t.spent_on == (@weekof + 4)}).inject(0) {|sum, x| sum + x.hours}
+    @sat = (usrtiments.select {|t| t.spent_on == (@weekof + 5)}).inject(0) {|sum, x| sum + x.hours}
+    @sun = (usrtiments.select {|t| t.spent_on == (@weekof + 6)}).inject(0) {|sum, x| sum + x.hours}
     
     #respond_to do |format|
-      #format.html
-      #format.pdf { render :pdf => generate_timesheet_pdf(name, wage) }
+    #  format.html
+    #  format.pdf { render :pdf => generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun) }
     #end
     
-    send_data (generate_timesheet_pdf(name, wage, number, current, beginning, ending, hours),
-      :filename => "foo.pdf",
+    send_data (generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun),
+      :filename => name + "_timecard_from_" + beginning.to_s + "_to_" + (@weekof + 6.days).to_s + ".pdf",
       :type => "application/pdf")
   end
   
-  def timesheets #does this work? -MAD
+  def timesheets
     if params[:date].present? #look for a year and set the current one if not present.
       @year = params[:date][:year]
     else
@@ -145,8 +161,9 @@ class ManageController < ApplicationController #handles the management/rebooking
       day = (@weekof + daycount.days)
       @entsbyday << @seltiments.select {|t| t.spent_on == day}
       daycount += 1
+      
     end
-    
+
     @totalhours = @seltiments.inject(0) {|sum,x| sum + x.hours}
     
   end
