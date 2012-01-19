@@ -6,7 +6,7 @@ module ManageHelper
   	text "DMC Student Employee Timesheet", :style => :bold, :align => :center
   	font_size(12)
   	pad_top(15){ text "Student Name:<b> " + name + "</b>       Student Hourly Wage: $" + wage, :align => :center, :inline_format => true }
-  	pad_top(10){ text "Pay period for this timesheet:   From -<b> " + beginning.to_s + "</b>  To -<b> " + (beginning + 6.days).to_s  + "</b>", :align => :center, :inline_format => true }
+  	pad_top(10){ text "Pay period for this timesheet:   From -<b> " + beginning.strftime("%D") + "</b>  To -<b> " + (beginning + 6.days).strftime("%D")  + "</b>", :align => :center, :inline_format => true }
 	font_size(14)
 	pad_top(10){ text "Report of hours worked", :style => :bold}
 	font_size(12)

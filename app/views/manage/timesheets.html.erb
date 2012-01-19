@@ -13,17 +13,24 @@
 	<% 7.times do %>
 	  <% day = (@weekof + count.days) %>
 	  <% ents = @entsbyday[count] %>
-	  <li><%= day.strftime("%A - %D") %><%= ents.inject(0) {|sum, x| sum + x.hours} %></li>
+	  <li><%= day.strftime("%A - %D") %><!--<%= ents.inject(0) {|sum, x| sum + x.hours} %>--></li>
 	  <ul>
-		  <% ents.each do |ent| %>
-		    <li><%= ent.user.firstname %>
-                <%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => ent, :project_id => nil},
+		<% ents.each do |ent| %>
+		<li><!--<%= ent.user.firstname %>-->
+			<%= ent.activity_id.to_s %>
+                	<%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => ent, :project_id => nil},
 			                                       :title => l(:button_edit) %>
-			    <%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => ent, :project_id => nil},
+			<%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => ent, :project_id => nil},
 			                                         :confirm => l(:text_are_you_sure),
 			                                         :method => :delete,
 			                                         :title => l(:button_delete) %>
+			<%= ent.hours %>
+	  	</li>
+		<ul>
+			<li>
+				<% if ent.comments != "" %><%= ent.comments %><% else %>no comment<% end %>
 			</li>
+		</ul>
           <% end %>
 	  </ul>
 	  <% count += 1 %>
@@ -32,4 +39,4 @@
 <br>
 <h3>TOTAL HOURS WORKED: <%= @totalhours %></h3>
 </br>
-<%= link_to "Generate Timesheet", {:controller => 'manage', :action => 'generate_timesheet', :weekof => @weekof} %>
+<%= button_to "Generate Timecard", {:controller => 'manage', :action => 'generate_timesheet', :weekof => @weekof} %>
