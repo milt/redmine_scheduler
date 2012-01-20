@@ -1,5 +1,6 @@
 require 'redmine'
 
+#this is matt changing some stuff
 # Patches to the redmine core for User, Issue HABTM relationships
 require 'issue_patch'
 require 'user_patch'
