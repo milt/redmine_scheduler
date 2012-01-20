@@ -98,13 +98,6 @@ class ManageController < ApplicationController #handles the management/rebooking
     beginning = params[:weekof]
 
     usrtiments = TimeEntry.all.select {|t| t.user == User.current }
-    #entsbyday = []
-    #daycount = 0
-    #7.times do
-    #  day = (@weekof + daycount.days)
-    #  entsbyday << usrtiments.select {|t| t.spent_on == day}
-    #  daycount += 1
-    #end
 
     @mon = (usrtiments.select {|t| t.spent_on == @weekof}).inject(0) {|sum, x| sum + x.hours}
     @tue = (usrtiments.select {|t| t.spent_on == (@weekof + 1)}).inject(0) {|sum, x| sum + x.hours}
@@ -114,7 +107,12 @@ class ManageController < ApplicationController #handles the management/rebooking
     @sat = (usrtiments.select {|t| t.spent_on == (@weekof + 5)}).inject(0) {|sum, x| sum + x.hours}
     @sun = (usrtiments.select {|t| t.spent_on == (@weekof + 6)}).inject(0) {|sum, x| sum + x.hours}
     
-    #respond_to do |format|
+    #@allshiftstoday = Issue.all.select {|i| (i.is_frontdesk_shift?) }
+    #@todayshifts = @allshiftstoday.select {|i| (i.assigned_to == User.current) }
+    #@alllcshiftstoday = Issue.all.select {|i| (i.is_labcoach_shift?) }
+    #@todaylcshifts = @alllcshiftstoday.select {|i| (i.assigned_to == User.current) }
+
+ #respond_to do |format|
     #  format.html
     #  format.pdf { render :pdf => generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun) }
     #end

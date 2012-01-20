@@ -3,6 +3,7 @@
 
 <% form_tag do %>
 <%= select_year Date.new(@year.to_i) %>
+<%= select_month Date.new(@month.to_i) %>
 <%= select_tag(:tweek, options_for_select(@weeks, @weeks[@tweek.to_i - 1])) %>
 <%= submit_tag "Update" %>
 <% end %>
@@ -18,19 +19,17 @@
 		<% ents.each do |ent| %>
 		<li><!--<%= ent.user.firstname %>-->
 			<%= (TimeEntryActivity.all.select {|t| t.id == ent.activity_id })[0].name %>
+                        <%= ": " %>
+			<% if ent.comments != "" %><%= ent.comments %><% else %>no comment<% end %>
+			<%= " - " %>
+			<%= ent.hours %>
                 	<%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => ent, :project_id => nil},
 			                                       :title => l(:button_edit) %>
 			<%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => ent, :project_id => nil},
 			                                         :confirm => l(:text_are_you_sure),
 			                                         :method => :delete,
 			                                         :title => l(:button_delete) %>
-			<%= ent.hours %>
 	  	</li>
-		<ul>
-			<li>
-				<% if ent.comments != "" %><%= ent.comments %><% else %>no comment<% end %>
-			</li>
-		</ul>
           <% end %>
 	  </ul>
 	  <% count += 1 %>
@@ -40,3 +39,17 @@
 <h3>TOTAL HOURS WORKED: <%= @totalhours %></h3>
 </br>
 <%= button_to "Generate Timecard", {:controller => 'manage', :action => 'generate_timesheet', :weekof => @weekof} %>
+</br>
+</br>
+<p>Missing a shift?  Take a look here:</p>
+<% allshiftsuser = Issue.all.select {|i| (i.assigned_to == User.current) } %>
+<% count = 0 %>
+<% 7.times do %>
+	<% day = (@weekof + count.days) %>
+	<% allshiftstoday = allshiftsuser.select {|i| (i.start_date == day) } %>
+	<% allshiftstoday.each do |shift| %>
+  		<%= shift.tracker.name %><%= ": " %><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %>
+	<% end %>
+	<% count += 1 %>
+<% end %>
+
