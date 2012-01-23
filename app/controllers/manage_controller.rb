@@ -63,6 +63,10 @@ class ManageController < ApplicationController #handles the management/rebooking
     @booking = Booking.find(params[:booking_id])
   end
 
+  def mail
+    UserMailer.deliver_welcome_email()
+  end
+
   def cancel #cancel a booking (won't reschedule)
     @booking = Booking.find(params[:booking_id])
     unless @booking.timeslot_id.nil?
