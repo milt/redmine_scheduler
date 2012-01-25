@@ -4,6 +4,7 @@ require 'redmine'
 # Patches to the redmine core for User, Issue HABTM relationships
 require 'issue_patch'
 require 'user_patch'
+require 'mailer_patch'
 require_dependency 'redmine_scheduler/hooks'
 
 #Dispatcher.to_prepare :redmine_todos_scrum_plugin_model_patches do
@@ -25,4 +26,5 @@ Redmine::Plugin.register :redmine_scheduler do
   #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
   #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
   menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'
+    #        config.active_record.observers = :booking_observer
 end
