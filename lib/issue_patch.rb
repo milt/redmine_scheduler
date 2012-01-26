@@ -27,7 +27,7 @@ module IssuePatch
       timelist = []
       t = Time.local(0,1,1,0,15)
       47.times do
-        timelist = timelist << t.strftime("%I:%M %P")
+        timelist = timelist << t.strftime("%I:%M %p")
         t = t + 30.minutes
       end
       return timelist
@@ -37,7 +37,7 @@ module IssuePatch
       timelist = []
       t = Time.local(0,1,1,0,15)
       47.times do
-        timelist = timelist << t.strftime("%I:%M %P")
+        timelist = timelist << t.strftime("%I:%M %p")
         t = t + 30.minutes
       end
       return timelist

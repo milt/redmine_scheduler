@@ -10,25 +10,14 @@ module MailerPatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
-    def booking_email(booking)
-        recipients 	booking.email
-        from 	"Redmine Notifications <redmine@example.com>"
-        subject 	"This is a test of the EMERGENCY BROADCAST SYSTEM"
-        sent_on 	Time.now
-        body 	"Issues"
-    end
-    
-    def labcoach_email(booking)
-        recipients	booking.timeslot.issue.assigned_to.mail
-        from	"Redmine Notifications <redmine@example.com>"
-        subject	"This is an EMERGENCY BROADCAST SYSTEM"
-        sent_on	Time.now
-        body	"Issues"
-    end
-    
-    def hello_world
-        puts "Hello World!"
-    end
+
+        def booking_add(booking)
+            recipients	booking.timeslot.issue.assigned_to.mail
+            from	"Redmine Notifications <redmine@example.com>"
+            subject	"This is an EMERGENCY BROADCAST SYSTEM"
+            sent_on	Time.now
+            body	"Issues"
+        end
     end
 
   end

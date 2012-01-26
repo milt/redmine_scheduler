@@ -63,10 +63,6 @@ class ManageController < ApplicationController #handles the management/rebooking
     @booking = Booking.find(params[:booking_id])
   end
 
-  def mail
-    UserMailer.deliver_welcome_email()
-  end
-
   def cancel #cancel a booking (won't reschedule)
     @booking = Booking.find(params[:booking_id])
     unless @booking.timeslot_id.nil?
@@ -169,7 +165,11 @@ class ManageController < ApplicationController #handles the management/rebooking
     @totalhours = @seltiments.inject(0) {|sum,x| sum + x.hours}
     
   end
-  
+    
+  def fire
+    @data = Mailer.hello_world
+  end
+      
   private
   
 end
