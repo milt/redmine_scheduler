@@ -11,6 +11,7 @@ module UserPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_and_belongs_to_many :skills
+      belongs_to :wage
 
     end
 
