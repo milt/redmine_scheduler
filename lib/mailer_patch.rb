@@ -13,10 +13,10 @@ module MailerPatch
 
         def booking_add(booking)
             recipients	booking.timeslot.issue.assigned_to.mail
-            from	"Redmine Notifications <redmine@example.com>"
-            subject	"This is an EMERGENCY BROADCAST SYSTEM"
+            from	"DMC Lab Coach Notifier <notification@redmine.com>"
+            subject	"You have a Lab Coach Signup!"
             sent_on	Time.now
-            body	"Issues"
+            body	("Booking scheduled with " + booking.name + " on " + booking.apt_time.strftime("%m/%d/%Y at %I:%M%p") + "\nYou can contact this patron at " + booking.phone + " or " + booking.email + "\n\nProject Description:\n" + booking.project_desc + "\n\n\n\n*Do Not Reply to this Email\nThis email is an auto-generated message.  Replies to automated messages are not monitored.")
         end
     end
 
