@@ -1,14 +1,15 @@
 = scheduler
 
-A simple skill-based lab coach/tutor scheduling plugin for redmine
+A skill-based lab coach/tutor scheduling plugin for Chiliproject. Developed for internal use at the JHU Digital Media Center, but feel free to use anything here.
 
 You'll need:
 
-1. A suitable working installation of redmine
+1. A suitable working installation of Chiliproject 2.X
 2. A tracker called 'Lab Coach Shift'
 
 installation:
 
-1. Copy directory to [redmine app, ie. /usr/share/redmine/], as your redmine user
-2. Run: export RAILS_ENV="production" if you haven't already.
-3. Run: rake db:migrate_plugins
+1. Copy directory to [chili dir]/vendor/plugins/
+2. Run: rake db:migrate:plugins
+3. ???
+4. Profit
