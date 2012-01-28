@@ -165,10 +165,6 @@ class ManageController < ApplicationController #handles the management/rebooking
     @totalhours = @seltiments.inject(0) {|sum,x| sum + x.hours}
     
   end
-    
-  def fire
-    @data = Mailer.hello_world
-  end
       
   private
   
