@@ -6,6 +6,7 @@ class SkillsController < ApplicationController #define skills, assign them to us
   def index #index and manage skills
     @skills = Skill.all
     @skillcats = Skillcat.all
+    logger.info "the skill index page is showing"
   end
 
   def edit #edit users assigned to a given skill
