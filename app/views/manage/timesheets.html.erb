@@ -3,7 +3,6 @@
 
 <% form_tag do %>
 <%= select_year Date.new(@year.to_i) %>
-<%= select_month Date.new(@month.to_i) %>
 <%= select_tag(:tweek, options_for_select(@weeks, @weeks[@tweek.to_i - 1])) %>
 <%= submit_tag "Update" %>
 <% end %>
@@ -17,7 +16,7 @@
 	  <li><%= day.strftime("%A - %D") %><!--<%= ents.inject(0) {|sum, x| sum + x.hours} %>--></li>
 	  <ul>
 		<% ents.each do |ent| %>
-		<li><!--<%= ent.user.firstname %>-->
+		<li>
 			<%= (TimeEntryActivity.all.select {|t| t.id == ent.activity_id })[0].name %>
                         <%= ": " %>
 			<% if ent.comments != "" %><%= ent.comments %><% else %>no comment<% end %>
