@@ -73,11 +73,25 @@ staff_role_params = {
 
 staff_role = Role.create(staff_role_params)
 
-#remove builtin, add custom trackers to projects
-front_desk_project.trackers.delete_all
+#make default modules
+shift_module_params = [
+  "calendar",
+  "documents",
+  "news",
+  "time_tracking",
+  "issue_tracking"
+]
+#add them to default groups
+shift_module_params.each do |module|
+  front_desk_project.enabled_modules << EnabledModule.new(:name => module)
+  lab_coach_project.enabled_modules << EnabledModule.new(:name => module)
+end
+
+
+front_desk_project.trackers.clear
 front_desk_project.trackers << fd_tracker
 
-lab_coach_project.trackers.delete_all
+lab_coach_project.trackers.clear
 lab_coach_project.trackers << lc_tracker
 
 #Default skillcat
