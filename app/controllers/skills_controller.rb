@@ -1,7 +1,7 @@
 class SkillsController < ApplicationController #define skills, assign them to users
   unloadable
 
-  before_filter :find_users, :only => [:index, :edit] #finds users for skill assignment
+  before_filter :require_admin, :find_users, :only => [:index, :edit] #finds users for skill assignment
   
   def index #index and manage skills
     @skills = Skill.all
@@ -84,6 +84,14 @@ class SkillsController < ApplicationController #define skills, assign them to us
   end
   
   private
+  
+  # def ghetto_auth
+  #   @you = User.current
+  #   unless @you.admin?
+  #     flash[:warning] = "You aren't supposed to be there."
+  #     redirect_to home_url
+  #   end
+  # end
   
   def find_users #find the users who aren't system users
     @users = User.all.select {|u| u.id > 2 }

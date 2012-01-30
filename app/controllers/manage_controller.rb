@@ -2,6 +2,7 @@ class ManageController < ApplicationController #handles the management/rebooking
   unloadable
   include ManageHelper
   require 'prawn'
+  before_filter :wage_check, :only => [:generate_timesheet, :timesheets]
   
   def index
     allbookings = Booking.all.select {|b| b.apt_time > DateTime.now} #all scheduled bookings in the future
@@ -93,7 +94,7 @@ class ManageController < ApplicationController #handles the management/rebooking
     @weekof = Date.parse(params[:weekof])
     name = User.current.firstname
     #wage = params[:wage]
-    wage = ""
+    wage = User.current.wage.amount.to_s
     current = Date.today
     beginning = params[:weekof]
 
@@ -168,4 +169,12 @@ class ManageController < ApplicationController #handles the management/rebooking
       
   private
   
+  def wage_check
+    unless User.current.admin?
+      if User.current.wage.nil?
+        flash[:warning] = "You don't seem to be assigned a wage. Please speak to your manager."
+        redirect_to :action => 'today'
+      end
+    end
+  end
 end

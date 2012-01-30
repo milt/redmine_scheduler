@@ -1,6 +1,7 @@
 class SkillcatsController < ApplicationController #management of skill categories. pretty boring
   unloadable
 
+  before_filter :require_admin
 
   def index #index of skill cats
     @skillcats = Skillcat.all #find all skill categories

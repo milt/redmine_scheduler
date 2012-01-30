@@ -7,10 +7,15 @@ require 'user_patch'
 require 'mailer_patch'
 require_dependency 'redmine_scheduler/hooks'
 
-#Dispatcher.to_prepare :redmine_todos_scrum_plugin_model_patches do
-#  Project.send(:include, IssuePatch)
-#  User.send(:include, UserPatch)
-#end
+# Dispatcher.to_prepare :redmine_scheduler do
+#   require 'issue_patch'
+#   require 'user_patch'
+#   require 'mailer_patch'
+#   require_dependency 'redmine_scheduler/hooks'
+#   Issue.send(:include, IssuePatch)
+#   User.send(:include, UserPatch)
+#   Mailer.send(:include, MailerPatch)
+# end
 
 Redmine::Plugin.register :redmine_scheduler do
   name 'Redmine Scheduler plugin'
@@ -20,8 +25,9 @@ Redmine::Plugin.register :redmine_scheduler do
   url 'http://'
   author_url 'http://digitalmedia.jhu.edu'
 
-  permission :view_skills, :skills => :index
-  permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] } 
+  # permission :view_skills, :skills => :index
+  # permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] }
+  # permission :manage_wages, :wages => :all
   menu :application_menu, :manage, { :controller => 'manage', :action => 'today' }, :caption => 'Staff'
   #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
   #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'

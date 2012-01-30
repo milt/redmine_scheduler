@@ -41,14 +41,15 @@
 </br>
 </br>
 <p>Missing a shift?  Take a look here:</p>
-<% allshiftsuser = Issue.all.select {|i| (i.assigned_to == User.current) } %>
+<% allshifts = Issue.all %>
 <% count = 0 %>
 <% 7.times do %>
 	<% day = (@weekof + count.days) %>
-	<% allshiftstoday = allshiftsuser.select {|i| (i.start_date == day) } %>
+	<% allshiftstoday = allshifts.select {|i| (i.start_date == day) } %>
 	<% allshiftstoday.each do |shift| %>
   		<%= shift.tracker.name %><%= ": " %><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %>
 	<% end %>
+	<br>
 	<% count += 1 %>
 <% end %>
 
