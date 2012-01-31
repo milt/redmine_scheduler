@@ -44,9 +44,13 @@
 <% elsif @issue.tracker.name == "Front Desk Shift" %>
 <p><%= f.select :start_time, @issue.timelist_fd, :selected => (@issue.start_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
 <p><%= f.select :end_time, @issue.timelist_fd, :selected => (@issue.end_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
-<% end %><p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
+<% end %>
 <% if @issue.leaf? && Issue.use_field_for_done_ratio? %>
 <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
+<% end %>
+<% if (params[:action] == "new") && @issue.is_shift? %>
+<p>Repeats weekly until <%= text_field_tag 'repeat_ends' %><%= calendar_for('repeat_ends') if @issue.leaf? %></p>
+<p><em>Please use caution with this field!</em>
 <% end %>
 </div>
 
@@ -54,3 +58,4 @@
 <%= render :partial => 'issues/form_custom_fields' %>
 
 <% end %>
+
