@@ -4,7 +4,7 @@ A skill-based lab coach/tutor scheduling plugin for ChiliProject. Developed for 
 
 You'll need:
 
-1. A suitable working installation of ChiliProject 2.X
+1. A suitable working installation of ChiliProject 2.X on 1.8.7/2.3.x
 2. gems: prawn, rpam 1.0, json, some others probably.
 
 installation:
