@@ -1,11 +1,11 @@
 = scheduler
 
-A skill-based lab coach/tutor scheduling plugin for ChiliProject. Developed for internal use at the JHU Digital Media Center, but feel free to use anything here.
+A skill-based lab coach/tutor scheduling plugin for ChiliProject. Developed for internal use at the JHU Digital Media Center, EXTREMELY domain specific, but feel free to use anything here. 
 
 You'll need:
 
 1. A suitable working installation of ChiliProject 2.X
-2. A tracker called 'Lab Coach Shift'
+2. gems: prawn, rpam 1.0, json, some others probably.
 
 installation:
 
