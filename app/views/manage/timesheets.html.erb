@@ -42,13 +42,18 @@
 </br>
 <p>Missing a shift?  Take a look here:</p>
 <% allshifts = Issue.all.select {|i| i.is_shift?} %>
+<% allevents = Issue.all.select {|i| i.tracker.name == "Event"} %>
 <% count = 0 %>
 <ul>
 <% 7.times do %>
 	<% day = (@weekof + count.days) %>
 	<li><%= day.strftime("%A - %D") %></li>
 	<% allshiftstoday = allshifts.select {|i| (i.start_date == day) } %>
+	<% alleventstoday = allevents.select {|i| (i.start_date == day) } %>
 	  <ul>
+		<% alleventstoday.each do |event| %>
+		<li>EVENT: <%= link_to event.subject, {:controller => 'issues', :action => 'show', :id => event[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => event[:id], :time_entry => {:spent_on => event[:start_date]} } %></li>
+		<% end %>
 		<% allshiftstoday.each do |shift| %>
 			<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></li>
 		<% end %>
