@@ -50,7 +50,7 @@
 	<% allshiftstoday = allshifts.select {|i| (i.start_date == day) } %>
 	  <ul>
 		<% allshiftstoday.each do |shift| %>
-			<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></li>
+			<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></li>
 		<% end %>
 	  </ul>
 	<br>
