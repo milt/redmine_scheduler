@@ -1,5 +1,6 @@
 <%= render 'nav' %>
 <h2>Today's Shifts</h2>
+<div>
 <% if @todayshifts.empty? && @todaylcshifts.empty? %>
 <p>You don't have any shifts scheduled for today. If you believe that this is an error, please talk to Deborah!</p>
 <% else %>
@@ -31,3 +32,12 @@
 		<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %> : <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></li>
 	<% end %>
 </ul>
+</div>
+<div>
+	<h3>My Tasks</h3>
+	<ul>
+		<% @mytasks.each do |task| %>
+		  <li><%= link_to task.subject, {:controller => 'issues', :action => 'show', :id => task[:id] } %> : <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => task[:id]} %></li>
+		<% end %>
+	</ul>
+</div>

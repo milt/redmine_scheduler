@@ -58,6 +58,7 @@ class ManageController < ApplicationController #handles the management/rebooking
     @todayshifts = @allshiftstoday.select {|i| i.assigned_to == User.current}
     @alllcshiftstoday = Issue.all.select {|i| (i.start_date == Date.today) && i.is_labcoach_shift? }
     @todaylcshifts = @alllcshiftstoday.select {|i| i.assigned_to == User.current}
+    @mytasks = Issue.all.select {|i| ((i.tracker.name == "Task") && (i.status.is_closed == false)) && i.assigned_to == User.current}
   end
   
   def show #view a single booking
