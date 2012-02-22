@@ -2,7 +2,7 @@
 <h2>Today's Shifts</h2>
 <div>
 <% if @todayshifts.empty? && @todaylcshifts.empty? %>
-<p>You don't have any shifts scheduled for today. If you believe that this is an error, please talk to Deborah!</p>
+<p>You don't have any shifts scheduled for today. If you believe that this is an error, please speak with your manager!</p>
 <% else %>
 <p>You have the following shift or shifts scheduled today. To log time spent, please click on the clock button for the appropriate shift.</p>
 <ul>
@@ -33,57 +33,10 @@
 	<% end %>
 </ul>
 </div>
-<% unless @mytasks.empty? %>
-<div>
-	<h3>My Tasks</h3>
-	
-	<table class="table table-striped">
-		<thead>
-		  <tr>
-		  <th>Area</th>
-		  <th>Description</th>
-		  <th>Due</th>
-		  <th>Log Time</th>
-		  </tr>
-		</thead>
-		<% @mytasks.each do |task| %>
-		<tbody>
-		  <tr>
-			<td><%= link_to task.project, {:controller => 'projects', :action => 'show', :id => task.project[:id] } %></td>
-			<td><%= link_to task.subject, {:controller => 'issues', :action => 'show', :id => task[:id] } %></td>
-			<td><%= link_to task.due_date, {:controller => 'issues', :action => 'show', :id => task[:id] } unless task.due_date.nil? %></td>
-			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => task[:id]} %></td>
-		  </tr>
-		</tbody>
-		<% end %>
-    </table>
-</div>
-<% end %>
 
-<% unless @mygoals.empty? %>
-<div>
-	<h3>My Training Goals</h3>
-	
-	<table class="table table-striped">
-		<thead>
-		  <tr>
-		  <th>Description</th>
-		  <th>Due</th>
-		  <th>Log Time</th>
-		  </tr>
-		</thead>
-		<% @mygoals.each do |goal| %>
-		<tbody>
-		  <tr>
-			<td><%= link_to goal.subject, {:controller => 'issues', :action => 'show', :id => goal[:id] } %></td>
-			<td><%= link_to goal.due_date, {:controller => 'issues', :action => 'show', :id => goal[:id] } unless goal.due_date.nil? %></td>
-			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => goal[:id]} %></td>
-		  </tr>
-		</tbody>
-		<% end %>
-    </table>
-</div>
-<% end %>
+<%= render 'tasks' unless @mytasks.empty? %>
+
+<%= render 'goals' unless @mygoals.empty? %>
 
 <% content_for :header_tags do %>
     <%= stylesheet_link_tag 'bootstrap', :plugin => 'redmine_scheduler' %>
