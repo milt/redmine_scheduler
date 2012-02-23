@@ -5,6 +5,7 @@ require 'redmine'
 require 'issue_patch'
 require 'user_patch'
 require 'mailer_patch'
+require 'tracker_patch'
 require_dependency 'redmine_scheduler/hooks'
 
 # Dispatcher.to_prepare :redmine_scheduler do

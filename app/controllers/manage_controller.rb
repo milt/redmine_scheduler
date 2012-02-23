@@ -54,12 +54,22 @@ class ManageController < ApplicationController #handles the management/rebooking
   end
 
   def today #the "My shifts today page"
-    @allshiftstoday = Issue.all.select {|i| (i.start_date == Date.today) && i.is_frontdesk_shift? }
+    @allshiftstoday = Issue.today.fdshift
     @todayshifts = @allshiftstoday.select {|i| i.assigned_to == User.current}
-    @alllcshiftstoday = Issue.all.select {|i| (i.start_date == Date.today) && i.is_labcoach_shift? }
+    @alllcshiftstoday = Issue.today.lcshift
     @todaylcshifts = @alllcshiftstoday.select {|i| i.assigned_to == User.current}
-    @mytasks = Issue.all.select {|i| ((i.tracker.name == "Task") && (i.status.is_closed == false)) && i.assigned_to == User.current}
-    @mygoals = Issue.all.select {|i| ((i.tracker.name == "Training Goal") && (i.status.is_closed == false)) && i.assigned_to == User.current}
+      
+    #I bet this one will be enumerable because I use select...
+    @mytasks = Issue.open.tasks.select {|i| i.assigned_to == User.current}
+    @mygoals = Issue.open.goals.select {|i| i.assigned_to == User.current}
+
+    #The Jason way, nice and clean but I can't seem to use stuff like #each on it, I think because its an array?
+    #@mytasks = Issue.open.tasks.find_by_assigned_to_id(User.current.id)
+    #@mygoals = Issue.open.goals.find_by_assigned_to_id(User.current.id)
+    
+    #The original way. Obviously an affront to God.
+    #@mytasks = Issue.all.select {|i| ((i.tracker.name == "Task") && (i.status.is_closed == false)) && i.assigned_to == User.current}
+    #@mygoals = Issue.all.select {|i| ((i.tracker.name == "Training Goal") && (i.status.is_closed == false)) && i.assigned_to == User.current}
   end
   
   def show #view a single booking

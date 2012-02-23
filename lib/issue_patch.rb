@@ -13,6 +13,11 @@ module IssuePatch
       has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
       safe_attributes 'start_time', 'end_time' #since our migration adds start_time and end_time to issues for use as shifts, we need to mark these as safe for editing.
       alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
+      named_scope :today, lambda { { :conditions => { :start_date => Date.today } } }
+      named_scope :fdshift, lambda { { :conditions => { :tracker_id => Tracker.fdshift_track.first.id } } }
+      named_scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
+      named_scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
+      named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
 
     end
 
