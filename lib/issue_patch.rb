@@ -18,6 +18,7 @@ module IssuePatch
       named_scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
       named_scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
       named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
+      named_scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
 
     end
 
