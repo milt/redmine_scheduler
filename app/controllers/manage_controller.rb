@@ -3,16 +3,11 @@ class ManageController < ApplicationController #handles the management/rebooking
   include ManageHelper
   require 'prawn'
   before_filter :wage_check, :only => [:generate_timesheet, :timesheets]
+  before_filter :crying_orphans, :only => [:index, :today]
   
   def index
-    allbookings = Booking.all.select {|b| b.apt_time > DateTime.now} #all scheduled bookings in the future
-    @booked = allbookings.select {|b| b.timeslot_id.present?} #all valid bookings
-    nullified = allbookings.select {|b| b.timeslot_id.nil?} #all nullified bookings
-    @orphaned = nullified.select {|b| b.cancelled.nil?} #all nullified bookings that weren't cancelled, must be rescheduled
-    if @orphaned.present?
-      flash[:warning] = 'There are ' + @orphaned.count.to_s + ' bookings to be rescheduled! Please address these to make this message go away!'
-    end
-    @cancelled = nullified.select {|b| b.cancelled == true} #intentionally cancelled bookings
+    @booked = Booking.booked.future #all valid bookings in the future
+    @cancelled = Booking.cancelled #intentionally cancelled bookings
     
     #Nightmare table sort! needs.. fire. sort_col is for active bookings, sort_o_col is for orphaned bookings, sort_c_col is for cancelled bookings.
     if params[:sort_col].present?
@@ -178,6 +173,13 @@ class ManageController < ApplicationController #handles the management/rebooking
         flash[:warning] = "You don't seem to be assigned a wage. Please speak to your manager."
         redirect_to :action => 'today'
       end
+    end
+  end
+  
+  def crying_orphans
+    @orphaned = Booking.orphaned #all nullified bookings that weren't cancelled, must be rescheduled
+    if @orphaned.present?
+      flash[:warning] = 'There are ' + @orphaned.count.to_s + ' bookings to be rescheduled! Please address these to make this message go away!'
     end
   end
 end
