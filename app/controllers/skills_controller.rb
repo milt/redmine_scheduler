@@ -2,6 +2,7 @@ class SkillsController < ApplicationController #define skills, assign them to us
   unloadable
 
   before_filter :require_admin, :find_users, :only => [:index, :edit] #finds users for skill assignment
+  before_filter :find_skill, :only => [:edit, :update, :destroy, :link, :unlink]
   
   def index #index and manage skills
     @skills = Skill.all
@@ -10,15 +11,14 @@ class SkillsController < ApplicationController #define skills, assign them to us
   end
 
   def edit #edit users assigned to a given skill
-    @skill = Skill.find(params[:id])    
-    @assigned = @users.select {|user| @skill.users.exists?(user)}
+    @assigned = @skill.users
     @unassigned = @users.reject {|user| @skill.users.exists?(user)}
   end
   
   def assign #assign a skill to a given user
     @user = User.find(params[:user_id])
     @skills = Skill.all
-    @assigned = @skills.select {|skill| @user.skills.exists?(skill)}
+    @assigned = @user.skills
     @unassigned = @skills.reject {|skill| @user.skills.exists?(skill)}
   end
 
@@ -45,7 +45,6 @@ class SkillsController < ApplicationController #define skills, assign them to us
   end
   
   def update #edit a skill from user input
-    @skill = Skill.find(params[:id])
     
     respond_to do |format|
       if @skill.update_attributes(params[:skill])
@@ -61,14 +60,12 @@ class SkillsController < ApplicationController #define skills, assign them to us
   end
   
   def destroy
-    @skill = Skill.find(params[:id])
     @skill.destroy
     flash[:notice] = 'Skill deleted.'
     redirect_to :action => 'index'
   end
   
   def link #link a given skill to a given user
-    @skill = Skill.find(params[:id])
     @user = User.find(params[:user_id])
     @user.skills << @skill
     flash[:notice] = 'Skill assigned.'
@@ -76,7 +73,6 @@ class SkillsController < ApplicationController #define skills, assign them to us
   end
   
   def unlink #unlink a given skill from a given user
-    @skill = Skill.find(params[:id])
     @user = User.find(params[:user_id])
     @user.skills.delete(@skill)
     flash[:notice] = 'Skill unassigned.'
@@ -85,13 +81,9 @@ class SkillsController < ApplicationController #define skills, assign them to us
   
   private
   
-  # def ghetto_auth
-  #   @you = User.current
-  #   unless @you.admin?
-  #     flash[:warning] = "You aren't supposed to be there."
-  #     redirect_to home_url
-  #   end
-  # end
+  def find_skill
+    @skill = Skill.find(params[:id])
+  end
   
   def find_users #find the users who aren't system users
     @users = User.all.select {|u| u.id > 2 }
