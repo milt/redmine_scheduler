@@ -4,6 +4,7 @@ class ManageController < ApplicationController #handles the management/rebooking
   require 'prawn'
   before_filter :wage_check, :only => [:generate_timesheet, :timesheets]
   before_filter :crying_orphans, :only => [:index, :today]
+  before_filter :find_first_monday, :only => [:generate_timesheet]
   
   def index
     @booked = Booking.booked.future #all valid bookings in the future
@@ -96,7 +97,7 @@ class ManageController < ApplicationController #handles the management/rebooking
     current = Date.today
     beginning = params[:weekof]
 
-    usrtiments = TimeEntry.all.select {|t| t.user == User.current }
+    usrtiments = TimeEntry.foruser(User.current)
 
     @mon = (usrtiments.select {|t| t.spent_on == @weekof}).inject(0) {|sum, x| sum + x.hours}
     @tue = (usrtiments.select {|t| t.spent_on == (@weekof + 1)}).inject(0) {|sum, x| sum + x.hours}
@@ -128,14 +129,15 @@ class ManageController < ApplicationController #handles the management/rebooking
       @year = Time.current.year.to_s
     end
     
-    #Find first monday
-    days = []
-    dcount = 0
-    7.times do
-      days << (Date.new(@year.to_i) + dcount.days)
-      dcount += 1
-    end
-    yearstart = days.detect {|day| day.wday == 1 }
+    #Find first monday (this code has been moved to a private, maybe it should be somewhere else)
+    #days = []
+    #dcount = 0
+    #7.times do
+    #  days << (Date.new(@year.to_i) + dcount.days)
+    #  dcount += 1
+    #end
+    #yearstart = days.detect {|day| day.wday == 1 }
+    yearstart = find_first_monday(@year)
     
     @weeks = []
     c = 0
@@ -181,5 +183,15 @@ class ManageController < ApplicationController #handles the management/rebooking
     if @orphaned.present?
       flash[:warning] = 'There are ' + @orphaned.count.to_s + ' bookings to be rescheduled! Please address these to make this message go away!'
     end
+  end
+  
+  def find_first_monday(year)
+    days = []
+    dcount = 0
+    7.times do
+      days << (Date.new(year.to_i) + dcount.days)
+      dcount += 1
+    end
+    return days.detect {|day| day.wday == 1 }
   end
 end
