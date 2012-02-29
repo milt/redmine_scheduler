@@ -37,7 +37,3 @@
 <%= render 'tasks' unless @mytasks.empty? %>
 
 <%= render 'goals' unless @mygoals.empty? %>
-
-<% content_for :header_tags do %>
-    <%= stylesheet_link_tag 'bootstrap', :plugin => 'redmine_scheduler' %>
-<% end %>
