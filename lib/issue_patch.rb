@@ -20,6 +20,7 @@ module IssuePatch
       named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
       named_scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
       named_scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
+      named_scope :by_start_date, lambda {|d| { :conditions => { :start_date => d } } }
 
     end
 
