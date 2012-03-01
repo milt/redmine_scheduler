@@ -41,8 +41,8 @@
 </br>
 </br>
 <p>Missing a shift?  Take a look here:</p>
-<% allshifts = Issue.all.select {|i| i.is_shift?} %>
-<% allevents = Issue.all.select {|i| i.tracker.name == "Event"} %>
+<% allshifts = @work_shifts %>
+<% allevents = @work_events %>
 <% count = 0 %>
 <ul>
 <% 7.times do %>
