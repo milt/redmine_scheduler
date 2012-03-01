@@ -19,6 +19,7 @@ module IssuePatch
       named_scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
       named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
       named_scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
+      named_scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
 
     end
 

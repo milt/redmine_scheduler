@@ -14,6 +14,7 @@ module TrackerPatch
       named_scope :lcshift_track, :conditions => { :name => "Lab Coach Shift" }
       named_scope :task_track, :conditions => { :name => "Task" }
       named_scope :goal_track, :conditions => { :name => "Training Goal" }
+      named_scope :event_track, :conditions => { :name => "Event" }
       
     end
 
