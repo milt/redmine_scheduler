@@ -9,15 +9,13 @@ require 'tracker_patch'
 require 'time_entry_patch'
 require_dependency 'redmine_scheduler/hooks'
 
-# Dispatcher.to_prepare :redmine_scheduler do
-#   require 'issue_patch'
-#   require 'user_patch'
-#   require 'mailer_patch'
-#   require_dependency 'redmine_scheduler/hooks'
-#   Issue.send(:include, IssuePatch)
-#   User.send(:include, UserPatch)
-#   Mailer.send(:include, MailerPatch)
-# end
+ Dispatcher.to_prepare :redmine_scheduler do
+   Issue.send(:include, IssuePatch)
+   User.send(:include, UserPatch)
+   Mailer.send(:include, MailerPatch)
+   Tracker.send(:include, TrackerPatch)
+   TimeEntry.send(:include, TimeEntryPatch)
+ end
 
 Redmine::Plugin.register :redmine_scheduler do
   name 'Redmine Scheduler plugin'
