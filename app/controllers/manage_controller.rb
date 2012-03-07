@@ -145,10 +145,11 @@ class ManageController < ApplicationController #handles the management/rebooking
       @weeks << [(yearstart + c.weeks).strftime("Week of %B %d"), (c + 1)]
       c += 1
     end
+    
     if params[:tweek].present?
       @tweek = params[:tweek]
     else
-      @tweek = 1
+      @tweek = Date.today.cweek
     end
 
     @weekof = yearstart + (@tweek.to_i - 1).weeks
