@@ -4,7 +4,6 @@ class ManageController < ApplicationController #handles the management/rebooking
   require 'prawn'
   before_filter :wage_check, :only => [:generate_timesheet, :timesheets]
   before_filter :crying_orphans, :only => [:index, :today]
-  before_filter :find_first_monday, :only => [:generate_timesheet]
   
   def index
     @booked = Booking.booked.future #all valid bookings in the future
