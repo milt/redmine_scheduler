@@ -153,10 +153,17 @@ class ManageController < ApplicationController #handles the management/rebooking
 
     @work_shifts = Issue.fdshift + Issue.lcshift
     @work_events = Issue.events
+<<<<<<< HEAD
     @weekof = yearstart + (@tweek.to_i - 1).weeks #can this be replaced with cweeks?s
     usrtiments = TimeEntry.all.select {|t| t.user == User.current } #this seems inefficient
     #usrtiments = Issue.foruser(User.current)
     @seltiments = usrtiments.select {|t| (t.tyear == @year.to_i) && (t.tweek == @tweek.to_i) }
+=======
+    @weekof = yearstart + (@tweek.to_i - 1).week #can this be replaced with cweeks?s
+    #usrtiments = TimeEntry.all.select {|t| t.user == User.current } #this seems inefficient
+    usrtiments = Issue.foruser(User.current)
+    seltiments = usrtiments.select {|t| (t.tyear == @year.to_i) && (t.tweek == @tweek.to_i) }
+>>>>>>> Should reduce load times by eliminating select.all statement
     @entsbyday = []
     daycount = 0
     7.times do
