@@ -68,4 +68,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
   
     render_on :view_issues_form_details_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
               :partial => 'hooks/redmine_scheduler/hello'
+
+    render_on :view_timelog_edit_form_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
+              :partial => 'hooks/redmine_scheduler/timex'
 end
