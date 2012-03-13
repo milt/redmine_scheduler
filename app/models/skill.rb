@@ -11,7 +11,8 @@ class Skill < ActiveRecord::Base
   def shifts(cutoff) #find shifts belonging to users with the given skill. called on a skill, looks for dates until cutoff
     skillissues = []
     self.users.each do |user| #for each user linked to the skill, find valid shifts
-      usrissues = Issue.all.select {|i| (i.is_labcoach_shift? && (i.start_date <= cutoff)) && (i.assigned_to_id == user.id) }
+      usrissues = Issue.lcshift.foruser(user).until_date(cutoff) #old code below
+      #usrissues = Issue.all.select {|i| (i.is_labcoach_shift? && (i.start_date <= cutoff)) && (i.assigned_to_id == user.id) }
       usrissues.collect {|ui| skillissues << ui }
     end
     return skillissues
