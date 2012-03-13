@@ -32,12 +32,15 @@
 
 <div class="splitcontentright">
 <p><%= f.text_field :start_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_start_date') if @issue.leaf? %></p>
+
+
 <% unless @issue.is_shift? %>
 <p><%= f.text_field :due_date, :size => 10, :disabled => !@issue.leaf? %><%= calendar_for('issue_due_date') if @issue.leaf? %></p>
+<p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
 <% else %>
 <p>(Shifts don't have due dates)</p>
+<p>(Shifts don't have est hours)</p>
 <% end %>
-<p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
 <% if @issue.is_labcoach_shift? %>
 <p><%= f.select :start_time, @issue.timelist_lc, :selected => (@issue.start_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
 <p><%= f.select :end_time, @issue.timelist_lc, :selected => (@issue.end_time.change(:year => 0,:month => 1,:day => 1) rescue Time.local(0,1,1,11,45)).to_time %></p>
@@ -58,4 +61,3 @@
 <%= render :partial => 'issues/form_custom_fields' %>
 
 <% end %>
-
