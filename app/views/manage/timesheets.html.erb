@@ -40,24 +40,39 @@
 <%= button_to "Generate Timecard", {:controller => 'manage', :action => 'generate_timesheet', :weekof => @weekof} %>
 </br>
 </br>
-<p>Missing a shift?  Take a look here:</p>
-<% allshifts = @work_shifts %>
+
+<p>Logging extra time (events/training)?</p>
+<% nowtraining = @work_goals %>
 <% allevents = @work_events %>
+<% count = 0 %>
+<% 7.times do %>
+	<% day = (@weekof + count.days) %>
+	<% alleventstoday = allevents.select {|i| (i.start_date == day) } %>
+	<% alleventstoday.each do |event| %>
+		<li>EVENT: <%= link_to event.subject, {:controller => 'issues', :action => 'show', :id => event[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => event[:id], :time_entry => {:spent_on => event[:start_date]} } %></li>
+	<% end %>
+	<% count += 1 %>
+<% end %>
+
+<% nowtraining.each do |training| %>
+	<li>TRAINING: <%= link_to training.subject, {:controller => 'issues', :action => 'show', :id=>training[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelong', :action => 'new', :issue_id => training[:id], :time_entry => {:spent_on => training[:start_date]} } %></li>
+<% end %>
+
+</br>
+
+<p>Missing a shift?</p>
+<% allshifts = @work_shifts %>
 <% count = 0 %>
 <ul>
 <% 7.times do %>
+	<ul>
 	<% day = (@weekof + count.days) %>
 	<li><%= day.strftime("%A - %D") %></li>
 	<% allshiftstoday = allshifts.select {|i| (i.start_date == day) } %>
-	<% alleventstoday = allevents.select {|i| (i.start_date == day) } %>
-	  <ul>
-		<% alleventstoday.each do |event| %>
-		<li>EVENT: <%= link_to event.subject, {:controller => 'issues', :action => 'show', :id => event[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => event[:id], :time_entry => {:spent_on => event[:start_date]} } %></li>
-		<% end %>
-		<% allshiftstoday.each do |shift| %>
+	<% allshiftstoday.each do |shift| %>
 			<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></li>
 		<% end %>
-	  </ul>
+	 </ul>
 	<br>
 	<% count += 1 %>
 <% end %>

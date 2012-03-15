@@ -161,12 +161,12 @@ class ManageController < ApplicationController #handles the management/rebooking
     daycount = 0
     7.times do
       day = (@weekof + daycount.days)
-      @entsbyday << @seltiments.select {|t| t.spent_on == day}
+      @entsbyday << seltiments.select {|t| t.spent_on == day}
       daycount += 1
       
     end
 
-    @totalhours = @seltiments.inject(0) {|sum,x| sum + x.hours}
+    @totalhours = seltiments.inject(0) {|sum,x| sum + x.hours}
     
   end
       
