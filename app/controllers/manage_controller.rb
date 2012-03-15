@@ -151,6 +151,7 @@ class ManageController < ApplicationController #handles the management/rebooking
       @tweek = Date.today.cweek
     end
 
+    @work_goals = Issue.goals.open
     @work_shifts = Issue.fdshift + Issue.lcshift
     @work_events = Issue.events
     @weekof = yearstart + (@tweek.to_i - 1).weeks #can this be replaced with cweeks?s
