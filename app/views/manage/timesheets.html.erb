@@ -44,7 +44,39 @@
 <p>Logging extra time (events/training)?</p>
 <% nowtraining = @work_goals %>
 <% allevents = @work_events %>
-<% count = 0 %>
+<table class="list issues">
+	<thead>
+		<tr>
+			<th>Area</th>
+			<th>Description</th>
+			<th>Due</th>
+			<th>Log Time</th>
+		</tr>
+	</thead>
+	<% nowtraining.each do |task| %>
+		<tr>
+			<td><%= link_to task.project, {:controller => 'projects', :action => 'show', :id => task.project[:id] } %></td>
+			<td><%= link_to task.subject, {:controller => 'issues', :action => 'show', :id => task[:id] } %></td>
+			<td><%= link_to task.due_date, {:controller => 'issues', :action => 'show', :id => task[:id] } unless task.due_date.nil? %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => task[:id]} %></td>
+		</tr>
+	<% end %>
+	<% count = 0 %>
+	<% 7.times do %>
+        	<% day = (@weekof + count.days) %>
+        	<% alleventstoday = allevents.select {|i| (i.start_date == day) } %>
+        	<% alleventstoday.each do |goal| %>
+			<tr>
+				<td><%= link_to goal.project, {:controller => 'projects', :action => 'show', id => goal.project[:id] } %></td>
+				<td><%= link_to goal.subject, {:controller => 'issues', :action => 'show', :id => goal[:id] } %></td>
+				<td><%= link_to goal.due_date, {:controller => 'issues', :action => 'show', :id => goal[:id] } unless goal.due_date.nil? %></td>
+				<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => goal[:id]} %></td>
+			</tr>
+		<% end %>
+		<% count += 1 %>
+	<% end %>
+</table>
+<!--<% count = 0 %>
 <% 7.times do %>
 	<% day = (@weekof + count.days) %>
 	<% alleventstoday = allevents.select {|i| (i.start_date == day) } %>
@@ -57,23 +89,33 @@
 <% nowtraining.each do |training| %>
 	<li>TRAINING: <%= link_to training.subject, {:controller => 'issues', :action => 'show', :id=>training[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelong', :action => 'new', :issue_id => training[:id], :time_entry => {:spent_on => training[:start_date]} } %></li>
 <% end %>
-
+-->
 </br>
 
 <p>Missing a shift?</p>
 <% allshifts = @work_shifts %>
 <% count = 0 %>
-<ul>
+<table class="list issues">
+	<th>Details</th>
+	<th>Shift</th>
+	<th>Log Time</th>
+<!--<ul>-->
 <% 7.times do %>
-	<ul>
+	<!--<ul>-->
 	<% day = (@weekof + count.days) %>
-	<li><%= day.strftime("%A - %D") %></li>
+	<!--<li><%= day.strftime("%A - %D") %></li>-->
 	<% allshiftstoday = allshifts.select {|i| (i.start_date == day) } %>
 	<% allshiftstoday.each do |shift| %>
-			<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></li>
+		<tr>
+			<td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></td>
+			<td><%= shift.tracker.name %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+		</tr>
+			<!--<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></li>-->
 		<% end %>
-	 </ul>
-	<br>
+	<!--</ul>
+	<br>-->
 	<% count += 1 %>
 <% end %>
-</ul>
+</table>
+<!--</ul>-->
