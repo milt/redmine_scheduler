@@ -91,7 +91,6 @@ class ManageController < ApplicationController #handles the management/rebooking
   def generate_timesheet
     @weekof = Date.parse(params[:weekof])
     name = User.current.firstname
-    #wage = params[:wage]
     wage = User.current.wage.amount.to_s
     current = Date.today
     beginning = params[:weekof]
@@ -105,20 +104,16 @@ class ManageController < ApplicationController #handles the management/rebooking
     @fri = (usrtiments.select {|t| t.spent_on == (@weekof + 4)}).inject(0) {|sum, x| sum + x.hours}
     @sat = (usrtiments.select {|t| t.spent_on == (@weekof + 5)}).inject(0) {|sum, x| sum + x.hours}
     @sun = (usrtiments.select {|t| t.spent_on == (@weekof + 6)}).inject(0) {|sum, x| sum + x.hours}
-    
-    #@allshiftstoday = Issue.all.select {|i| (i.is_frontdesk_shift?) }
-    #@todayshifts = @allshiftstoday.select {|i| (i.assigned_to == User.current) }
-    #@alllcshiftstoday = Issue.all.select {|i| (i.is_labcoach_shift?) }
-    #@todaylcshifts = @alllcshiftstoday.select {|i| (i.assigned_to == User.current) }
 
- #respond_to do |format|
-    #  format.html
-    #  format.pdf { render :pdf => generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun) }
-    #end
-    
-    send_data (generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun),
-      :filename => name + "_timecard_from_" + beginning.to_s + "_to_" + (@weekof + 6.days).to_s + ".pdf",
-      :type => "application/pdf")
+    hours = @mon + @tue + @wed + @thu + @fri + @sat + @sun
+    if hours == 0
+      flash[:warning] = 'You do not have any hours for the specified week!  Add hours to print a timecard.'
+      redirect_to :action => 'timesheets'
+    else
+      send_data (generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun),
+        :filename => name + "_timecard_from_" + beginning.to_s + "_to_" + (@weekof + 6.days).to_s + ".pdf",
+        :type => "application/pdf")
+    end
   end
   
   def timesheets
@@ -168,7 +163,6 @@ class ManageController < ApplicationController #handles the management/rebooking
     end
 
     @totalhours = @seltiments.inject(0) {|sum,x| sum + x.hours}
-    
   end
       
   private
