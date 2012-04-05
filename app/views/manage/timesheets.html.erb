@@ -108,7 +108,7 @@
 		<tr>
 			<td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></td>
 			<td><%= shift.tracker.name %></td>
-			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></td>
 		</tr>
 			<!--<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></li>-->
 		<% end %>
