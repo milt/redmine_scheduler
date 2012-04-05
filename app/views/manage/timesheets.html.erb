@@ -96,14 +96,13 @@
 <% allshifts = @work_shifts %>
 <% count = 0 %>
 <table class="list issues">
-	<th>Details</th>
-	<th>Shift</th>
-	<th>Log Time</th>
-<!--<ul>-->
 <% 7.times do %>
-	<!--<ul>-->
 	<% day = (@weekof + count.days) %>
-	<!--<li><%= day.strftime("%A - %D") %></li>-->
+	<tr>
+		<th><%= day.strftime("%A") %></th>
+		<th>Shift</th>
+		<th>Log Time</th>
+	</tr>
 	<% allshiftstoday = allshifts.select {|i| (i.start_date == day) } %>
 	<% allshiftstoday.each do |shift| %>
 		<tr>
@@ -113,8 +112,6 @@
 		</tr>
 			<!--<li><%= shift.tracker.name %> : <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %> - <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]} } %></li>-->
 		<% end %>
-	<!--</ul>
-	<br>-->
 	<% count += 1 %>
 <% end %>
 </table>

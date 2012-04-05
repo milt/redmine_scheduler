@@ -90,7 +90,7 @@ class ManageController < ApplicationController #handles the management/rebooking
   
   def generate_timesheet
     @weekof = Date.parse(params[:weekof])
-    name = User.current.firstname
+    name = User.current.firstname + " " + User.current.lastname
     wage = User.current.wage.amount.to_s
     current = Date.today
     beginning = params[:weekof]
