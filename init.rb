@@ -29,7 +29,7 @@ Redmine::Plugin.register :redmine_scheduler do
   # permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] }
   # permission :manage_wages, :wages => :all
   menu :application_menu, :manage, { :controller => 'manage', :action => 'today' }, :caption => 'Staff'
-  #menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'ProStaff'
+  menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'ProStaff'
   #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
   #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
   menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'
