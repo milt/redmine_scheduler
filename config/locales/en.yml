@@ -2,6 +2,7 @@
 en:
   field_start_time: "Start Time"
   field_end_time: "End Time"
+  field_manager: "Group Manager"
   helpers:
     label:
       booking:
