@@ -2,22 +2,26 @@
 
 <% @workgroups.each do |workgroup| %>
 <div>
-	<p><%= workgroup.name %> - <%= link_to "Edit Membership...", {:controller => 'groups', :action => 'edit', :id => workgroup[:id], :tab => 'users'} %></p>
+	<h3><%= workgroup.name %> - <%= link_to "Edit Membership...", {:controller => 'groups', :action => 'edit', :id => workgroup[:id], :tab => 'users'} %></h3>
 	<% workgroup.users.each do |user| %>
-	  <div>
-		  <p><%= user.name %></p>
+	  <div class="box tabular">
+		  <h4><%= user.name %></h4>
+		  <% form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.task_track.first.id, :assigned_to_id => user.id}, :html => {:class => "nifty_form"} do |f| %>
+		    New Task in:<%= f.select :project_id, user.projects.map {|p| [p.name, p.id]}, :label => :field_quicktask %>
+		    <%= submit_tag "Go!" %>
+		  <% end %>
 		  <table class="list issues">
 			  <tr>
 				  <th>Subject</th>
 				  <th>Due?</th>
 			  </tr>
-			  <% Issue.tasks.foruser(user).each do |task| %>
+			  <% Issue.open.tasks.foruser(user).each do |task| %>
 			  <tr>
 				  <td><%= task.subject %></td>
 				  <td><%= task.due_date.to_s %></td>
 			  </tr>
 			  <% end %>
-		  <table>
+		  </table>
 				  
 	  </div>
 	<% end %>
