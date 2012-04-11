@@ -7,6 +7,7 @@ require 'user_patch'
 require 'mailer_patch'
 require 'tracker_patch'
 require 'time_entry_patch'
+require 'group_patch'
 require_dependency 'redmine_scheduler/hooks'
 
  Dispatcher.to_prepare :redmine_scheduler do
@@ -15,6 +16,7 @@ require_dependency 'redmine_scheduler/hooks'
    Mailer.send(:include, MailerPatch)
    Tracker.send(:include, TrackerPatch)
    TimeEntry.send(:include, TimeEntryPatch)
+   Group.send(:include, GroupPatch)
  end
 
 Redmine::Plugin.register :redmine_scheduler do

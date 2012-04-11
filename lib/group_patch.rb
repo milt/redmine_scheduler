@@ -1,7 +1,7 @@
-require_dependency 'user'
+require_dependency 'group'
 
-# Patches Redmine's Users dynamically.  Adds a relationship User +has_and_belongs_to_many+ Skill. 
-module UserPatch
+# Patches Redmine's Groups dynamically.  Adds a relationships to support an "owner" for a given group.
+module GroupPatch
   def self.included(base) # :nodoc:
     base.extend(ClassMethods)
 
@@ -10,10 +10,7 @@ module UserPatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
-      has_and_belongs_to_many :skills
-      belongs_to :wage
-      has_one :workgroup, :class_name => "Group",
-        :foreign_key => "manager_id"
+      belongs_to :manager, :class_name => "User"
 
     end
 
@@ -29,4 +26,4 @@ module UserPatch
 end
 
 # Add module to User
-User.send(:include, UserPatch)
+Group.send(:include, GroupPatch)
