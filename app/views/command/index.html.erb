@@ -1,1 +1,25 @@
 <h2>Master and Commander</h2>
+
+<% @workgroups.each do |workgroup| %>
+<div>
+	<p><%= workgroup.name %> - <%= link_to "Edit Membership...", {:controller => 'groups', :action => 'edit', :id => workgroup[:id], :tab => 'users'} %></p>
+	<% workgroup.users.each do |user| %>
+	  <div>
+		  <p><%= user.name %></p>
+		  <table class="list issues">
+			  <tr>
+				  <th>Subject</th>
+				  <th>Due?</th>
+			  </tr>
+			  <% Issue.tasks.foruser(user).each do |task| %>
+			  <tr>
+				  <td><%= task.subject %></td>
+				  <td><%= task.due_date.to_s %></td>
+			  </tr>
+			  <% end %>
+		  <table>
+				  
+	  </div>
+	<% end %>
+</div>
+<% end %>

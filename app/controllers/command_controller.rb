@@ -3,5 +3,6 @@ class CommandController < ApplicationController
 
 
   def index
+    @workgroups = User.current.workgroups
   end
 end

@@ -12,7 +12,7 @@ module UserPatch
       unloadable # Send unloadable so it will not be unloaded in development
       has_and_belongs_to_many :skills
       belongs_to :wage
-      has_one :workgroup, :class_name => "Group",
+      has_many :workgroups, :class_name => "Group",
         :foreign_key => "manager_id"
 
     end
