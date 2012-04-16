@@ -1,28 +1,56 @@
-<h2>Master and Commander</h2>
+<h1>My Staff</h1>
 
 <% @workgroups.each do |workgroup| %>
 <div>
 	<h3><%= workgroup.name %> - <%= link_to "Edit Membership...", {:controller => 'groups', :action => 'edit', :id => workgroup[:id], :tab => 'users'} %></h3>
 	<% workgroup.users.each do |user| %>
 	  <div class="box tabular">
-		  <h4><%= user.name %></h4>
-		  <% form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.task_track.first.id, :assigned_to_id => user.id}, :html => {:class => "nifty_form"} do |f| %>
-		    New Task in:<%= f.select :project_id, user.projects.map {|p| [p.name, p.id]}, :label => :field_quicktask %>
-		    <%= submit_tag "Go!" %>
-		  <% end %>
+		  <h4><%= link_to user.name, user %></h4>
 		  <table class="list issues">
 			  <tr>
-				  <th>Subject</th>
+				  <th>Task</th>
 				  <th>Due?</th>
 			  </tr>
 			  <% Issue.open.tasks.foruser(user).each do |task| %>
 			  <tr>
-				  <td><%= task.subject %></td>
+				  <td><%= link_to task.subject, task %></td>
 				  <td><%= task.due_date.to_s %></td>
 			  </tr>
 			  <% end %>
+			  <tr>
+				  <th>Goal</th>
+				  <th>Due?</th>
+			  </tr>
+			  <% Issue.open.goals.foruser(user).each do |goal| %>
+			  <tr>
+				  <td><%= link_to goal.subject, goal %></td>
+				  <td><%= goal.due_date.to_s %></td>
+			  </tr>
+			  <% end %>
+			  <tr>
+				  <th>Project</th>
+				  <th>Activity</th>
+				  <th>Comment</th>
+				  <th>Hours</th>
+				  <th>Spent On</th>
+			  </tr>
+			  <% TimeEntry.foruser(user).after(Date.today - 2.weeks).each do |timent| %>
+			  <tr>
+				  <td><%= link_to timent.project.name, timent.project %></td>
+				  <td><%= link_to timent.activity.name, timent %></td>
+				  <td><%= link_to timent.comments, timent %></td>
+				  <td><%= link_to timent.hours.to_s, timent %></td>
+				  <td><%= link_to timent.spent_on, timent %></td>
+			  </tr>
+			  <% end %>
+			  
 		  </table>
-				  
+		  <p>
+		  <% form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.task_track.first.id, :assigned_to_id => user.id}, :html => {:class => "nifty_form"} do |f| %>
+		    New Task in:<%= f.select :project_id, user.projects.map {|p| [p.name, p.id]}, :label => :field_quicktask %>
+		    <%= submit_tag "Go!" %>
+		  <% end %>
+		  </p>
 	  </div>
 	<% end %>
 </div>

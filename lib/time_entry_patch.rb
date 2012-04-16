@@ -11,6 +11,7 @@ module TimeEntryPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       named_scope :foruser, lambda {|u| { :conditions => { :user_id => u.id } } }
+      named_scope :after, lambda {|d| { :conditions => ["spent_on >= ?", d] } }
 
     end
 
