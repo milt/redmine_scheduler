@@ -14,6 +14,7 @@ module UserPatch
       belongs_to :wage
       has_many :workgroups, :class_name => "Group",
         :foreign_key => "manager_id"
+      has_many :time_entries
 
     end
 

@@ -1,0 +1,29 @@
+<div class="task-title-container">
+	<div class="task-title-left">Tasks</div>
+	<div class="task-title-right">
+		New task in:
+		<% form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.task_track.first.id, :assigned_to_id => user.id}, :html => {:class => "nifty_form"} do |f| %>
+			<%= f.select :project_id, Tracker.task_track.first.projects.map {|p| [p.name, p.id]}, :label => :field_quicktask %>
+			<%= submit_tag "Go!" %>
+		<% end %>
+	</div>
+</div>
+
+<% if Issue.open.tasks.foruser(user).empty? %>
+  <p><em>No tasks assigned</em></p>
+<% else %>
+<table class="list issues">
+  <tr>
+	  <th>Project</th>
+	  <th>Task</th>
+	  <th>Due?</th>
+  </tr>
+    <% Issue.open.tasks.foruser(user).each do |task| %>
+    <tr>
+	    <td><%= task.project.name %></td>
+	    <td><%= link_to task.subject, task %></td>
+	    <td><%= task.due_date.to_s %></td>
+    </tr>
+    <% end %>
+</table>
+<% end %>

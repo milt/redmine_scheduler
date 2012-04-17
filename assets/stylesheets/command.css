@@ -1,0 +1,25 @@
+div.task-title-container {
+
+}
+
+div.task-title-left {
+	font-size: 14px;
+	float: left;
+}
+
+div.task-title-right {
+	float: right;
+}
+
+div.time-title-container {
+
+}
+
+div.time-title-left {
+	font-size: 14px;
+	float: left;
+}
+
+div.time-title-right {
+	float: right;
+}

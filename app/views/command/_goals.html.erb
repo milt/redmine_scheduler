@@ -1,0 +1,25 @@
+<div class="task-title-container">
+	<div class="task-title-left">Goals</div>
+	<div class="task-title-right">
+		<% form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.goal_track.first.id, :project_id => Tracker.goal_track.first.projects.first.id, :assigned_to_id => user.id}, :html => {:class => "nifty_form"} do |f| %>
+		<%= submit_tag "New Training Goal for " + user.firstname %>
+		<% end %>
+	</div>
+</div>
+
+<% if Issue.open.goals.foruser(user).empty? %>
+  <p><em>No training goals assigned</em></p>
+<% else %>
+<table class="list issues">
+<tr>
+  <th>Goal</th>
+  <th>Due?</th>
+</tr>
+<% Issue.open.goals.foruser(user).each do |goal| %>
+	<tr>
+	  <td><%= link_to goal.subject, goal %></td>
+	  <td><%= goal.due_date.to_s %></td>
+	</tr>
+<% end %>
+</table>
+<% end %>
