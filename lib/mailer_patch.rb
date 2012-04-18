@@ -1,5 +1,3 @@
-require_dependency 'mailer'
-
 # Patches Redmine's Mailer model to add fun things.
 module MailerPatch
   def self.included(base) # :nodoc: add the indicated methods to Issue. not sure what :nodoc: did but it is off now
@@ -32,5 +30,3 @@ module MailerPatch
   end
 end
 
-# Add module to Mailer
-Mailer.send(:include, MailerPatch)
