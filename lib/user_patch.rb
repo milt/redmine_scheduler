@@ -23,6 +23,14 @@ module UserPatch
   end
 
   module InstanceMethods
+    def analyze_time(hours)
+      b = self.time_entries.sort_by_date.reverse.take_while do |m|
+        c ||= 0
+        c += m.hours
+        c < hours
+      end
+      return b
+    end
 
   end
 end
