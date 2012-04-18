@@ -1,5 +1,3 @@
-require_dependency 'time_entry'
-
 # Patches Redmine's Users dynamically.  Adds a relationship User +has_and_belongs_to_many+ Skill. 
 module TimeEntryPatch
   def self.included(base) # :nodoc:
@@ -26,6 +24,3 @@ module TimeEntryPatch
 
   end
 end
-
-# Add module to User
-TimeEntry.send(:include, TimeEntryPatch)
