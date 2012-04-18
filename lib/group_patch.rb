@@ -1,5 +1,3 @@
-require_dependency 'group'
-
 # Patches Redmine's Groups dynamically.  Adds a relationships to support an "owner" for a given group.
 module GroupPatch
   def self.included(base) # :nodoc:
