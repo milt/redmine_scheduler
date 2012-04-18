@@ -2,21 +2,34 @@ require 'redmine'
 
 #this is matt changing some stuff
 # Patches to the redmine core for User, Issue HABTM relationships
+require 'tracker_patch'
 require 'issue_patch'
 require 'user_patch'
 require 'mailer_patch'
-require 'tracker_patch'
 require 'time_entry_patch'
 require 'group_patch'
 require_dependency 'redmine_scheduler/hooks'
+require 'dispatcher'
 
  Dispatcher.to_prepare :redmine_scheduler do
-   Issue.send(:include, IssuePatch)
-   User.send(:include, UserPatch)
-   Mailer.send(:include, MailerPatch)
-   Tracker.send(:include, TrackerPatch)
-   TimeEntry.send(:include, TimeEntryPatch)
-   Group.send(:include, GroupPatch)
+
+  require_dependency 'tracker'
+  Tracker.send(:include, TrackerPatch) unless Tracker.included_modules.include? TrackerPatch
+
+  require_dependency 'issue'
+  Issue.send(:include, IssuePatch) unless Issue.included_modules.include? IssuePatch
+
+  require_dependency 'user'
+  User.send(:include, UserPatch) unless User.included_modules.include? UserPatch
+
+  require_dependency 'mailer'
+  Mailer.send(:include, MailerPatch) unless Mailer.included_modules.include? MailerPatch
+
+  require_dependency 'time_entry'
+  TimeEntry.send(:include, TimeEntryPatch) unless TimeEntry.included_modules.include? TimeEntryPatch
+
+  require_dependency 'group'
+  Group.send(:include, GroupPatch) unless Group.included_modules.include? GroupPatch
  end
 
 Redmine::Plugin.register :redmine_scheduler do
