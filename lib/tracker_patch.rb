@@ -1,5 +1,3 @@
-require_dependency 'tracker'
-
 # Patches Redmine's Users dynamically.  Adds a relationship User +has_and_belongs_to_many+ Skill. 
 module TrackerPatch
   def self.included(base) # :nodoc:
@@ -29,5 +27,3 @@ module TrackerPatch
   end
 end
 
-# Add module to User
-Tracker.send(:include, TrackerPatch)
