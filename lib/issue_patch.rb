@@ -1,5 +1,3 @@
-require_dependency 'issue'
-
 # Patches Redmine's Issue model dynamically.  Adds a relationship Issue +has_many+ to Timeslot. this is a module, hence it has a slightly different order.
 module IssuePatch
   def self.included(base) # :nodoc: add the indicated methods to Issue. not sure what :nodoc: did but it is off now
