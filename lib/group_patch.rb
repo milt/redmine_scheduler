@@ -22,6 +22,3 @@ module GroupPatch
 
   end
 end
-
-# Add module to User
-Group.send(:include, GroupPatch)
