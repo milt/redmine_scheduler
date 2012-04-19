@@ -65,7 +65,10 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       context[:issue].recreate_timeslots # see the Issue patch
     end        
   end
-  
+
+    #render_on :view_layouts_base_html_head,
+    #          :partial => 'hooks/redmine_scheduler/google'
+
     render_on :view_issues_form_details_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
               :partial => 'hooks/redmine_scheduler/hello'
 

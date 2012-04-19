@@ -31,7 +31,10 @@ module UserPatch
       end
       return b
     end
-
+    
+    def get_workload(weeks_back)
+      self.time_entries.sort_by_date.after(Date.today - weeks_back.weeks)
+    end
   end
 end
 
