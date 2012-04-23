@@ -23,3 +23,16 @@ div.time-title-left {
 div.time-title-right {
 	float: right;
 }
+
+div.analyze-options-container {
+
+}
+
+div.analyze-options-left {
+	float: left;
+}
+
+div.analyze-options-right {
+	float: right;
+	font-size: 18px;
+}

@@ -6,9 +6,10 @@ module CommandHelper
       pie_array << [ key, grouphash[key].inject(0) {|sum,t| t.hours + sum} ]
     end
     g = GChart.pie :data => pie_array.map {|a| a[1]},
-                   :legend => pie_array.map { |a| a[0].name },
+                   :legend => (pie_array.map { |a| a[0].name + ' ' + a[1].to_s + ' hrs'} rescue pie_array.map { |a| a[0].subject }),
                    :height => 200,
-                   :width => 450 #,
+                   :width => 450,
+                   :title => "Time Spent by" + attribute.capitalize + " Total:" + hours.to_s
                    #:extras => { "chma" => "32,32,32,32" }
 
     g.to_url

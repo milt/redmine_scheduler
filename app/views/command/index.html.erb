@@ -1,5 +1,18 @@
 <h1>My Staff</h1>
 
+<div class="analyze-options-container">
+	<div class="analyze-options-left">
+		<% form_tag(:action => :index) do %>
+		  <%= label_tag(:hours, "Hours to Analyze:") %>
+		  <%= text_field_tag(:hours, @hours) %>
+		  <%= submit_tag("Update") %>
+		<% end %>
+	</div>
+    <div class="analyze-options-right">
+		Viewing the last <%= @hours.to_s %> hours of logged time.
+	</div>
+</div>
+
 <% @workgroups.each do |workgroup| %>
 <div>
 	<h3><%= workgroup.name %> - <%= link_to "Edit Membership...", {:controller => 'groups', :action => 'edit', :id => workgroup[:id], :tab => 'users'} %></h3>
