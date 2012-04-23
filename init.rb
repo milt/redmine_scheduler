@@ -16,6 +16,8 @@ require 'dispatcher'
   require_dependency 'tracker'
   Tracker.send(:include, TrackerPatch) unless Tracker.included_modules.include? TrackerPatch
 
+  require_dependency 'timeslot'
+  require_dependency 'booking'
   require_dependency 'issue'
   Issue.send(:include, IssuePatch) unless Issue.included_modules.include? IssuePatch
 
@@ -30,6 +32,7 @@ require 'dispatcher'
 
   require_dependency 'group'
   Group.send(:include, GroupPatch) unless Group.included_modules.include? GroupPatch
+  
  end
 
 Redmine::Plugin.register :redmine_scheduler do

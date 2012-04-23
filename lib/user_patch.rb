@@ -13,6 +13,7 @@ module UserPatch
       has_many :workgroups, :class_name => "Group",
         :foreign_key => "manager_id"
       has_many :time_entries
+      has_many :bookings
 
     end
 
