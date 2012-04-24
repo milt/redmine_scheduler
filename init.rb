@@ -21,6 +21,7 @@ require 'dispatcher'
   require_dependency 'issue'
   Issue.send(:include, IssuePatch) unless Issue.included_modules.include? IssuePatch
 
+  require_dependency 'timesheet'
   require_dependency 'user'
   User.send(:include, UserPatch) unless User.included_modules.include? UserPatch
 

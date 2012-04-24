@@ -94,8 +94,10 @@ class ManageController < ApplicationController #handles the management/rebooking
     wage = User.current.wage.amount.to_s
     current = Date.today
     beginning = params[:weekof]
+    beginning_date = Date.parse(beginning)
 
-    usrtiments = TimeEntry.foruser(User.current)
+    #TODO change the name of the default scopes on TimeEntry for dates, they need to express that the collection includes the dates indicated.
+    usrtiments = TimeEntry.foruser(User.current).after(beginning_date).before(beginning_date + 6.days)
 
     @mon = (usrtiments.select {|t| t.spent_on == @weekof}).inject(0) {|sum, x| sum + x.hours}
     @tue = (usrtiments.select {|t| t.spent_on == (@weekof + 1)}).inject(0) {|sum, x| sum + x.hours}

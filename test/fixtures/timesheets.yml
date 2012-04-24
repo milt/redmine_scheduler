@@ -1,0 +1,15 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+one:
+  id: 1
+  user_id: 1
+  pay_period: 2012-04-24 15:48:02
+  print_date: 2012-04-24 15:48:02
+  paid: false
+  notes: MyText
+two:
+  id: 2
+  user_id: 1
+  pay_period: 2012-04-24 15:48:02
+  print_date: 2012-04-24 15:48:02
+  paid: false
+  notes: MyText

@@ -8,8 +8,10 @@ module TimeEntryPatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
+      belongs_to :timesheet
       named_scope :foruser, lambda {|u| { :conditions => { :user_id => u.id } } }
       named_scope :after, lambda {|d| { :conditions => ["spent_on >= ?", d] } }
+      named_scope :before, lambda {|d| { :conditions => ["spent_on <= ?", d] } }
       named_scope :sort_by_date, :order => "spent_on ASC"
 
     end
