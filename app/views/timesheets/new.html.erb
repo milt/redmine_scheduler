@@ -1,1 +1,11 @@
-<h2>Timesheets#new</h2>
+<h2>New Timesheet for <%= @user.firstname %></h2>
+
+<p>name: <%= @user.firstname %></p>
+<p>wage: <%= @user.wage.amount.to_s %></p>
+<p>monday: <%= @time_entries.ondate(@pay_period).inject(0) {|sum,t| sum + t.hours} %></p>
+<p>tuesday: <%= @time_entries.ondate(@pay_period + 1).inject(0) {|sum,t| sum + t.hours} %></p>
+<p>wednesday: <%= @time_entries.ondate(@pay_period + 2).inject(0) {|sum,t| sum + t.hours} %></p>
+<p>thursday: <%= @time_entries.ondate(@pay_period + 3).inject(0) {|sum,t| sum + t.hours} %></p>
+<p>friday: <%= @time_entries.ondate(@pay_period + 4).inject(0) {|sum,t| sum + t.hours} %></p>
+<p>saturday: <%= @time_entries.ondate(@pay_period + 5).inject(0) {|sum,t| sum + t.hours} %></p>
+<p>sunday: <%= @time_entries.ondate(@pay_period + 6).inject(0) {|sum,t| sum + t.hours} %></p>

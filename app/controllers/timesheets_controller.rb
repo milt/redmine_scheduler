@@ -6,7 +6,10 @@ class TimesheetsController < ApplicationController
     @timesheets = Timesheet.all
   end
 
-  def new
+  def new # the button in Manage>timesheets can point here. The only param needed is the date. Pretty cool...
+    @pay_period = Date.parse(params[:pay_period])
+    @user = User.current
+    @time_entries = @user.time_entries
     @timesheet = Timesheet.new
   end
 
