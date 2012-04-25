@@ -9,3 +9,5 @@
 <p>friday: <%= @time_entries.ondate(@pay_period + 4).inject(0) {|sum,t| sum + t.hours} %></p>
 <p>saturday: <%= @time_entries.ondate(@pay_period + 5).inject(0) {|sum,t| sum + t.hours} %></p>
 <p>sunday: <%= @time_entries.ondate(@pay_period + 6).inject(0) {|sum,t| sum + t.hours} %></p>
+
+<p>Hey! this page isn't really doing anything right now, except showing how you could pass values in.</p>
