@@ -1,6 +1,5 @@
 class Booking < ActiveRecord::Base
   belongs_to :timeslot #one-to-one relationship with timeslots, means you can call timeslot.booking and get the associated booking or nil
-  belongs_to :issue
   attr_accessible :name, :phone, :email, :project_desc, :timeslot_id
   validates_presence_of :name, :phone, :email, :project_desc #all form fields must exist be non-nil 
   validates_length_of :name, :email, :maximum => 127 #name can't be over 127 chars

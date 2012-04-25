@@ -9,7 +9,6 @@ module IssuePatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
-      has_many :bookings
       safe_attributes 'start_time', 'end_time' #since our migration adds start_time and end_time to issues for use as shifts, we need to mark these as safe for editing.
       alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
       named_scope :today, lambda { { :conditions => { :start_date => Date.today } } }
