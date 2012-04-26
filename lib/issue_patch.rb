@@ -20,6 +20,7 @@ module IssuePatch
       named_scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
       named_scope :by_start_date, lambda {|d| { :conditions => { :start_date => d } } }
       named_scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
+      named_scope :from_date, lambda {|d| { :conditions => ["start_date >= ?", d] } }
 
     end
 

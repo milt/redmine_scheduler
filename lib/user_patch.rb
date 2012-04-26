@@ -36,6 +36,10 @@ module UserPatch
     def get_workload(weeks_back)
       self.time_entries.sort_by_date.after(Date.today - weeks_back.weeks)
     end
+    
+    def get_open_slots_by_date_range(from, to)
+      (Issue.lcshift.from_date(from).until_date(to).foruser(self).collect {|i| i.open_slots })[0]
+    end
   end
 end
 
