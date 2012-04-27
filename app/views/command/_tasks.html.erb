@@ -2,7 +2,7 @@
 	<div class="task-title-left">Tasks</div>
 	<div class="task-title-right">
 		New task in:
-		<% form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.task_track.first.id, :assigned_to_id => user.id}, :html => {:class => "nifty_form"} do |f| %>
+		<% form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.task_track.first.id, :coach_id => user.id}, :html => {:class => "nifty_form"} do |f| %>
 			<%= f.select :project_id, Tracker.task_track.first.projects.map {|p| [p.name, p.id]}, :label => :field_quicktask %>
 			<%= submit_tag "Go!" %>
 		<% end %>

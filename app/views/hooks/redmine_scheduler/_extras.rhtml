@@ -1,3 +1,13 @@
 <div>
-	<h2>Special options for <%= @issue.tracker %></h2>
+	<h2>Special options for <%= @issue.tracker.name %></h2>
+</div>
+<div>
+	<% case @issue.tracker.name
+	when "Task" %>
+      <%= render 'hooks/redmine_scheduler/task' %>
+    <% when "Training Goal" %>
+      <%= render 'hooks/redmine_scheduler/goal' %>
+    <% else %>
+      <h3>No Special Options</h3>
+    <% end %>
 </div>

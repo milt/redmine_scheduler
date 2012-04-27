@@ -38,7 +38,11 @@ module UserPatch
     end
     
     def get_open_slots_by_date_range(from, to)
-      (Issue.lcshift.from_date(from).until_date(to).foruser(self).collect {|i| i.open_slots })[0]
+      slots = []
+      Issue.lcshift.from_date(from).until_date(to).foruser(self).each do |issue|
+        slots += issue.open_slots
+      end
+      return slots
     end
   end
 end
