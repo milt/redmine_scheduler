@@ -13,3 +13,5 @@ installation:
 2. Run: rake db:migrate:plugins
 3. ???
 4. Profit
+
+This is a test edit from Guannan
