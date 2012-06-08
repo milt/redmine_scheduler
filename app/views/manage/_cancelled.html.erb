@@ -7,8 +7,8 @@
     <th>Shift</th>
     <th>Actions</th>
   </tr>
-  <% @cancelled.each do |booking| %>
-	  <tr>
+    <% @cancelled.each do |booking| %>
+    <tr>
 		<td><%= format_time(booking.apt_time) %></td>
 		<td>(none)</td>
 		<td><%= booking.name %></td>

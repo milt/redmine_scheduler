@@ -3,3 +3,4 @@
 <%= render 'orph' unless @orphaned.empty? %>
 <%= render 'booked' unless @booked.empty? %>
 <%= render 'cancelled' unless @cancelled.empty? %>
+<br><%= will_paginate @cancelled %></br>

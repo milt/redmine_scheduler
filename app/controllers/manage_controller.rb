@@ -7,7 +7,18 @@ class ManageController < ApplicationController #handles the management/rebooking
   
   def index
     @booked = Booking.booked.future #all valid bookings in the future
-    @cancelled = Booking.cancelled #intentionally cancelled bookings
+
+
+
+
+    @cancelled = Booking.cancelled.paginate(:page => params[:page])
+    #@cancelled = Booking.cancelled #intentionally cancelled bookings
+
+
+
+
+
+
     
     #Nightmare table sort! needs.. fire. sort_col is for active bookings, sort_o_col is for orphaned bookings, sort_c_col is for cancelled bookings.
     if params[:sort_col].present?

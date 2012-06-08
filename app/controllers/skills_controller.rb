@@ -2,7 +2,7 @@ class SkillsController < ApplicationController #define skills, assign them to us
   unloadable
 
   before_filter :require_admin, :find_users, :only => [:index, :edit] #finds users for skill assignment
-  before_filter :find_skill, :only => [:edit, :update, :destroy, :link, :unlink]
+  before_filter :find_skill, :only => [:edit, :update, :destroy, :link, :link2, :unlink]
   
   def index #index and manage skills
     @skills = Skill.all
@@ -70,6 +70,20 @@ class SkillsController < ApplicationController #define skills, assign them to us
     @user.skills << @skill
     flash[:notice] = 'Skill assigned.'
     redirect_to :action => 'assign', :user_id => @user[:id]
+  end
+
+  def link2 #link a given skill to a given user
+    @user = User.find(params[:user_id])
+    @user.skills << @skill
+    flash[:notice] = 'Skill assigned.'
+    #redirect_to :action => 'edit', :_id => @user.skills[:id]
+
+    @skill_in = Skill.find(params[:id])
+    #@user.skills << @skill_in   #works with skill if add link into filter_before
+    #flash[:notice] = 'Skill assigned.'
+    #redirect_to :action => 'assign', :user_id => @user[:id]
+    redirect_to :action => 'edit', :id => @skill_in[:id]
+
   end
   
   def unlink #unlink a given skill from a given user

@@ -11,4 +11,8 @@ class Booking < ActiveRecord::Base
   named_scope :cancelled, lambda { { :conditions => { :cancelled => true } } }
   named_scope :orphaned, lambda { { :conditions => { :cancelled => nil, :timeslot_id => nil } } }
 
+  #cattr_reader :per_page
+  #@@per_page = 10
+  self.per_page = 2
+  
 end

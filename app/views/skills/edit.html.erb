@@ -18,7 +18,7 @@
 <h3>Unassigned Users</h3>
 <% @unassigned.each do |user| %>
   <p>
-  <%= user[:firstname] %> <%= user[:lastname] %> : <%= link_to 'Add', {:action => 'link', :id => @skill[:id], :user_id => user[:id]} %>
+  <%= user[:firstname] %> <%= user[:lastname] %> : <%= link_to 'Add', {:action => 'link2', :id => @skill[:id], :user_id => user[:id]} %>
   </p>
 <% end %>
 <br>
