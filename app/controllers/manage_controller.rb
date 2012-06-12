@@ -7,19 +7,13 @@ class ManageController < ApplicationController #handles the management/rebooking
   
   def index
     @booked = Booking.booked.future #all valid bookings in the future
-
-
-
-
-    @cancelled = Booking.cancelled.paginate(:page => params[:page])
+    #@booked = Booking.booked.paginate(:page => params[:booked_page], :per_page => 10)
+    @orphaned = Booking.orphaned.paginate(:page => params[:orphaned_page], :per_page => 2)
+    @cancelled = Booking.cancelled.paginate(:page => params[:cancelled_page], :per_page =>4, :order => 'name') #hello, its me yes!
     #@cancelled = Booking.cancelled #intentionally cancelled bookings
-
-
-
-
-
-
     
+    #@orphaned = Booking.orphaned.order(params[:sort]) #will work with ruby 3.0
+
     #Nightmare table sort! needs.. fire. sort_col is for active bookings, sort_o_col is for orphaned bookings, sort_c_col is for cancelled bookings.
     if params[:sort_col].present?
       case params[:sort_col].to_i
@@ -52,7 +46,7 @@ class ManageController < ApplicationController #handles the management/rebooking
       when 0
         @cancelled = @cancelled.sort_by {|b| b.apt_time}
       when 2
-        @cancelled = @cancelled.sort_by {|b| b.name.downcase}
+        @cancelled = @cancelled.sort_by {|b| b[:name]}
       else
         @cancelled = @cancelled.sort_by {|b| b.apt_time}
       end

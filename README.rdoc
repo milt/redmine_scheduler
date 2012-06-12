@@ -13,11 +13,3 @@ installation:
 2. Run: rake db:migrate:plugins
 3. ???
 4. Profit
-
-This is a test edit from Guannan
-
-
-changes to add pagination:
-added lines in manage_controller
-added lines in booking.rb in models
-added lines in index.html.erb in views->manage
