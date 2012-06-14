@@ -9,7 +9,7 @@ class ManageController < ApplicationController #handles the management/rebooking
     @booked = Booking.booked.future #all valid bookings in the future
     #@booked = Booking.booked.paginate(:page => params[:booked_page], :per_page => 10)
     @orphaned = Booking.orphaned.paginate(:page => params[:orphaned_page], :per_page => 2)
-    @cancelled = Booking.cancelled.paginate(:page => params[:cancelled_page], :per_page =>4, :order => 'name') #hello, its me yes!
+    @cancelled = Booking.cancelled.paginate(:page => params[:cancelled_page], :per_page =>4) #hello, its me yes!
     #@cancelled = Booking.cancelled #intentionally cancelled bookings
     
     #@orphaned = Booking.orphaned.order(params[:sort]) #will work with ruby 3.0
@@ -44,9 +44,11 @@ class ManageController < ApplicationController #handles the management/rebooking
     if params[:sort_c_col].present?
       case params[:sort_c_col].to_i
       when 0
-        @cancelled = @cancelled.sort_by {|b| b.apt_time}
+        @cancelled = Booking.cancelled.paginate(:page => params[:cancelled_page], :per_page =>4, :order => 'apt_time')
+        #@cancelled = @cancelled.sort_by {|b| b.apt_time}
       when 2
-        @cancelled = @cancelled.sort_by {|b| b[:name]}
+        @cancelled = Booking.cancelled.paginate(:page => params[:cancelled_page], :per_page =>4, :order => 'name')
+        #@cancelled = @cancelled.sort_by {|b| b[:name]}
       else
         @cancelled = @cancelled.sort_by {|b| b.apt_time}
       end

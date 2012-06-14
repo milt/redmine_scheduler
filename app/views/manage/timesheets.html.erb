@@ -3,7 +3,11 @@
 
 <% form_tag do %>
 <%= select_year Date.new(@year.to_i) %>
-<%= select_tag(:tweek, options_for_select(@weeks, @weeks[@tweek.to_i - 1]), :disabled => true) %> <!--what is tweek, and what is to_i-->
+<% options = [@weeks[2], @weeks[3], @weeks[4], @weeks[5], @weeks[6]] %>
+<% disabled_options = [@weeks[1], @weeks[2], @weeks[3], @weeks[4], @weeks[5]] %>
+
+<%= select_tag :tweek, options_for_select(@weeks) %> 
+<!--what is tweek, is @weeks[@tweek.to_i] needed? )-->
 <%= submit_tag "Update" %>
 <% end %>
 <br>
