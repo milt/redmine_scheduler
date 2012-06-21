@@ -1,9 +1,9 @@
 class TimesheetsController < ApplicationController
   unloadable
 
-
   def index
     @timesheets = Timesheet.all
+    #flash[:notice] = 'working'
   end
 
   def new # the button in Manage>timesheets can point here. The only param needed is the date. Pretty cool...
@@ -15,25 +15,32 @@ class TimesheetsController < ApplicationController
 
   def create #make a new timesheet from user input
     @timesheet = Timesheet.new(params[:timesheet])
+    @timesheet.paid = false
 
     respond_to do |format|
       if @timesheet.save
-        flash[:notice] = 'Skill was successfully created.'
-        format.html { redirect_to :action => "index" }
-        format.xml  { render :xml => @timesheet, :status => :created,
-                    :location => @timesheet }
+        flash[:notice] = 'Timesheet was successfully created.'
       else                                               
         flash[:warning] = 'Invalid Options... Try again!'
-        format.html { redirect_to :action => "index" }
-        format.xml  { render :xml => @timesheet.errors,
-                    :status => :unprocessable_entity }
       end
     end
   end
 
   def show
+
   end
 
   def edit
+    @timesheet = Timesheet.find (params[:id])
+  end
+
+  def update
+    @timesheet = Timesheet.find (params[:id])
+    @timesheet.update_attributes (params[:timesheet])
+    flash[:notice] = "Timesheet has been updated"
+    redirect_to @timesheet
+  end
+
+  def delete
   end
 end

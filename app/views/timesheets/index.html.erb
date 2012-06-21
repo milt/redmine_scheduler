@@ -1,1 +1,27 @@
-<h2>Timesheets#index</h2>
+<h1>Timesheet display</h1> 
+	<table> 	
+		<tr> 
+			<th>Employee id</th>
+			<th>Name</th> 
+			<th>Pay period</th> 
+			<th>Paid?</th>
+			<th>Wage</th>
+			<th>Edit timesheet</th>
+			<th>Delete</th>
+			<th>Print</th>	
+		</tr> 
+
+	<% for timesheet in @timesheets %> 
+		<tr> 
+			<td><%=h timesheet.user_id %></td>
+			<td><%=h User.find(timesheet.user_id).firstname %></td> 
+			<td><%=h timesheet.pay_period %></td> 
+			<td><%=h (timesheet.paid ? "Yes" : "No") %></td>
+			<td><%=h User.find(timesheet.user_id).wage.amount %></td>
+			<td><%=h link_to 'Edit', {:controller => 'timesheet', :action => 'Edit'} %></td>
+			<td><%=h link_to 'Delete', {:controller => 'timesheet', :action => 'Delete'} %></td>
+			<td><%=h link_to 'Print', {:controller => 'manage', :action => 'generate_timesheet'} %></td>
+		</tr> 
+	<% end %> 
+	</table> 
+	<br /> 
