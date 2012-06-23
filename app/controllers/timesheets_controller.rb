@@ -41,6 +41,10 @@ class TimesheetsController < ApplicationController
     redirect_to @timesheet
   end
 
-  def delete
+  def destroy
+    @timesheet = Timesheet.find(params[:timesheet])
+    flash[:warning] = "what are you doing?"
+    @timesheet.destroy
+    redirect_to :action => "index"
   end
 end
