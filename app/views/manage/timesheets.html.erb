@@ -17,7 +17,8 @@
 	<% 7.times do %>
 	  <% day = (@weekof + count.days) %>
 	  <% ents = @entsbyday[count] %>
-	  <li><%= day.strftime("%A - %D") %><!--<%= ents.inject(0) {|sum, x| sum + x.hours} %>--></li>
+	  <li><%= day.strftime("%A - %D") %>
+	  	<%= ents.inject(0) {|sum, x| sum + x.hours} %></li>
 	  <ul>
 		<% ents.each do |ent| %>
 		<li>

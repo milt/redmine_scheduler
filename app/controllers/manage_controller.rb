@@ -131,16 +131,8 @@ class ManageController < ApplicationController #handles the management/rebooking
     else
       @year = Time.current.year.to_s
     end
-    
-    #Find first monday (this code has been moved to a private, maybe it should be somewhere else)
-    #days = []
-    #dcount = 0
-    #7.times do
-    #  days << (Date.new(@year.to_i) + dcount.days)
-    #  dcount += 1
-    #end
-    #yearstart = days.detect {|day| day.wday == 1 }
-    yearstart = find_first_monday(@year)
+
+    yearstart = find_first_monday(Time.current.year + 5.year)
     
     @weeks = []
     c = 0
@@ -159,8 +151,7 @@ class ManageController < ApplicationController #handles the management/rebooking
     @work_shifts = Issue.fdshift + Issue.lcshift
     @work_events = Issue.events
     @weekof = yearstart + (@tweek.to_i - 1).weeks #can this be replaced with cweeks?s
-    usrtiments = TimeEntry.all.select {|t| t.user == User.current } #this seems inefficient
-    #usrtiments = TimeEntry.foruser(User.current)
+    usrtiments = TimeEntry.all.select {|t| t.user == User.current }
     @seltiments = usrtiments.select {|t| (t.tyear == @year.to_i) && (t.tweek == @tweek.to_i) }
     @entsbyday = []
     daycount = 0
@@ -168,7 +159,6 @@ class ManageController < ApplicationController #handles the management/rebooking
       day = (@weekof + daycount.days)
       @entsbyday << @seltiments.select {|t| t.spent_on == day}
       daycount += 1
-      
     end
 
     @totalhours = @seltiments.inject(0) {|sum,x| sum + x.hours}

@@ -1,5 +1,6 @@
 class TimesheetsController < ApplicationController
   unloadable
+  #respond_to :json   #what does this mean?
 
   def index
     @timesheets = Timesheet.all
@@ -27,11 +28,33 @@ class TimesheetsController < ApplicationController
   end
 
   def show
-
+   
   end
 
   def edit
-    @timesheet = Timesheet.find (params[:id])
+    #@timesheet = Timesheet.find (params[:id])
+
+    @year = Time.current.year
+
+    yearstart = find_first_monday(@year)
+    flash[:notice] = "checking first monday of the year! #{yearstart.inspect}"
+
+    @weeks = []
+  
+    (0..51).each do |i|
+      @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
+    end
+
+    @weekof = yearstart + (Date.today.cweek-1).weeks     #.weeks acts like *7
+    user_entries = TimeEntry.all.select {|t| t.user == User.current}
+    cur_week_entries = user_entries.select {|t| (t.tyear == @year) && (t.tweek == Date.today.cweek)}  #replace with cweek and cwyear
+  
+    @entries_by_day = []
+
+    (0..6).each do |i| 
+      day = (@weekof + i.days)
+      @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
+    end
   end
 
   def update
@@ -41,10 +64,39 @@ class TimesheetsController < ApplicationController
     redirect_to @timesheet
   end
 
-  def destroy
+  def delete
     @timesheet = Timesheet.find(params[:timesheet])
     flash[:warning] = "what are you doing?"
     @timesheet.destroy
     redirect_to :action => "index"
+  end
+
+  def find_first_monday(year)
+    # days = []
+    # dcount = 0
+    # 7.times do
+    #   days = (Time.current.year + dcount.days)
+    #   if days[dcount].wday == 1{
+    #     return days[dcount];
+    #   }
+    #   dcount += 1
+    # end
+    # return days.detect {|day| day.wday == 1 }
+    
+    t = Date.new(year, 1,1).wday     #checks which day (Mon = 1, Sun = 0) is first day of the year 
+    if t == 0
+      return Date.new(year, 1,2)
+    elsif t == 1
+      return Date.new (year, 1,1)
+    else
+      return Date.new (year, 1,(1+8-t))     #cases designed to return the first Monday of the year's date
+    end
+
+    #doesn't work
+    # for i in 1..8                                       #can also use (1..8).each do |i|
+    #   if Date.new(Time.current.year+1, 1, i).cweek == 1
+    #     return Date.new(Time.current.year, 1, i)
+    #   end
+    # end
   end
 end
