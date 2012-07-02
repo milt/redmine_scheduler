@@ -18,9 +18,9 @@
 			<td><%=h timesheet.pay_period.strftime ("%D") %></td> 
 			<td><%=h (timesheet.paid ? "Yes" : "No") %></td>
 			<td><%=h User.find(timesheet.user_id).wage.amount %></td>
-			<td><%=h link_to 'Edit', {:controller => 'timesheets', :action => 'edit', :weekof => timesheet.pay_period} %></td>
-			<td><%=h link_to 'Delete', {:controller => 'timesheets', :action => 'Delete'} %></td>
-			<td><%=h link_to 'Print', {:controller => 'manage', :action => 'generate_timesheet'} %></td>
+			<td><%=h link_to 'Edit', {:action => 'edit', :weekof => timesheet.pay_period} %></td>
+			<td><%=h link_to 'Delete', {:action => 'delete'} %></td>
+			<td><%=h link_to 'Print', {:action => 'print', :weekof => timesheet.pay_period} %></td>
 		</tr> 
 	<% end %> 
 	</table> 

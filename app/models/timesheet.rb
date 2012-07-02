@@ -7,5 +7,5 @@ class Timesheet < ActiveRecord::Base
   validates_uniqueness_of :user_id, :scope => :pay_period, # only one sheet can be entered for a given time period
       :message => "Users can only have one timesheet per pay period."
   validates_presence_of :user_id, :pay_period #, :print_date
-
+  #named_scope :paid
 end
