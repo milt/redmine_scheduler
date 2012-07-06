@@ -1,6 +1,7 @@
 class TimesheetsController < ApplicationController
   unloadable
   #respond_to :json   #what does this mean?
+  include TimesheetHelper
   require "prawn"   #needed for pdf generation
 
   def index
@@ -8,7 +9,11 @@ class TimesheetsController < ApplicationController
     #flash[:notice] = 'working'
   end
 
-  def new # the button in Manage>timesheets can point here. The only param needed is the date. Pretty cool...
+  def student_index
+    @timesheets = Timesheet.all
+  end
+
+  def new
     @pay_period = Date.parse(params[:pay_period])
     @user = User.current
     @time_entries = @user.time_entries
@@ -16,8 +21,7 @@ class TimesheetsController < ApplicationController
   end
 
   def create #make a new timesheet from user input
-    @timesheet = Timesheet.new(params[:timesheet])
-    @timesheet.paid = false
+    @timesheet = Timesheet.new(:user_id => params[:user_id], :pay_period => params[:pay_period])
 
     respond_to do |format|
       if @timesheet.save
@@ -26,29 +30,35 @@ class TimesheetsController < ApplicationController
         flash[:warning] = 'Invalid Options... Try again!'
       end
     end
+    
   end
 
   def show
-   
+    @timesheet = Timesheet.find(6)
+    
+    if @timesheet.paid?
+      flash[:notice] = 'Person has been paid'
+    else
+      flash[:notice] = 'Person has not been paid'
+    end
+    redirect_to :action =>'index'
   end
 
+  #need to be edited to the actual dates/person
   def print
-    # @weekof = Date.parse(params[:weekof])   #returns date in the format { Thu, 18 Jan 2007 }
-    # name = User.current.firstname+""+User.current.lastname
-    # send_data(generate_timesheet_pdf(name), :filename => name + "_timecard_from_" +"to" + ".pdf", :type => "application/pdf" )
-  
+
     @weekof = Date.parse(params[:weekof])   
-    name = "Guannan"
-    wage = 12
+    name = User.current.firstname
+    wage = User.current.wage.amount.to_s
     current = Date.today
     beginning = params[:weekof]
     beginning_date = Date.parse(beginning)
 
     #TODO change the name of the default scopes on TimeEntry for dates, they need to express that the collection includes the dates indicated.
-    # usrtiments = TimeEntry.foruser(User.current).after(beginning_date).before(beginning_date + 6.days)
+    usrtiments = TimeEntry.foruser(User.current).after(beginning_date).before(beginning_date + 6.days)
 
     # @mon = (usrtiments.select {|t| t.spent_on == @weekof}).inject(0) {|sum, x| sum + x.hours}
-    # @tue = (usrtiments.select {|t| t.spent_on == (@weekof + 1)}).inject(0) {|sum, x| sum + x.hours}
+    # @tue = (usrtiments.select {|t| t.spent_on == (@weekof + 1)}).inject(0) {|sum, x| sum + x.hours} 
     # @wed = (usrtiments.select {|t| t.spent_on == (@weekof + 2)}).inject(0) {|sum, x| sum + x.hours}
     # @thu = (usrtiments.select {|t| t.spent_on == (@weekof + 3)}).inject(0) {|sum, x| sum + x.hours}
     # @fri = (usrtiments.select {|t| t.spent_on == (@weekof + 4)}).inject(0) {|sum, x| sum + x.hours}
@@ -60,21 +70,29 @@ class TimesheetsController < ApplicationController
     @wed = 1
     @thu = 1
     @fri = 1
-    @sat = 1
-    @sun = 1
+    @sat = 0
+    @sun = 0
 
     hours = @mon + @tue + @wed + @thu + @fri + @sat + @sun
+    status =""
+
+    #need to check for valid datetime instead of nil
+    if Timesheet.find(6).paid != nil
+      status = "Paid"
+    elsif Timesheet.find(6).paid == nil && Timesheet.find(6).submitted != nil
+      status = "Submitted, but not paid"
+    else
+      status = "Not submitted and not paid"
+    end
+
     if hours == 0
       flash[:warning] = 'You do not have any hours for the specified week!  Add hours to print a timecard.'
       redirect_to :action => 'index'
-    else
-      send_data (print_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun),
+    else  #method in timesheethelper
+      send_data (generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun,status),
         :filename => name + "_timecard_from_" + beginning.to_s + "_to_" + (@weekof + 6.days).to_s + ".pdf",
         :type => "application/pdf")
     end
-    # Prawn::Document.generate("hello.pdf") do
-    #   text "hello world!"
-    # end
   end
 
   def edit

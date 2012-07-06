@@ -1,6 +1,6 @@
 <h2>New Timesheet for <%= @user.firstname %></h2>
 
-<!--
+<!-- 
 <p>name: <%= @user.firstname %></p>
 <p>wage: <%= @user.wage.amount.to_s %></p>
 <p>monday: <%= @time_entries.ondate(@pay_period).inject(0) {|sum,t| sum + t.hours} %></p>
@@ -10,31 +10,12 @@
 <p>friday: <%= @time_entries.ondate(@pay_period + 4).inject(0) {|sum,t| sum + t.hours} %></p>
 <p>saturday: <%= @time_entries.ondate(@pay_period + 5).inject(0) {|sum,t| sum + t.hours} %></p>
 <p>sunday: <%= @time_entries.ondate(@pay_period + 6).inject(0) {|sum,t| sum + t.hours} %></p>
+ -->
+<% form_for :timesheet, @timesheet, :url => { :action => 'create'} do |f| %>
+  <p><%= f.label "user id?" %><%= f.text_field :user_id %></p>
+  <p><%= f.label "paid?" %><%= f.text_field :pay_period %></p>
+  <p><%= submit_tag "Create"%></p>
+<% end %>
 
-<p>Hey! this page isn't really doing anything right now, except showing how you could pass values in.</p>-->
-
-<% form_for(@timesheet) do |f| %> 
-	<%= f.error_messages %> 
-
-	<p> 
-		<%= f.label :name %><br /> 
-		<%= f.text_field :name %> 
-	</p> 
-
-	<p> 
-		<%= f.label :title %><br /> 
-		<%= f.text_field :title %> 
-	</p> 
-
-	<p> 
-		<%= f.label :content %><br /> 
-		<%= f.text_area :content %> 
-	</p> 
-
-	<p> 
-		<%= f.submit "Create" %> 
-	</p> 
-
-<% end %> 
-
-<%= link_to 'Back', timesheets_path %>
+<!-- 
+<%= button_to "Create Timesheet", {:action => 'create'}%>  -->

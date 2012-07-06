@@ -1,5 +1,5 @@
 module TimesheetHelper
-def print_pdf(name, wage, current, beginning, mon, tue, wed, thu, fri, sat, sun)
+  def generate_timesheet_pdf(name, wage, current, beginning, mon, tue, wed, thu, fri, sat, sun, status)
     beginning = Date.parse(beginning)
     Prawn::Document.new do
   	font_size(16)
@@ -7,6 +7,7 @@ def print_pdf(name, wage, current, beginning, mon, tue, wed, thu, fri, sat, sun)
   	font_size(12)
   	pad_top(15){ text "Student Name:<b> " + name + "</b>       Student Hourly Wage: $" + wage, :align => :center, :inline_format => true }
   	pad_top(10){ text "Pay period for this timesheet:   From -<b> " + beginning.strftime("%D") + "</b>  To -<b> " + (beginning + 6.days).strftime("%D")  + "</b>", :align => :center, :inline_format => true }
+	pad_top(10){ text "Current status: " + status}
 	font_size(14)
 	pad_top(10){ text "Report of hours worked", :style => :bold}
 	font_size(12)
@@ -35,6 +36,5 @@ def print_pdf(name, wage, current, beginning, mon, tue, wed, thu, fri, sat, sun)
 	pad_top(15) {dash(1, :space => 0, :phase => 0) }
 	pad_top(15) { table([[" "],["Processed By                                                                Date"]], :column_widths=> [360]) }
     end.render
-end
-
+  end
 end
