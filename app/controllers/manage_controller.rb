@@ -150,7 +150,7 @@ class ManageController < ApplicationController #handles the management/rebooking
     @work_goals = Issue.goals.open
     @work_shifts = Issue.fdshift + Issue.lcshift
     @work_events = Issue.events
-    @weekof = yearstart + (@tweek.to_i - 1).weeks #can this be replaced with cweeks?s
+    @weekof = yearstart + (@tweek.to_i - 1).weeks
     usrtiments = TimeEntry.all.select {|t| t.user == User.current }
     @seltiments = usrtiments.select {|t| (t.tyear == @year.to_i) && (t.tweek == @tweek.to_i) }
     @entsbyday = []

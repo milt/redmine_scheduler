@@ -3,14 +3,36 @@ class TimesheetsController < ApplicationController
   #respond_to :json   #what does this mean?
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
+  #need to use filter for securing the manager role
 
   def index
     @timesheets = Timesheet.all
     #flash[:notice] = 'working'
   end
 
-  def student_index
+  def employee_index
     @timesheets = Timesheet.all
+    @not_submitted_ts = Timesheet.all.select {|x| x.submitted == nil}
+    @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}
+    @paid_ts = Timesheet.all.select {|x| x.paid != nil}
+
+    yearstart = find_first_monday(Time.current.year)
+    @weekof = params[:cweek]
+    user_entries = TimeEntry.all.select {|t| t.user == User.current}
+    cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == Date.today.cweek)}  #replace with cweek and cwyear
+  
+    # @entries_by_day = []
+
+    # (0..6).each do |i| 
+    #   day = (@weekof + i.days)
+    #   @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
+    # end
+    @hours_total = cur_week_entries.inject(0) {|sum,x| sum + x.hours}
+  end
+
+  #need to add filter for security
+  def manager_index
+
   end
 
   def new
@@ -18,19 +40,61 @@ class TimesheetsController < ApplicationController
     @user = User.current
     @time_entries = @user.time_entries
     @timesheet = Timesheet.new
+
+  end
+
+  #need to fix this
+  def employee_new
+    yearstart = find_first_monday(Time.current.year)
+
+    @weeks = []
+    (0..51).each do |i|
+      @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
+    end
+
+    #flash[:notice] = "all weeks? #{@weeks.inspect}"
+    if params[:cweek].present?
+      cweek = params[:cweek].to_i + 1  #need to add 1 here to get the week number right
+    else
+      cweek = Date.today.cweek
+    end
+    #flash[:notice] = "cweek is #{@cweek.inspect}"
+    @weekof = yearstart + (cweek - 1).weeks
+    #@weekof = yearstart + (Date.today.cweek-1).weeks     #.weeks acts like *7
+    user_entries = TimeEntry.all.select {|t| t.user == User.current}
+    cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == Date.today.cweek)}  #replace with cweek and cwyear
+  
+    @entries_by_day = []
+
+    (0..6).each do |i| 
+      day = (@weekof + i.days)
+      @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
+    end
   end
 
   def create #make a new timesheet from user input
-    @timesheet = Timesheet.new(:user_id => params[:user_id], :pay_period => params[:pay_period])
 
-    respond_to do |format|
-      if @timesheet.save
-        flash[:notice] = 'Timesheet was successfully created.'
-      else                                               
+    yearstart = find_first_monday(Time.current.year)
+
+    if params[:weekof].present?
+      weekof = yearstart + params[:weekof].to_i.weeks
+      #flash[:notice] = "weekof is #{weekof}"
+      #weekof = find_first_monday(Time.current.year) + (Date.current.cweek - 1).weeks
+    else
+      weekof = yearstart + (Date.current.cweek - 1).weeks
+    end
+
+    timesheet = Timesheet.new(:user_id => User.current.id, :weekof => weekof)
+
+    # respond_to do |format|
+      if timesheet.save
+        flash[:notice] = "Timesheet for the week starting on #{timesheet.weekof} was successfully created."
+      else
+        # flash[:notice] = "user id is #{timesheet.user_id} and weekof is #{timesheet.weekof}"                                               
         flash[:warning] = 'Invalid Options... Try again!'
       end
-    end
-    
+    # end
+    redirect_to :action => 'employee_index'
   end
 
   def show
@@ -140,47 +204,9 @@ class TimesheetsController < ApplicationController
 
   private
 
-  
+   
   def sort_wage
 
-  end
-
-  def print_pdf(name, wage, current, beginning, mon, tue, wed, thu, fri, sat, sun)
-    beginning = Date.parse(beginning)
-    Prawn::Document.new do
-    font_size(16)
-    text "DMC Student Employee Timesheet", :style => :bold, :align => :center
-    font_size(12)
-    pad_top(15){ text "Student Name:<b> " + name + "</b>       Student Hourly Wage: $" + wage, :align => :center, :inline_format => true }
-    pad_top(10){ text "Pay period for this timesheet:   From -<b> " + beginning.strftime("%D") + "</b>  To -<b> " + (beginning + 6.days).strftime("%D")  + "</b>", :align => :center, :inline_format => true }
-    font_size(14)
-    pad_top(10){ text "Report of hours worked", :style => :bold}
-    font_size(12)
-    table([ ["Day", "Date", "# Hours Worked"] ], :column_widths => [108, 216, 216], :cell_style => {:height => 21})
-    table([ ["Monday", beginning, mon],
-    [" ", "", ""],
-    ["Tuesday", beginning + 1.days, tue],
-    [" ", "", ""],
-    ["Wednesday", beginning + 2.days, wed],
-    [" ", "", ""],
-    ["Thursday",  beginning + 3.days, thu],
-    [" ", "", ""],
-    ["Friday",  beginning + 4.days, fri],
-    [" ", "", ""],
-    ["Saturday", beginning + 5.days, sat],
-    [" ",  "", ""],
-    ["Sunday",  beginning + 6.days, sun],
-    [" ",  "", ""],
-    ["", "", "Total Hours: " + (mon + tue + wed + thu + fri + sat + sun).to_s]], :column_widths => [108, 216, 216], :cell_style => {:height => 21})
-    pad_top(30) { table([[" "],["*Student's signature                                                      Date"]], :column_widths=> [360]) } 
-
-    pad_top(20) { text "*NOTE: Your signature certifies that this document reflects actual hours worked in accordance with wage and hours laws" }
-    pad_top(10) { dash(7, :space => 7, :phase => 0) }
-    stroke_horizontal_line 0, 540
-    pad_top(10) { text "For Processing Dept Use Only:", :style => :bold }
-    pad_top(15) {dash(1, :space => 0, :phase => 0) }
-    pad_top(15) { table([[" "],["Processed By                                                                Date"]], :column_widths=> [360]) }
-    end.render
   end
   
   def find_first_monday(year)

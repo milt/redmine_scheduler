@@ -11,11 +11,9 @@
 <p>saturday: <%= @time_entries.ondate(@pay_period + 5).inject(0) {|sum,t| sum + t.hours} %></p>
 <p>sunday: <%= @time_entries.ondate(@pay_period + 6).inject(0) {|sum,t| sum + t.hours} %></p>
  -->
+ 
 <% form_for :timesheet, @timesheet, :url => { :action => 'create'} do |f| %>
   <p><%= f.label "user id?" %><%= f.text_field :user_id %></p>
   <p><%= f.label "paid?" %><%= f.text_field :pay_period %></p>
   <p><%= submit_tag "Create"%></p>
 <% end %>
-
-<!-- 
-<%= button_to "Create Timesheet", {:action => 'create'}%>  -->
