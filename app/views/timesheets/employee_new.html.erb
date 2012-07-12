@@ -1,8 +1,9 @@
+<%= render 'manage/nav'%>
 <h2>New Timesheet for <%= User.current.firstname %></h2>
 
 <% form_tag do %>
 <%= select_year Date.new(Time.current.year) %>
-<%= select_tag :cweek, options_for_select(@weeks) %> 
+<%= select_tag :cweek, options_for_select(@weeks), :selected => params[:cweek] %> <!--not exactly setting the default here--> 
 
 <%= submit_tag "Update"%>
 <%end%>

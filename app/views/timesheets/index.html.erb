@@ -16,16 +16,17 @@
 		<tr> 
 			<td><%=h timesheet.user_id %></td>
 			<td><%=h User.find(timesheet.user_id).firstname %></td> 
-			<td><%=h timesheet.pay_period.strftime ("%D") %></td> 
+			<td><%=h timesheet.weekof.strftime ("%D") %></td> 
 			<td><%=h (timesheet.submitted ? timesheet.submitted : "Not Submitted") %> </td>
 			<td><%=h (timesheet.paid ? timesheet.paid : "Not Paid") %></td>
 			<td><%=h User.find(timesheet.user_id).wage.amount %></td>
-			<td><%=h link_to 'Edit', {:action => 'edit', :weekof => timesheet.pay_period} %></td>
+			<td><%=h link_to 'Edit', {:action => 'edit', :weekof => timesheet.weekof} %></td>
 			<td><%=h link_to 'Delete', {:action => 'delete'} %></td>
-			<td><%=h link_to 'Print', {:action => 'print', :weekof => timesheet.pay_period} %></td>
+			<td><%=h link_to 'Print', {:action => 'print', :weekof => timesheet.weekof} %></td>
 		</tr> 
 	<% end %> 
 	</table> 
-		<%= button_to "New Timesheet", {:action => 'new', :pay_period => Time.current} %>
+	<%= will_paginate @timesheets, :param_name => 'timesheet_page' %>
+		<%= button_to "New Timesheet", {:action => 'new', :weekof => Time.current} %>
 		<%= button_to "Testing", {:action => 'show'}%>
 	<br /> 

@@ -1,3 +1,4 @@
+<%= render 'manage/nav'%>
 <h1>Timesheet display for <%= User.current.firstname %></h1>
 	<br></br>	
 	<h4>Submitted/Pending Timesheets</h4>
@@ -16,15 +17,16 @@
 		<tr>
 			<td><%=h submitted_ts.submitted %></td>
 			<td><%=h submitted_ts.weekof.strftime("%D") %></td>
-			<% {:cweek => submitted_ts.weekof} %>
+			<% {:weekof => submitted_ts.weekof} %>
 			<td><%= @hours_total %></td>
 			<td><%= link_to 'Edit', {:action => 'edit'} %></td>
 			<td>Coming soon!</td>
-			<td><%= link_to 'Print', {:action => 'print'} %></td>
+			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => submitted_ts.id, :weekof => submitted_ts.weekof} %></td>
 			<td>Coming soon!</td>
 		</tr>
 		<%end%>
 	</table>
+	<%= will_paginate @submitted_ts, :param_name => 'submitted_ts_page' %>
 
 	<br></br>
 	<h4>Submitted/Paid Timesheets</h4>
@@ -40,12 +42,13 @@
 		<tr>
 			<td><%=h paid_ts.paid.strftime("%D") %></td>
 			<td><%=h paid_ts.weekof.strftime("%D") %></td>
-			<% {:cweek => paid_ts.weekof} %>
+			<% {:weekof => paid_ts.weekof} %>
 			<td><%= @hours_total %></td>
-			<td><%= link_to 'Print', {:action => 'print'} %></td>
+			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => paid_ts.id, :weekof => paid_ts.weekof} %></td>
 		</tr>
 		<%end%>
 	</table>
+	<%= will_paginate @paid_ts, :param_name => 'paid_ts_page' %>
 
 	<br></br>
 	<h4>Not Yet Submitted Timesheets</h4>
@@ -61,15 +64,17 @@
 		<% for not_submitted_ts in @not_submitted_ts %>
 		<tr>
 			<td><%=h not_submitted_ts.weekof.strftime("%D") %></td>
-			<% {:cweek => not_submitted_ts.weekof} %>
+			<% {:weekof => not_submitted_ts.weekof} %>
 			<td><%= @hours_total %></td>
 			<td><%= link_to 'Edit', {:action => 'edit'} %></td>
-			<td><%= link_to 'Print', {:action => 'print'} %></td>
+			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => not_submitted_ts.id, :weekof => not_submitted_ts.weekof} %></td>
 			<td><%= link_to 'Delete', {:action => 'delete'} %></td>
 		</tr>
 		<%end%>
-	</table><br></br>
-	<%= link_to "New Timesheet", {:action => 'employee_new'} %>
+	</table>
+	<%= will_paginate @not_submitted_ts, :param_name => 'not_submitted_ts_page' %>
+	<br></br>
+	<%= link_to "Create New Timesheet", {:action => 'employee_new'} %>
 
 	<br></br><p>Version drafted by Guannan, feel free to send questions via gren3@jhu.edu</p>
 
@@ -87,7 +92,7 @@
 			<th>Print</th>	
 		</tr> 
 
-	<% for timesheet in @timesheets %> 
+	<% for timesheet in Timesheet.all %> 
 		<tr> 
 			<td><%=h timesheet.user_id %></td>
 			<td><%=h User.find(timesheet.user_id).firstname %></td> 

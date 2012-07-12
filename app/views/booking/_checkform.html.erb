@@ -7,7 +7,7 @@
 <td class="skillcat">
   <p class="skillcat_name"><%= skillcat.name %></p>
   <% skillcat.skills.each do |skill| %>
-	<p class="skill"><%= check_box_tag 'skill_ids[]', skill.id, @filter.include?(skill.id.to_s) %><%= label_tag skill.name %></p>
+	<p class="skill"><%= check_box_tag 'skill_ids[]', skill.id %><%= label_tag skill.name %></p>
   <% end %>
 </td>
 <% end %>

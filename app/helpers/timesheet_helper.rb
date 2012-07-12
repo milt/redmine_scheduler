@@ -1,6 +1,5 @@
 module TimesheetHelper
   def generate_timesheet_pdf(name, wage, current, beginning, mon, tue, wed, thu, fri, sat, sun, status)
-    beginning = Date.parse(beginning)
     Prawn::Document.new do
   	font_size(16)
   	text "DMC Student Employee Timesheet", :style => :bold, :align => :center

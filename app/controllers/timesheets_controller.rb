@@ -3,36 +3,47 @@ class TimesheetsController < ApplicationController
   #respond_to :json   #what does this mean?
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
-  #need to use filter for securing the manager role
+  before_filter :require_admin, :only => [:manager_index, :manager_edit]
 
   def index
-    @timesheets = Timesheet.all
-    #flash[:notice] = 'working'
+    @timesheets = Timesheet.all.paginate(:page => params[:timesheet_page], :per_page => 3)
+
   end
 
+  #sorted the timesheets according to their 'weekof' attribute, only this seems to make sense right now.
+  #why is it not sorting correctly??!
   def employee_index
-    @timesheets = Timesheet.all
-    @not_submitted_ts = Timesheet.all.select {|x| x.submitted == nil}
-    @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}
-    @paid_ts = Timesheet.all.select {|x| x.paid != nil}
+    timesheets = Timesheet.all.select {|x| x.user_id == User.current.id}
+    @not_submitted_ts = timesheets.select {|x| x.submitted == nil}.paginate(:page => params[:not_submitted_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
+    @submitted_ts = timesheets.select {|x| x.submitted != nil && x.paid == nil}.paginate(:page => params[:submitted_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
+    @paid_ts = timesheets.select {|x| x.paid != nil}.paginate(:page => params[:paid_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
 
-    yearstart = find_first_monday(Time.current.year)
-    @weekof = params[:cweek]
+    #yearstart = find_first_monday(Time.current.year)
+    #weekof = params[:cweek]
     user_entries = TimeEntry.all.select {|t| t.user == User.current}
-    cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == Date.today.cweek)}  #replace with cweek and cwyear
-  
-    # @entries_by_day = []
-
-    # (0..6).each do |i| 
-    #   day = (@weekof + i.days)
-    #   @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
-    # end
+    cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == params[:weekof])}  #replace with cweek and cwyear
     @hours_total = cur_week_entries.inject(0) {|sum,x| sum + x.hours}
   end
 
-  #need to add filter for security
   def manager_index
+    @submitted_ts = []
+    @paid_ts = []
 
+    if params[:submit_checkbox].present? && params[:paid_checkbox].present?
+      @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}
+      @paid_ts = Timesheet.all.select {|x| x.paid != nil}
+    elsif params[:paid_checkbox].present?
+      @paid_ts = Timesheet.all.select {|x| x.paid != nil}
+    elsif params[:submit_checkbox].present?
+      @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}
+    else
+      @display_setting = 0
+    end
+
+    @all_user_names = []
+    User.all.each do |cur_user|
+      @all_user_names << cur_user.firstname
+    end
   end
 
   def new
@@ -40,10 +51,8 @@ class TimesheetsController < ApplicationController
     @user = User.current
     @time_entries = @user.time_entries
     @timesheet = Timesheet.new
-
   end
 
-  #need to fix this
   def employee_new
     yearstart = find_first_monday(Time.current.year)
 
@@ -98,63 +107,49 @@ class TimesheetsController < ApplicationController
   end
 
   def show
-    @timesheet = Timesheet.find(6)
-    
-    if @timesheet.paid?
-      flash[:notice] = 'Person has been paid'
-    else
-      flash[:notice] = 'Person has not been paid'
-    end
-    redirect_to :action =>'index'
   end
 
-  #need to be edited to the actual dates/person
   def print
-
-    @weekof = Date.parse(params[:weekof])   
+    current_ts = Timesheet.find(params[:current_ts_id])
+    if params[:weekof].present?
+      weekof = Date.parse(params[:weekof])   
+    else
+      weekof = Date.today
+    end
     name = User.current.firstname
     wage = User.current.wage.amount.to_s
     current = Date.today
-    beginning = params[:weekof]
-    beginning_date = Date.parse(beginning)
 
     #TODO change the name of the default scopes on TimeEntry for dates, they need to express that the collection includes the dates indicated.
-    usrtiments = TimeEntry.foruser(User.current).after(beginning_date).before(beginning_date + 6.days)
+    usrtiments = TimeEntry.foruser(User.current).after(weekof).before(weekof + 6.days) #this use of before and after is cool
 
-    # @mon = (usrtiments.select {|t| t.spent_on == @weekof}).inject(0) {|sum, x| sum + x.hours}
-    # @tue = (usrtiments.select {|t| t.spent_on == (@weekof + 1)}).inject(0) {|sum, x| sum + x.hours} 
-    # @wed = (usrtiments.select {|t| t.spent_on == (@weekof + 2)}).inject(0) {|sum, x| sum + x.hours}
-    # @thu = (usrtiments.select {|t| t.spent_on == (@weekof + 3)}).inject(0) {|sum, x| sum + x.hours}
-    # @fri = (usrtiments.select {|t| t.spent_on == (@weekof + 4)}).inject(0) {|sum, x| sum + x.hours}
-    # @sat = (usrtiments.select {|t| t.spent_on == (@weekof + 5)}).inject(0) {|sum, x| sum + x.hours}
-    # @sun = (usrtiments.select {|t| t.spent_on == (@weekof + 6)}).inject(0) {|sum, x| sum + x.hours}
+    mon = (usrtiments.select {|t| t.spent_on == weekof}).inject(0) {|sum, x| sum + x.hours}
+    tue = (usrtiments.select {|t| t.spent_on == (weekof + 1)}).inject(0) {|sum, x| sum + x.hours} 
+    wed = (usrtiments.select {|t| t.spent_on == (weekof + 2)}).inject(0) {|sum, x| sum + x.hours}
+    thu = (usrtiments.select {|t| t.spent_on == (weekof + 3)}).inject(0) {|sum, x| sum + x.hours}
+    fri = (usrtiments.select {|t| t.spent_on == (weekof + 4)}).inject(0) {|sum, x| sum + x.hours}
+    sat = (usrtiments.select {|t| t.spent_on == (weekof + 5)}).inject(0) {|sum, x| sum + x.hours}
+    sun = (usrtiments.select {|t| t.spent_on == (weekof + 6)}).inject(0) {|sum, x| sum + x.hours}
 
-    @mon = 1
-    @tue = 1
-    @wed = 1
-    @thu = 1
-    @fri = 1
-    @sat = 0
-    @sun = 0
-
-    hours = @mon + @tue + @wed + @thu + @fri + @sat + @sun
+    hours = mon + tue + wed + thu + fri + sat + sun
     status =""
 
     #need to check for valid datetime instead of nil
-    if Timesheet.find(6).paid != nil
+    if current_ts.paid != nil
       status = "Paid"
-    elsif Timesheet.find(6).paid == nil && Timesheet.find(6).submitted != nil
+    elsif current_ts.paid == nil && current_ts.submitted != nil
       status = "Submitted, but not paid"
     else
       status = "Not submitted and not paid"
     end
 
-    if hours == 0
-      flash[:warning] = 'You do not have any hours for the specified week!  Add hours to print a timecard.'
-      redirect_to :action => 'index'
+    if hours == 0 || hours > 100
+      #flash[:warning] = 'You do not have any hours for the specified week!  Add hours to print a timecard.'
+      flash[:warning] = 'Error, error! Either you are printing a timesheet with no need for payment or you got some wiring loose and logged too many hours.'
+      redirect_to :action => 'employee_index'   #potential problem with this when admin uses it
     else  #method in timesheethelper
-      send_data (generate_timesheet_pdf(name, wage, current, beginning, @mon, @tue, @wed, @thu, @fri, @sat, @sun,status),
-        :filename => name + "_timecard_from_" + beginning.to_s + "_to_" + (@weekof + 6.days).to_s + ".pdf",
+      send_data (generate_timesheet_pdf(name, wage, current, weekof, mon, tue, wed, thu, fri, sat, sun,status),
+        :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
         :type => "application/pdf")
     end
   end
