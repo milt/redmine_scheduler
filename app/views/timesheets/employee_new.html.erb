@@ -3,7 +3,7 @@
 
 <% form_tag do %>
 <%= select_year Date.new(Time.current.year) %>
-<%= select_tag :cweek, options_for_select(@weeks), :selected => params[:cweek] %> <!--not exactly setting the default here--> 
+<%= select_tag :cweek, options_for_select(@weeks, params[:cweek].to_i) %> <!--the second parameter is useful, try to take it out and see the result!!-->
 
 <%= submit_tag "Update"%>
 <%end%>

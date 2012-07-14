@@ -25,24 +25,59 @@ class TimesheetsController < ApplicationController
     @hours_total = cur_week_entries.inject(0) {|sum,x| sum + x.hours}
   end
 
-  def manager_index
-    @submitted_ts = []
-    @paid_ts = []
+  def admin_index
 
-    if params[:submit_checkbox].present? && params[:paid_checkbox].present?
-      @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}
-      @paid_ts = Timesheet.all.select {|x| x.paid != nil}
-    elsif params[:paid_checkbox].present?
-      @paid_ts = Timesheet.all.select {|x| x.paid != nil}
-    elsif params[:submit_checkbox].present?
-      @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}
+    if params[:search]
+      user_id_from_firstname = User.all.select {|x| x.firstname == params[:search]}
+      @employee_selected_ts = Timesheet.find(:all, :conditions => ["user_id = ?", user_id_from_firstname])
     else
-      @display_setting = 0
+      @employee_selected_ts = Timesheet.find(:all)
+    end
+    #flash[:notice] = "all search items are #{@employee_selected_ts}"
+    
+    yearstart = find_first_monday(Time.current.year)
+
+    @weeks = []
+    (0..51).each do |i|
+      @weeks << [(yearstart + i.weeks).strftime("%B %d"), (i)]
     end
 
-    @all_user_names = []
-    User.all.each do |cur_user|
-      @all_user_names << cur_user.firstname
+    @submitted_ts = []
+    @paid_ts = []
+    
+    if params[:view_all_ts].present?
+      if params[:submit_checkbox].present? && params[:paid_checkbox].present?
+        @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+        @paid_ts = Timesheet.all.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+        #flash[:notice] = "start week time is #{params[:start_week_filter].to_i}, end week time is #{params[:end_week_filter].to_i}"
+      elsif params[:paid_checkbox].present?
+        @paid_ts = Timesheet.all.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+      elsif params[:submit_checkbox].present?
+        @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+      else
+        @display_setting = 0
+      end
+    else
+      #flash[:notice] = "taking the other branche, with employee #{@employee_selected_ts}"
+      if params[:submit_checkbox].present? && params[:paid_checkbox].present?
+        @submitted_ts = @employee_selected_ts.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+        @paid_ts = @employee_selected_ts.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+        #flash[:notice] = "start week time is #{params[:start_week_filter].to_i}, end week time is #{params[:end_week_filter].to_i}"
+      elsif params[:paid_checkbox].present?
+        @paid_ts = @employee_selected_ts.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+      elsif params[:submit_checkbox].present?
+        @submitted_ts = @employee_selected_ts.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
+      else
+        @display_setting = 0
+      end
+    end
+
+    if params[:employee_selected].nil?
+      @hours_total = 0  
+    else
+      user_entries = TimeEntry.all.select {|t| t.user == params[:employee_selected]}
+      cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == params[:weekof])}  #replace with cweek and cwyear
+      @hours_total = cur_week_entries.inject(0) {|sum,x| sum + x.hours}
     end
   end
 
@@ -109,6 +144,7 @@ class TimesheetsController < ApplicationController
   def show
   end
 
+  #need a way to redirect back to the right page
   def print
     current_ts = Timesheet.find(params[:current_ts_id])
     if params[:weekof].present?
@@ -157,18 +193,9 @@ class TimesheetsController < ApplicationController
   def edit
     @year = Time.current.year
 
-    yearstart = find_first_monday(@year)
-    flash[:notice] = "checking first monday of the year! #{yearstart.inspect}"
-
-    @weeks = []
-  
-    (0..51).each do |i|
-      @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
-    end
-
-    @weekof = yearstart + (Date.today.cweek-1).weeks     #.weeks acts like *7
+    @weekof = Date.parse(params[:weekof].to_s)    #this weekof time variable is such a pain in the $#^, should've made it into cweek integer
     user_entries = TimeEntry.all.select {|t| t.user == User.current}
-    cur_week_entries = user_entries.select {|t| (t.tyear == @year) && (t.tweek == Date.today.cweek)}  #replace with cweek and cwyear
+    cur_week_entries = user_entries.select {|t| (t.tyear == @year) && (t.tweek == Date.parse(params[:weekof].to_s).cweek)}  #replace with cweek and cwyear
   
     @entries_by_day = []
 
@@ -176,21 +203,33 @@ class TimesheetsController < ApplicationController
       day = (@weekof + i.days)
       @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
     end
+
+    # if params[:day].present?
+    #   flash[:notice] = "you are going to edit this time"
+    # end
   end
 
+  #not quite sure how the edit time would work
   def update
-    @timesheet = Timesheet.find (params[:id])
-    @timesheet.update_attributes (params[:timesheet])
-    flash[:notice] = "Timesheet has been updated"
-    redirect_to @timesheet
+    # @timesheet = Timesheet.find (params[:id])
+    # @timesheet.update_attributes (params[:timesheet])
+    # flash[:notice] = "Timesheet has been updated"
+
+    user_entries = TimeEntry.all.select {|t| t.user == User.current}
+    cur_week_entries = user_entries.select {|t| (t.tyear == @year) && (t.tweek == Date.parse(params[:weekof].to_s).cweek)}  #replace with cweek and cwyear
+    day_selected = cur_week_entries.select {|t| t.spent_on == params[:day]}
+
+    sum_time = day_selected.inject(0) {|sum,x| sum + x.hours}
+    diff_time = :params[:changed_time] - sum_time
+    #TimeEntry.create()
+    redirect_to :action => 'edit', :weekof => params[:weekof]
   end
 
+  #need a warning box with options.
   def delete
-    flash[:warning] = "Are you sure you want to delete this timesheet?"
-    #@timesheet = Timesheet.all
-    @timesheet = Timesheet.all.paginate(:page => params[:timesheet_page], :per_page =>2)
-    # @timesheet.destroy
-    # redirect_to :action => "index"
+    #flash[:warning] = "Are you sure you want to delete this timesheet?"
+    Timesheet.delete(params[:current_ts])
+    redirect_to :action => 'employee_index'
   end
 
   def sort_name   
@@ -199,7 +238,6 @@ class TimesheetsController < ApplicationController
 
   private
 
-   
   def sort_wage
 
   end

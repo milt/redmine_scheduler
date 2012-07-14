@@ -11,4 +11,13 @@ class Timesheet < ActiveRecord::Base
   #validates_presence_of :user_id, :pay_period #, :print_date
   validates_presence_of :user_id, :weekof
   #named_scope :paid
+
+  #doesn't work
+  # def self.search(search)
+  #   if search
+  #     find(:all, :conditions => [User.firstname == search])   # conditions not condition
+  #   else
+  #     find(:all)
+  #   end
+  # end
 end

@@ -19,7 +19,7 @@
 			<td><%=h submitted_ts.weekof.strftime("%D") %></td>
 			<% {:weekof => submitted_ts.weekof} %>
 			<td><%= @hours_total %></td>
-			<td><%= link_to 'Edit', {:action => 'edit'} %></td>
+			<td><%= link_to 'Edit', {:action => 'edit', :weekof => submitted_ts.weekof} %></td>
 			<td>Coming soon!</td>
 			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => submitted_ts.id, :weekof => submitted_ts.weekof} %></td>
 			<td>Coming soon!</td>
@@ -68,7 +68,7 @@
 			<td><%= @hours_total %></td>
 			<td><%= link_to 'Edit', {:action => 'edit'} %></td>
 			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => not_submitted_ts.id, :weekof => not_submitted_ts.weekof} %></td>
-			<td><%= link_to 'Delete', {:action => 'delete'} %></td>
+			<td><%= link_to 'Delete', {:action => 'delete', :current_ts => not_submitted_ts} %></td>
 		</tr>
 		<%end%>
 	</table>
@@ -76,9 +76,9 @@
 	<br></br>
 	<%= link_to "Create New Timesheet", {:action => 'employee_new'} %>
 
-	<br></br><p>Version drafted by Guannan, feel free to send questions via gren3@jhu.edu</p>
+	<br></br><p>Version drafted by Guannan, please direct all questions to gren3@jhu.edu</p>
 
-	<br></br>
+	<!-- <br></br>
 	<table> 	
 		<tr> 
 			<th>Employee id</th>
@@ -108,4 +108,4 @@
 	</table> 
 		<%= button_to "New Timesheet", {:action => 'new', :weekof => Time.current} %>
 		<%= button_to "Testing", {:action => 'show'}%>
-	
+	 -->
