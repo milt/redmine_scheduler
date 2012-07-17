@@ -82,10 +82,10 @@ shift_module_params = [
   "issue_tracking"
 ]
 #add them to default groups
-shift_module_params.each do |module|
-  front_desk_project.enabled_modules << EnabledModule.new(:name => module)
-  lab_coach_project.enabled_modules << EnabledModule.new(:name => module)
-end
+#shift_module_params.each do |module|
+#  front_desk_project.enabled_modules << EnabledModule.new(:name => module)
+#  lab_coach_project.enabled_modules << EnabledModule.new(:name => module)
+#end
 
 
 front_desk_project.trackers.clear
@@ -139,4 +139,58 @@ auth_params = {
 pam_auth_source = AuthSource.new(auth_params)
 pam_auth_source.type = "AuthSourcePam" #Only seems to work with type declared separately and as a string, probably an STI thang?
 pam_auth_source.save
+
+#Dummy Users
+
+#student staff manager
+manager = User.create(:firstname => "Deborah", :lastname => "Manager", :mail => "mgr@fake.edu")
+manager.login = "manager"
+manager.password = "password"
+manager.admin = true
+manager.save
+
+#prostaff
+prostaff1 = User.create(:firstname => "Joe", :lastname => "Prostaff", :mail => "ps1@fake.edu")
+prostaff1.login = "prostaff1"
+prostaff1.password = "password"
+prostaff1.save
+
+prostaff2 = User.create(:firstname => "Rose", :lastname => "Prostaff", :mail => "ps2@fake.edu")
+prostaff2.login = "prostaff2"
+prostaff2.password = "password"
+prostaff2.save
+
+
+#Stustaff
+stustaff1 = User.create(:firstname => "Morgan", :lastname => "Stustaff", :mail => "ss1@fake.edu")
+stustaff1.login = "stustaff1"
+stustaff1.password = "password"
+stustaff1.save
+
+stustaff2 = User.create(:firstname => "Jay", :lastname => "Stustaff", :mail => "ss2@fake.edu")
+stustaff2.login = "stustaff2"
+stustaff2.password = "password"
+stustaff2.save
+
+stustaff3 = User.create(:firstname => "Carlos", :lastname => "Stustaff", :mail => "ss3@fake.edu")
+stustaff3.login = "stustaff3"
+stustaff3.password = "password"
+stustaff3.save
+
+#add skills for these users
+
+#add groups: prostaff, stustaff
+prostaffgroup = Group.create!(:lastname => "Prostaff", :type => "Group")
+stustaffgroup = Group.create!(:lastname => "Stustaff", :type => "Group")
+
+#add users to groups
+
+#add manager to the projects using the manager role.
+
+# add student staff to the projects using the staff role
+
+
+
+
+
 
