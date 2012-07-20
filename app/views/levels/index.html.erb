@@ -1,0 +1,9 @@
+<h1>Skill Levels</h1>
+
+<% @users.each do |user| %>
+  <h2><%= user.firstname %></h2>
+  <% user.levels.each do |level| %>
+    <p><%= level.skill.name %> : <%= level.rating.to_s %></p>
+  <% end %>
+
+<% end %>

@@ -1,5 +1,7 @@
 class Skill < ActiveRecord::Base
-  has_and_belongs_to_many :users, :uniq => true #HABM relationship uses the skills_users table, associations are unique so someone cannot have a skill more than once
+  #has_and_belongs_to_many :users, :uniq => true #HABM relationship uses the skills_users table, associations are unique so someone cannot have a skill more than once
+  has_many :levels
+  has_many :users, :through => :levels
   belongs_to :skillcat #each skill belongs to one category
   attr_accessible :name, :skillcat_id
   validates_uniqueness_of :name #skill names are unique
