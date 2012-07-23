@@ -89,6 +89,12 @@ staff_role_params = {
 
 staff_role = Role.create(staff_role_params)
 
+#add workflows
+fd_tracker.workflows << Tracker.find(2).workflows
+lc_tracker.workflows << Tracker.find(2).workflows
+task_tracker.workflows << Tracker.find(2).workflows
+goal_tracker.workflows << Tracker.find(2).workflows
+
 #make default modules
 shift_module_params = [
   "calendar",
