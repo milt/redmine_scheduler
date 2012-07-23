@@ -40,6 +40,22 @@ lc_tracker_params = {
 
 lc_tracker = Tracker.create(lc_tracker_params)
 
+task_tracker_params = {
+  :name => "Task",
+  :is_in_chlog => false,
+  :is_in_roadmap => false
+}
+
+task_tracker = Tracker.create(task_tracker_params)
+
+goal_tracker_params = {
+  :name => "Training Goal",
+  :is_in_chlog => false,
+  :is_in_roadmap => false
+}
+
+goal_tracker = Tracker.create(goal_tracker_params)
+
 #add staff role
 staff_role_params = {
   :name => "Staff",
