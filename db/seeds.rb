@@ -90,10 +90,17 @@ staff_role_params = {
 staff_role = Role.create(staff_role_params)
 
 #add workflows
-fd_tracker.workflows << Tracker.find(2).workflows
-lc_tracker.workflows << Tracker.find(2).workflows
-task_tracker.workflows << Tracker.find(2).workflows
-goal_tracker.workflows << Tracker.find(2).workflows
+Workflow.copy_one(Tracker.find(3), Role.find(3), fd_tracker, Role.find(3))
+Workflow.copy_one(Tracker.find(3), Role.find(4), fd_tracker, staff_role)
+
+Workflow.copy_one(Tracker.find(3), Role.find(3), lc_tracker, Role.find(3))
+Workflow.copy_one(Tracker.find(3), Role.find(4), lc_tracker, staff_role)
+
+Workflow.copy_one(Tracker.find(3), Role.find(3), task_tracker, Role.find(3))
+Workflow.copy_one(Tracker.find(3), Role.find(4), task_tracker, staff_role)
+
+Workflow.copy_one(Tracker.find(3), Role.find(3), goal_tracker, Role.find(3))
+Workflow.copy_one(Tracker.find(3), Role.find(4), goal_tracker, staff_role)
 
 #make default modules
 shift_module_params = [
