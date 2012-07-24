@@ -10,17 +10,16 @@ class TimesheetsController < ApplicationController
 
   end
 
-  #sorted the timesheets according to their 'weekof' attribute, only this seems to make sense right now.
-  #why is it not sorting correctly??!
+  #timesheets are sorted by :weekof by default. See default_scope on the timesheet model.
   def employee_index
-    timesheets = Timesheet.all.select {|x| x.user_id == User.current.id}
-    @not_submitted_ts = timesheets.select {|x| x.submitted == nil}.paginate(:page => params[:not_submitted_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
-    @submitted_ts = timesheets.select {|x| x.submitted != nil && x.paid == nil}.paginate(:page => params[:submitted_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
-    @paid_ts = timesheets.select {|x| x.paid != nil}.paginate(:page => params[:paid_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
+    timesheets = Timesheet.for_user(User.current)
+    @not_submitted_ts = timesheets.is_not_submitted.paginate(:page => params[:not_submitted_ts_page], :per_page => 5)
+    @submitted_ts = timesheets.is_submitted.is_not_paid.paginate(:page => params[:submitted_ts_page], :per_page => 5)
+    @paid_ts = timesheets.is_paid.paginate(:page => params[:paid_ts_page], :per_page => 5)
 
     #yearstart = find_first_monday(Time.current.year)
     #weekof = params[:cweek]
-    user_entries = TimeEntry.all.select {|t| t.user == User.current}
+    user_entries = TimeEntry.foruser(User.current)
     cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == params[:weekof])}  #replace with cweek and cwyear
     @hours_total = cur_week_entries.inject(0) {|sum,x| sum + x.hours}
   end

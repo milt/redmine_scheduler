@@ -13,16 +13,19 @@ class Timesheet < ActiveRecord::Base
   named_scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
   #named scopes for submitted
   named_scope :is_submitted, lambda { { :conditions => "submitted IS NOT NULL" } }
+  named_scope :is_not_submitted, lambda { { :conditions => "submitted IS NULL" } }
   named_scope :submitted_from, lambda {|d| { :conditions => ["submitted >= ?", d] } }
   named_scope :submitted_to, lambda {|d| { :conditions => ["submitted <= ?", d] } }
   named_scope :submitted_on, lambda {|d| { :conditions => ["submitted = ?", d] } }
   #named scopes for printed
   named_scope :is_printed, lambda { { :conditions => "print_date IS NOT NULL" } }
+  named_scope :is_not_printed, lambda { { :conditions => "print_date IS NULL" } }
   named_scope :printed_from, lambda {|d| { :conditions => ["print_date >= ?", d] } }
   named_scope :printed_to, lambda {|d| { :conditions => ["print_date <= ?", d] } }
   named_scope :printed_on, lambda {|d| { :conditions => ["print_date = ?", d] } }
   #named scopes for paid
   named_scope :is_paid, lambda { { :conditions => "paid IS NOT NULL" } }
+  named_scope :is_not_paid, lambda { { :conditions => "paid IS NULL" } }
   named_scope :paid_from, lambda {|d| { :conditions => ["paid >= ?", d] } }
   named_scope :paid_to, lambda {|d| { :conditions => ["paid <= ?", d] } }
   named_scope :paid_on, lambda {|d| { :conditions => ["paid = ?", d] } }
