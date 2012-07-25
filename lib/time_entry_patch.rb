@@ -13,6 +13,7 @@ module TimeEntryPatch
       named_scope :after, lambda {|d| { :conditions => ["spent_on >= ?", d] } }
       named_scope :before, lambda {|d| { :conditions => ["spent_on <= ?", d] } }
       named_scope :ondate, lambda {|d| { :conditions => ["spent_on = ?", d] } }
+      named_scope :on_tweek, lambda {|d| { :conditions => ["tweek = ?", d] } }
       named_scope :sort_by_date, :order => "spent_on ASC"
 
     end

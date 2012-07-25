@@ -56,6 +56,14 @@ goal_tracker_params = {
 
 goal_tracker = Tracker.create(goal_tracker_params)
 
+event_tracker_params = {
+  :name => "Event",
+  :is_in_chlog => false,
+  :is_in_roadmap => false
+}
+
+event_tracker = Tracker.create(event_tracker_params)
+
 #add staff role
 staff_role_params = {
   :name => "Staff",

@@ -2,22 +2,34 @@
 <h2>New Timesheet for <%= User.current.firstname %></h2>
 
 <% form_tag do %>
-<%= select_year Date.new(Time.current.year) %>
-<%= select_tag :cweek, options_for_select(@weeks, params[:cweek].to_i) %> <!--the second parameter is useful, try to take it out and see the result!!-->
-
-<%= submit_tag "Update"%>
+  <%= select_year Date.today.year %>
+  <%= select_tag :cweek, options_for_select(@weeks, @cweek - 1) %> <!--Defaults to the week before-->
+  <%= submit_tag "Update"%>
 <%end%>
 
 <br></br>
 <ul>
-	<% (0..6).each do |i|%>
-		<% day = (@weekof + i.days) %><!--is using @weekof correct?-->
-		<% entries = @entries_by_day[i] %><!--is using @entries_by_day correct?-->
-		<li>	
-		<%= day.strftime("%A - %D") %><br>
-	  	<%= entries.inject(0) {|sum, x| sum + x.hours} %></br></li>
-	<%end%>
+
+  <% (0..6).each do |i|%>
+
+    <% day = (@weekof + i.days) %><!--is using @weekof correct?-->
+    <% entries = @entries_by_day[i] %><!--is using @entries_by_day correct?-->
+    <li>  
+      <%= day.strftime("%A - %D") %>
+      <ul>
+        <% entries.each do |entry| %>
+          <li><%= entry.inspect %></li>
+        <% end %>
+      </ul>
+      <br>
+      <%= entries.inject(0) {|sum, x| sum + x.hours} %>
+      </br>
+    </li>
+
+  <%end%>
+
 </ul>
+
 <br></br>
 
 <% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => params[:cweek]} do |f| %>
