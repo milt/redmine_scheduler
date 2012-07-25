@@ -34,7 +34,9 @@ class Timesheet < ActiveRecord::Base
   named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
   named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
-  
+  def entries
+    TimeEntry.foruser(self.user).on_tweek(self.weekof.to_date.cweek)
+  end
 
   #doesn't work
   # def self.search(search)
