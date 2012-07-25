@@ -102,6 +102,25 @@ Workflow.copy_one(Tracker.find(3), Role.find(4), task_tracker, staff_role)
 Workflow.copy_one(Tracker.find(3), Role.find(3), goal_tracker, Role.find(3))
 Workflow.copy_one(Tracker.find(3), Role.find(4), goal_tracker, staff_role)
 
+activity_list = [
+  "Helping Patrons",
+  "Self Training",
+  "Cleaning",
+  "Training",
+  "Helping Staff",
+  "Troubleshooting",
+  "Documentation",
+  "Design",
+  "Development",
+  "Working Event",
+  "Equipment Repair",
+  "Promotion"
+]
+
+activities = activity_list.map {|a| TimeEntryActivity.create(:name => a)}
+front_desk_project.activities << activities
+lab_coach_project.activities << activities
+
 #make default modules
 shift_module_params = [
   "calendar",
