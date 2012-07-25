@@ -32,7 +32,7 @@
 
 <br></br>
 
-<% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => params[:cweek]} do |f| %>
+<% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => @cweek} do |f| %>
   <p><%= f.label "Signature" %><%= f.text_field :user_signature %></p>
   <h5>note: your signature confirms that you have checked over the time entries listed. any deviation from the actual time worked will result to fines and disciplinary actions.</h5>
   <p><%= submit_tag "Create"%></p>

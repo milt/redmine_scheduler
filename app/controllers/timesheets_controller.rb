@@ -7,23 +7,21 @@ class TimesheetsController < ApplicationController
 
   def index
     @timesheets = Timesheet.all.paginate(:page => params[:timesheet_page], :per_page => 3)
-
   end
 
   #sorted the timesheets according to their 'weekof' attribute, only this seems to make sense right now.
   #why is it not sorting correctly??!
   def employee_index
-    timesheets = Timesheet.all.select {|x| x.user_id == User.current.id}
-    # @not_submitted_ts = timesheets.select {|x| x.submitted == nil}.paginate(:page => params[:not_submitted_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
-    # @submitted_ts = timesheets.select {|x| x.submitted != nil && x.paid == nil}.paginate(:page => params[:submitted_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
-    # @paid_ts = timesheets.select {|x| x.paid != nil}.paginate(:page => params[:paid_ts_page], :per_page => 5, :order => '#{weekof.cweek}')
+    timesheets = Timesheet.for_user(User.current)
 
     @not_submitted_ts = timesheets.is_not_submitted.paginate(:page => params[:not_submitted_ts_page], :per_page => 5)
     @submitted_ts = timesheets.is_submitted.is_not_paid.paginate(:page => params[:submitted_ts_page], :per_page => 5)
     @paid_ts = timesheets.is_paid.paginate(:page => params[:paid_ts_page], :per_page => 5)
     #yearstart = find_first_monday(Time.current.year)
     #weekof = params[:cweek]
-    user_entries = TimeEntry.all.select {|t| t.user == User.current}
+
+    #why is this stuff here?
+    user_entries = TimeEntry.foruser(User.current)
     cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == params[:weekof])}  #replace with cweek and cwyear
     @hours_total = cur_week_entries.inject(0) {|sum,x| sum + x.hours}
   end
@@ -50,17 +48,11 @@ class TimesheetsController < ApplicationController
     
     if params[:view_all_ts].present?
       if params[:submit_checkbox].present? && params[:paid_checkbox].present?
-        # @submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
-        # @paid_ts = Timesheet.all.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
-        # flash[:notice] = "start week time is #{params[:start_week_filter].to_i}, end week time is #{params[:end_week_filter].to_i}"
-      
         @submitted_ts = Timesheet.all.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
         @paid_ts = Timesheet.all.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       elsif params[:paid_checkbox].present?
-        #@paid_ts = Timesheet.all.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
         @paid_ts = Timesheet.all.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       elsif params[:submit_checkbox].present?
-        #@submitted_ts = Timesheet.all.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
         @submitted_ts = Timesheet.all.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       else
         @display_setting = 0
@@ -136,21 +128,24 @@ class TimesheetsController < ApplicationController
     yearstart = find_first_monday(Time.current.year)
 
     if params[:weekof].present?
-      weekof = yearstart + params[:weekof].to_i.weeks
+      weekof = yearstart + (params[:weekof].to_i - 1).weeks
       #flash[:notice] = "weekof is #{weekof}"
       #weekof = find_first_monday(Time.current.year) + (Date.current.cweek - 1).weeks
     else
-      weekof = yearstart + (Date.current.cweek - 1).weeks
+      flash[:notice] = "You must specify a pay period."
+      redirect_to :action => 'employee_new'
     end
 
-    timesheet = Timesheet.new(:user_id => User.current.id, :weekof => weekof)
+    timesheet = Timesheet.new
+    timesheet.user = User.current
+    timesheet.weekof = weekof
 
     # respond_to do |format|
       if timesheet.save
         flash[:notice] = "Timesheet for the week starting on #{timesheet.weekof} was successfully created."
       else
         # flash[:notice] = "user id is #{timesheet.user_id} and weekof is #{timesheet.weekof}"                                               
-        flash[:warning] = 'Invalid Options... Try again!'
+        flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
       end
     # end
     redirect_to :action => 'employee_index'
