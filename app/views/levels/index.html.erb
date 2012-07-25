@@ -1,0 +1,48 @@
+<h1>Skill Levels</h1>
+
+<% User.all.each do |user| %>
+	<h2><%= user.firstname %></h2>
+	<% user.levels.each do |level| %>
+		<p><%= level.skill.name %> : <%= level.rating.to_s %></p>
+	<%end%>
+<%end%>
+
+
+<br></br>
+<%= form_tag :action => 'user_new_skill', :method => 'get' %>
+	<p>
+		<%= text_field_tag :search, params[:search] %>
+	</p>
+
+	<br><h3>Select skill: </h3></br>
+		<%= select_tag :skill, options_for_select(Skill.all, params[:skill]) %>
+	<h3>Select level to be assigned: </h3>
+		<%= select_tag :level, options_for_select (param[:skill].Level.all, params[:level]) %>
+<%= submit_tag 'Update' %>
+
+<br></br>
+	<h4>All available users and their skill levels</h4>
+	<table>
+		<tr>
+			<th><%= link_to "Name", {:action => 'index', :sort => 'name'} %></th>
+			<th><%= link_to "Skill", {:action => 'index', :sort => 'skill'} %></th>
+			<th><%= link_to "Level", {:action => 'index', :sort => 'level'} %></th>
+			<th>Upgrade</th>
+			<th>Edit</th>
+			<th>Payrate</th>
+		</tr>
+
+		<% for employee in @employee_selected %>
+		<tr>
+			<% for skill in @employee_selected.skills %>
+				<td><%= employee.firstname %></td>
+				<td><%= skill.desc %></td>
+				<td><%= skill.level %></td>
+				<td>coming soon!</td>
+				<td><%= link_to "edit", {:action => 'edit'} %></td>
+				<td>coming soon!</td>
+			<%end%>
+		</tr>
+		<%end%>
+	</table>
+	<%= will_paginate @employee_selected, :param_name => 'employee_selected_page' %>

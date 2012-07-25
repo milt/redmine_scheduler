@@ -49,7 +49,7 @@ Redmine::Plugin.register :redmine_scheduler do
   # permission :manage_wages, :wages => :all
   menu :application_menu, :manage, { :controller => 'manage', :action => 'today' }, :caption => 'Staff'
   menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'ProStaff'
-  menu :application_menu, :timesheets, { :controller => 'timesheets', :action => 'admin_index' }, :caption => 'Manager'
+  menu :application_menu, :timesheet, { :controller => 'timesheets', :action => 'admin_index' }, :caption => 'Administrator'
   #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
   #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
   menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'

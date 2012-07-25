@@ -22,7 +22,7 @@
   <p>
     <b><%= user[:firstname] + ' ' + user[:lastname] %></b>
       <% user.skills.each do |skill| %>
-        <%= skill[:name] %>,
+        <%= skill[:name] %>
       <% end %>
     <%= link_to 'Assign...', {:action => 'assign', :user_id => user[:id]} %>
   </p>

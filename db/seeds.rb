@@ -233,6 +233,11 @@ stustaff3.login = "stustaff3"
 stustaff3.password = "password"
 stustaff3.save
 
+stustaff4 = User.create(:firstname => "FakeStudent", :lastname => "Stustaff", :mail => "dontfakemeout@fake.edu")
+stustaff4.login = "stustaff4"
+stustaff4.password = "password"
+stustaff4.save
+
 #add skills for these users
 
 #add groups: prostaff, stustaff
