@@ -230,15 +230,36 @@ stustaff3.save
 #add groups: prostaff, stustaff
 prostaffgroup = Group.create!(:lastname => "Prostaff", :type => "Group")
 stustaffgroup = Group.create!(:lastname => "Stustaff", :type => "Group")
+managergroup = Group.create!(:lastname => "Manager", :type => "Group")
 
 #add users to groups
+User.find(:all, :conditions => ["lastname = ?", "Prostaff"]).map {|u| prostaffgroup.users << u}
+User.find(:all, :conditions => ["lastname = ?", "Stustaff"]).map {|u| stustaffgroup.users << u}
+User.find(:all, :conditions => ["lastname = ?", "Manager"]).map {|u| managergroup.users << u}
 
-#add manager to the projects using the manager role.
+#create a wage
+wage = Wage.create(:amount => 12.5)
+#give it to all stustaff
+stustaffgroup.users.each do |u|
+  u.wage = wage
+  u.save
+end
 
-# add student staff to the projects using the staff role
 
+#add groups to project roles
+fd_managermember = Member.new(:principal => managergroup, :project => front_desk_project)
+fd_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+fd_managermember.save
 
+fd_staffmember = Member.new(:principal => stustaffgroup, :project => front_desk_project)
+fd_staffmember.member_roles << MemberRole.new(:role => staff_role)
+fd_staffmember.save
 
+lc_managermember = Member.new(:principal => managergroup, :project => lab_coach_project)
+lc_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+lc_managermember.save
 
-
+lc_staffmember = Member.new(:principal => stustaffgroup, :project => lab_coach_project)
+lc_staffmember.member_roles << MemberRole.new(:role => staff_role)
+lc_staffmember.save
 

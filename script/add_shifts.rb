@@ -17,6 +17,7 @@ for p in 0..21 do
   finish = start + 8.hours
 
   stustaff.each do |staffer|
+      #make a shift
       i = Issue.new
       i.tracker = fd_tracker
       i.project = fd_project
@@ -27,5 +28,9 @@ for p in 0..21 do
       i.start_time = start
       i.end_time = finish
       i.save
+
+      #make a time entry
+      te = TimeEntry.create(:project => fd_project, :user => staffer, :issue => i, :hours => 8.0, :comments => "I did a thing", :activity => TimeEntryActivity.find(10), :spent_on => date)
+
   end
 end
