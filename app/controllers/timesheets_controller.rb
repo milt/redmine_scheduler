@@ -102,8 +102,10 @@ class TimesheetsController < ApplicationController
   end
 
   def employee_new
+    #get the first week of the current year
     yearstart = find_first_monday(Time.current.year)
-
+    
+    #get the zero-indexed list of weeks in the current year for select
     @weeks = []
     (0..51).each do |i|
       @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
@@ -111,16 +113,16 @@ class TimesheetsController < ApplicationController
 
     #flash[:notice] = "all weeks? #{@weeks.inspect}"
     if params[:cweek].present?
-      cweek = params[:cweek].to_i + 1  #need to add 1 here to get the week number right
+      @cweek = params[:cweek].to_i + 1  #we add one, because select_tag returns zero-indexed
     else
-      cweek = Date.today.cweek
+      @cweek = Date.today.cweek
     end
+
     #flash[:notice] = "cweek is #{@cweek.inspect}"
-    @weekof = yearstart + (cweek - 1).weeks
-    #@weekof = yearstart + (Date.today.cweek-1).weeks     #.weeks acts like *7
-    user_entries = TimeEntry.all.select {|t| t.user == User.current}
-    cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == Date.today.cweek)}  #replace with cweek and cwyear
-  
+    @weekof = yearstart + (@cweek - 1).weeks
+
+    cur_week_entries = TimeEntry.foruser(User.current).on_tweek(@cweek)
+    
     @entries_by_day = []
 
     (0..6).each do |i| 
