@@ -6,6 +6,6 @@ class Level < ActiveRecord::Base
 		:only_integer => true, 
 		:greater_than_or_equal_to => 1, 
 		:less_than_or_equal_to => 3
-	validates_uniqueness _of :skill_id, :scope => :user_id, 
+	validates_uniqueness_of :skill_id, :scope => :user_id, 
 		:message => "Only one skill level per skill per user."
 end

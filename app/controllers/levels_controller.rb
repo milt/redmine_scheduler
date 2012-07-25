@@ -1,21 +1,15 @@
 class LevelsController < ApplicationController
 	unloadable
 
-	before_filter :find_users
-
 
 	#need to add additional levels?
 	def index
-		#@users = User.all
-		@sorted_by_name = User.all.paginate(:page => params[:level_page], :per_page =>5, :order => 'name')
-		@sorted_by_skill = User.all.paginate(:page => params[:level_page], :per_page => 5, :order => 'skill.desc')
-		@sorted_by_level = User.all.paginate(:page => params[:level_page], :per_page => 5, :order => 'level.rating')
-		@employee_selected = User.all		
+		@users = Group.stustaff.first.users
+		@skills = Skill.all
 	end
 
 	def edit
-		
-
+		@level = Level.find(params[:id])
 	end
 
 	#purpose: used to reassign a user to another skill level
@@ -33,7 +27,18 @@ class LevelsController < ApplicationController
 	end
 
 	def create
+      user = User.find(params[:level][:user_id].to_i)
+      skill = Skill.find(params[:level][:skill_id].to_i)
+      rating = params[:level][:rating].to_i
 
+      @level = Level.new(:user => user, :skill => skill, :rating => rating)
+      if @level.save
+        flash[:notice] = 'Level was successfully created.'
+        redirect_to :action => "index"
+      else                                               
+        flash[:warning] = 'Invalid Options... Try again!'
+        redirect_to :action => "index"
+      end
 	end
 
 	def user_new_skill
@@ -46,7 +51,4 @@ class LevelsController < ApplicationController
 
 	private
 
-	def find_users #find the users who aren't system users
-	    @users = User.all.select {|u| u.id > 2 }
-	end
 end
