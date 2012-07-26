@@ -9,8 +9,9 @@ module GroupPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       belongs_to :manager, :class_name => "User"
-      named_scope :stustaff, lambda { { :conditions => { :lastname => "Stustaff"} } }
-
+      named_scope :stustaff, :conditions => {:lastname => "Stustaff"}
+      named_scope :prostaff, :conditions => {:lastname => "Prostaff"}
+      named_scope :mgrstaff, :conditions => {:lastname => "Manager"}
     end
 
   end

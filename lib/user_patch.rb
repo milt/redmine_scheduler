@@ -26,6 +26,18 @@ module UserPatch
   end
 
   module InstanceMethods
+    def is_stustaff?
+      self.groups.include?(Group.stustaff.first)
+    end
+
+    def is_prostaff?
+      self.groups.include?(Group.prostaff.first)
+    end
+
+    def is_manager?
+      self.groups.include?(Group.mgrstaff.first)
+    end
+
     def analyze_time(hours)
       c = 0.0
       b = self.time_entries.sort_by_date.reverse.take_while do |m|
