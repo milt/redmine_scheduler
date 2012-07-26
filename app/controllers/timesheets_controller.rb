@@ -82,10 +82,11 @@ class TimesheetsController < ApplicationController
   end
 
   def employee_new
-    if params[:date].present?
-      @year_selected = params[:date][:year].to_i
-    # else
-    #   @year_selected = Time.current.year
+      if params[:date].present?
+        @year_selected = params[:date][:year].to_i
+      else
+         @year_selected = Time.current.year
+      end
     
 
       #get the first week of the current year
@@ -115,7 +116,6 @@ class TimesheetsController < ApplicationController
         day = (@weekof + i.days)
         @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
       end
-    end
   end
 
   def create #make a new timesheet from user input
