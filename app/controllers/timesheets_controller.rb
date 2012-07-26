@@ -1,13 +1,8 @@
 class TimesheetsController < ApplicationController
   unloadable
-  #respond_to :json   #what does this mean?
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
   before_filter :require_admin, :only => [:manager_index, :manager_edit]
-
-  def index
-    @timesheets = Timesheet.all.paginate(:page => params[:timesheet_page], :per_page => 3)
-  end
 
   #sorted the timesheets according to their 'weekof' attribute, only this seems to make sense right now.
   #why is it not sorting correctly??!
@@ -17,25 +12,25 @@ class TimesheetsController < ApplicationController
     @not_submitted_ts = timesheets.is_not_submitted.paginate(:page => params[:not_submitted_ts_page], :per_page => 5)
     @submitted_ts = timesheets.is_submitted.is_not_paid.paginate(:page => params[:submitted_ts_page], :per_page => 5)
     @paid_ts = timesheets.is_paid.paginate(:page => params[:paid_ts_page], :per_page => 5)
-    #yearstart = find_first_monday(Time.current.year)
-    #weekof = params[:cweek]
+  end
 
-    #why is this stuff here?
-    user_entries = TimeEntry.foruser(User.current)
-    cur_week_entries = user_entries.select {|t| (t.tyear == Time.current.year) && (t.tweek == params[:weekof])}  #replace with cweek and cwyear
-    @hours_total = cur_week_entries.inject(0) {|sum,x| sum + x.hours}
+  def submit
+    ts = Timesheet.find(params[:timesheet])
+    ts.submitted = Time.current
+    ts.save
+    redirect_to :action => 'employee_index'
   end
 
   def admin_index
-
     if params[:search]
       user_id_from_firstname = User.all.select {|x| x.firstname == params[:search]}
-      @employee_selected_ts = Timesheet.find(:all, :conditions => ["user_id = ?", user_id_from_firstname])
+      #@employee_selected_ts = Timesheet.find(:all, :conditions => ["user_id = ?", user_id_from_firstname])
+      @employee_selected_ts = Timesheet.for_user(user_id_from_firstname)
     else
-      @employee_selected_ts = Timesheet.find(:all)
+      flash[:warning] = "Invalid user input"
+      #@employee_selected_ts = Timesheet.find(:all)
     end
-    #flash[:notice] = "all search items are #{@employee_selected_ts}"
-    
+
     yearstart = find_first_monday(Time.current.year)
 
     @weeks = []
@@ -48,29 +43,22 @@ class TimesheetsController < ApplicationController
     
     if params[:view_all_ts].present?
       if params[:submit_checkbox].present? && params[:paid_checkbox].present?
-        @submitted_ts = Timesheet.all.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
-        @paid_ts = Timesheet.all.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
+        @submitted_ts = Timesheet.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
+        @paid_ts = Timesheet.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       elsif params[:paid_checkbox].present?
-        @paid_ts = Timesheet.all.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
+        @paid_ts = Timesheet.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       elsif params[:submit_checkbox].present?
-        @submitted_ts = Timesheet.all.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
+        @submitted_ts = Timesheet.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       else
         @display_setting = 0
       end
     else
-      #flash[:notice] = "taking the other branche, with employee #{@employee_selected_ts}"
-      if params[:submit_checkbox].present? && params[:paid_checkbox].present?
-        # @submitted_ts = @employee_selected_ts.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
-        # @paid_ts = @employee_selected_ts.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
-        # flash[:notice] = "start week time is #{params[:start_week_filter].to_i}, end week time is #{params[:end_week_filter].to_i}"
-      
+      if params[:submit_checkbox].present? && params[:paid_checkbox].present?  
         @submitted_ts = @employee_selected_ts.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
         @paid_ts = @employee_selected_ts.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       elsif params[:paid_checkbox].present?
-        # @paid_ts = @employee_selected_ts.select {|x| x.paid != nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
         @paid_ts = @employee_selected_ts.is_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       elsif params[:submit_checkbox].present?
-        # @submitted_ts = @employee_selected_ts.select {|x| x.submitted != nil && x.paid == nil}.select{|y| Date.parse(y.weekof.to_s).cweek>=params[:start_week_filter].to_i && Date.parse(y.weekof.to_s).cweek<=params[:end_week_filter].to_i}
         @submitted_ts = @employee_selected_ts.is_submitted.is_not_paid.weekof_from(params[:start_week_filter].to_i).weekof_to(params[:end_week_filter].to_i)
       else
         @display_setting = 0
@@ -94,32 +82,39 @@ class TimesheetsController < ApplicationController
   end
 
   def employee_new
-    #get the first week of the current year
-    yearstart = find_first_monday(Time.current.year)
+    if params[:date].present?
+      @year_selected = params[:date][:year].to_i
+    # else
+    #   @year_selected = Time.current.year
     
-    #get the zero-indexed list of weeks in the current year for select
-    @weeks = []
-    (0..51).each do |i|
-      @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
-    end
 
-    #flash[:notice] = "all weeks? #{@weeks.inspect}"
-    if params[:cweek].present?
-      @cweek = params[:cweek].to_i + 1  #we add one, because select_tag returns zero-indexed
-    else
-      @cweek = Date.today.cweek
-    end
-
-    #flash[:notice] = "cweek is #{@cweek.inspect}"
-    @weekof = yearstart + (@cweek - 1).weeks
-
-    cur_week_entries = TimeEntry.foruser(User.current).on_tweek(@cweek)
+      #get the first week of the current year
+      yearstart = find_first_monday(@year_selected)
     
-    @entries_by_day = []
+      #get the zero-indexed list of weeks in the current year for select
+      @weeks = []
+      (0..51).each do |i|
+        @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
+      end
 
-    (0..6).each do |i| 
-      day = (@weekof + i.days)
-      @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
+      #flash[:notice] = "all weeks? #{@weeks.inspect}"
+      if params[:cweek].present?
+        @cweek = params[:cweek].to_i + 1  #we add one, because select_tag returns zero-indexed
+      else
+        @cweek = Date.today.cweek
+      end
+
+      #flash[:notice] = "cweek is #{@cweek.inspect}"
+      @weekof = yearstart + (@cweek - 1).weeks
+
+      cur_week_entries = TimeEntry.foruser(User.current).on_tweek(@cweek)
+    
+      @entries_by_day = []
+
+      (0..6).each do |i| 
+        day = (@weekof + i.days)
+        @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
+      end
     end
   end
 
@@ -213,18 +208,10 @@ class TimesheetsController < ApplicationController
       day = (@weekof + i.days)
       @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
     end
-
-    # if params[:day].present?
-    #   flash[:notice] = "you are going to edit this time"
-    # end
   end
 
   #not quite sure how the edit time would work
   def update
-    # @timesheet = Timesheet.find (params[:id])
-    # @timesheet.update_attributes (params[:timesheet])
-    # flash[:notice] = "Timesheet has been updated"
-
     user_entries = TimeEntry.all.select {|t| t.user == User.current}
     cur_week_entries = user_entries.select {|t| (t.tyear == @year) && (t.tweek == Date.parse(params[:weekof].to_s).cweek)}  #replace with cweek and cwyear
     day_selected = cur_week_entries.select {|t| t.spent_on == params[:day]}
@@ -247,10 +234,6 @@ class TimesheetsController < ApplicationController
   end
 
   private
-
-  def sort_wage
-
-  end
   
   def find_first_monday(year)
     t = Date.new(year, 1,1).wday     #checks which day (Mon = 1, Sun = 0) is first day of the year 

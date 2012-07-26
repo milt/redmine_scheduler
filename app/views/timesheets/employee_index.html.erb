@@ -13,12 +13,11 @@
 			<th>Decorate!</th> <!--just for fun-->
 		</tr>
 
-		<% for submitted_ts in @submitted_ts %>
+		<% @submitted_ts.each do |submitted_ts| %>
 		<tr>
 			<td><%=h submitted_ts.submitted %></td>
 			<td><%=h submitted_ts.weekof.strftime("%D") %></td>
-			<% {:weekof => submitted_ts.weekof} %>
-			<td><%= @hours_total %></td>
+			<td><%=h submitted_ts.find_total_hours.to_s %></td>
 			<td><%= link_to 'Edit', {:action => 'edit', :weekof => submitted_ts.weekof} %></td>
 			<td>Coming soon!</td>
 			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => submitted_ts.id, :weekof => submitted_ts.weekof} %></td>
@@ -38,12 +37,11 @@
 			<th>Print</th>
 		</tr>
 
-		<% for paid_ts in @paid_ts %>
+		<% @paid_ts.each do |paid_ts| %>
 		<tr>
 			<td><%=h paid_ts.paid.strftime("%D") %></td>
 			<td><%=h paid_ts.weekof.strftime("%D") %></td>
-			<% {:weekof => paid_ts.weekof} %>
-			<td><%= @hours_total %></td>
+			<td><%=h paid_ts.find_total_hours.to_s %></td>
 			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => paid_ts.id, :weekof => paid_ts.weekof} %></td>
 		</tr>
 		<%end%>
@@ -57,16 +55,17 @@
 			<th>Week</th>
 			<th>Total Hours</th>
 			<th>Edit</th>
+			<th>Submit</th>
 			<th>Print</th>
 			<th>Delete</th>
 		</tr>
 
-		<% for not_submitted_ts in @not_submitted_ts %>
+		<% @not_submitted_ts.each do |not_submitted_ts| %>
 		<tr>
 			<td><%=h not_submitted_ts.weekof.strftime("%D") %></td>
-			<% {:weekof => not_submitted_ts.weekof} %>
-			<td><%= @hours_total %></td>
+			<td><%=h not_submitted_ts.find_total_hours.to_s %></td>
 			<td><%= link_to 'Edit', {:action => 'edit', :timesheet_id => not_submitted_ts.id} %></td>
+			<td><%= link_to 'Submit', {:action => 'submit', :timesheet => not_submitted_ts} %></td>
 			<td><%= link_to 'Print', {:action => 'print', :current_ts_id => not_submitted_ts.id, :weekof => not_submitted_ts.weekof} %></td>
 			<td><%= link_to 'Delete', {:action => 'delete', :current_ts => not_submitted_ts} %></td>
 		</tr>
@@ -77,35 +76,3 @@
 	<%= link_to "Create New Timesheet", {:action => 'employee_new'} %>
 
 	<br></br><p>Version drafted by Guannan, please direct all questions to gren3@jhu.edu</p>
-
-	<!-- <br></br>
-	<table> 	
-		<tr> 
-			<th>Employee id</th>
-			<th>Name</th> 
-			<th>Pay period</th>
-			<th>Submitted?</th> 
-			<th>Paid?</th>
-			<th>Wage</th>
-			<th>Edit timesheet</th>
-			<th>Delete</th>
-			<th>Print</th>	
-		</tr> 
-
-	<% for timesheet in Timesheet.all %> 
-		<tr> 
-			<td><%=h timesheet.user_id %></td>
-			<td><%=h User.find(timesheet.user_id).firstname %></td> 
-			<td><%=h timesheet.weekof.strftime ("%D") %></td> 
-			<td><%=h (timesheet.submitted ? timesheet.submitted : "Not Submitted") %> </td>
-			<td><%=h (timesheet.paid ? timesheet.paid : "Not Paid") %></td>
-			<td><%=h User.find(timesheet.user_id).wage.amount %></td>
-			<td><%=h link_to 'Edit', {:action => 'edit', :weekof => timesheet.weekof} %></td>
-			<td><%=h link_to 'Delete', {:action => 'delete'} %></td>
-			<td><%=h link_to 'Print', {:action => 'print', :weekof => timesheet.weekof} %></td>
-		</tr> 
-	<% end %> 
-	</table> 
-		<%= button_to "New Timesheet", {:action => 'new', :weekof => Time.current} %>
-		<%= button_to "Testing", {:action => 'show'}%>
-	 -->

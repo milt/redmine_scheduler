@@ -30,20 +30,19 @@ class Timesheet < ActiveRecord::Base
   named_scope :paid_to, lambda {|d| { :conditions => ["paid <= ?", d] } }
   named_scope :paid_on, lambda {|d| { :conditions => ["paid = ?", d] } }
   #named scopes for weekof
-  named_scope :weekof_from, lambda {|d| { :conditions => ["weekof >= ?", d] } }
+  named_scope :weekof_from, lambda {|d| {:conditions => ["weekof >= ?", d] } }
   named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
   named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
-  def entries
+  #retrieves all time entries for the week in question
+  def entries_for_week
     TimeEntry.foruser(self.user).on_tweek(self.weekof.to_date.cweek)
   end
 
-  #doesn't work
-  # def self.search(search)
-  #   if search
-  #     find(:all, :conditions => [User.firstname == search])   # conditions not condition
-  #   else
-  #     find(:all)
-  #   end
-  # end
+  #returns the total hours spent on the week
+  def find_total_hours
+    entries_for_week.inject(0) {|sum, x| sum + x.hours}
+  end
+
+
 end
