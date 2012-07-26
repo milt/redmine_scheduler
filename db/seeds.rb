@@ -23,6 +23,17 @@ lab_coach_project_params = {
 
 lab_coach_project = Project.create(lab_coach_project_params)
 
+training_project_params = {
+  :name => "Training Project",
+  :description => "Project for Skill Training",
+  :homepage => "",
+  :is_public => false,
+  :identifier => "training",
+  :status => 1
+}
+
+training_project = Project.create(training_project_params)
+
 #Required Trackers
 fd_tracker_params = {
   :name => "Front Desk Shift",
@@ -128,6 +139,7 @@ activity_list = [
 activities = activity_list.map {|a| TimeEntryActivity.create(:name => a)}
 front_desk_project.activities << activities
 lab_coach_project.activities << activities
+training_project.activities << activities
 
 #make default modules
 shift_module_params = [
@@ -149,6 +161,9 @@ front_desk_project.trackers << fd_tracker
 
 lab_coach_project.trackers.clear
 lab_coach_project.trackers << lc_tracker
+
+training_project.trackers.clear
+training_project.trackers << goal_tracker
 
 #Default skillcat
 skillcat_params = {
@@ -275,4 +290,13 @@ lc_managermember.save
 lc_staffmember = Member.new(:principal => stustaffgroup, :project => lab_coach_project)
 lc_staffmember.member_roles << MemberRole.new(:role => staff_role)
 lc_staffmember.save
+
+training_managermember = Member.new(:principal => prostaffgroup, :project => training_project)
+training_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+training_managermember.save
+
+training_staffmember = Member.new(:principal => stustaffgroup, :project => training_project)
+training_staffmember.member_roles << MemberRole.new(:role => staff_role)
+training_staffmember.save
+
 
