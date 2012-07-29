@@ -1,0 +1,24 @@
+<div>
+	<h3>My Tasks</h3>
+	
+	<table class="list issues">
+		<thead>
+		  <tr>
+		  <th>Area</th>
+		  <th>Description</th>
+		  <th>Due</th>
+		  <th>Log Time</th>
+		  </tr>
+		</thead>
+		<% @mytasks.each do |task| %>
+		<tbody>
+		  <tr>
+			<td><%= link_to task.project, {:controller => 'projects', :action => 'show', :id => task.project[:id] } %></td>
+			<td><%= link_to task.subject, {:controller => 'issues', :action => 'show', :id => task[:id] } %></td>
+			<td><%= link_to task.due_date, {:controller => 'issues', :action => 'show', :id => task[:id] } unless task.due_date.nil? %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => task[:id]} %></td>
+		  </tr>
+		</tbody>
+		<% end %>
+    </table>
+</div>

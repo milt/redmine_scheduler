@@ -1,19 +1,34 @@
-<h2>New Timesheet for <%= @user.firstname %></h2>
+<%= render 'nav/nav'%>
 
-<!-- 
-<p>name: <%= @user.firstname %></p>
-<p>wage: <%= @user.wage.amount.to_s %></p>
-<p>monday: <%= @time_entries.ondate(@pay_period).inject(0) {|sum,t| sum + t.hours} %></p>
-<p>tuesday: <%= @time_entries.ondate(@pay_period + 1).inject(0) {|sum,t| sum + t.hours} %></p>
-<p>wednesday: <%= @time_entries.ondate(@pay_period + 2).inject(0) {|sum,t| sum + t.hours} %></p>
-<p>thursday: <%= @time_entries.ondate(@pay_period + 3).inject(0) {|sum,t| sum + t.hours} %></p>
-<p>friday: <%= @time_entries.ondate(@pay_period + 4).inject(0) {|sum,t| sum + t.hours} %></p>
-<p>saturday: <%= @time_entries.ondate(@pay_period + 5).inject(0) {|sum,t| sum + t.hours} %></p>
-<p>sunday: <%= @time_entries.ondate(@pay_period + 6).inject(0) {|sum,t| sum + t.hours} %></p>
- -->
- 
-<% form_for :timesheet, @timesheet, :url => { :action => 'create'} do |f| %>
-  <p><%= f.label "user id?" %><%= f.text_field :user_id %></p>
-  <p><%= f.label "paid?" %><%= f.text_field :pay_period %></p>
-  <p><%= submit_tag "Create"%></p>
+<% if User.current.is_stustaff? %>
+  <h2>New Timesheet for <%= User.current.firstname %></h2>
+  <% form_tag do %>
+      <%= select_year(@year_selected, :start_year => Time.current.year - 1, :end_year => Time.current.year + 1) %>
+      <%= select_tag :cweek, options_for_select(@weeks, @cweek - 1) %> <!--Defaults to the week before-->
+      <%= submit_tag "Update"%>
+  <%end%>
+
+  <br>
+  <% if @year_selected.present? %>
+      <%= render 'timelog/list', :entries => @entries %>
+  <%end%>
+
+  <br>
+  <%if @year_selected %>
+  <% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => @cweek} do |f| %>
+    <p><%= f.label "Signature" %><%= f.text_field :user_signature %></p>
+    <h5>note: your signature confirms that you have checked over the time entries listed. any deviation from the actual time worked will result to fines and disciplinary actions.</h5>
+    <p><%= submit_tag "Create"%></p>
+  <% end %>
+  <%end%>
+
+<% elsif User.current.admstaff? %>
+
+  <% form_tag do %>
+  <% end %>
+
+<% else %>
+
+  You shouldn't be here!
+
 <% end %>

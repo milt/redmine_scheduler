@@ -1,0 +1,22 @@
+<div>
+	<h3>My Training Goals</h3>
+	
+	<table class="list issues">
+		<thead>
+		  <tr>
+		  <th>Description</th>
+		  <th>Due</th>
+		  <th>Log Time</th>
+		  </tr>
+		</thead>
+		<% @mygoals.each do |goal| %>
+		<tbody>
+		  <tr>
+			<td><%= link_to goal.subject, {:controller => 'issues', :action => 'show', :id => goal[:id] } %></td>
+			<td><%= link_to goal.due_date, {:controller => 'issues', :action => 'show', :id => goal[:id] } unless goal.due_date.nil? %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => goal[:id]} %></td>
+		  </tr>
+		</tbody>
+		<% end %>
+    </table>
+</div>

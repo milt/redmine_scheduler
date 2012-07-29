@@ -11,7 +11,7 @@ module GroupPatch
       belongs_to :manager, :class_name => "User"
       named_scope :stustaff, :conditions => {:lastname => "Stustaff"}
       named_scope :prostaff, :conditions => {:lastname => "Prostaff"}
-      named_scope :mgrstaff, :conditions => {:lastname => "Manager"}
+      named_scope :admstaff, :conditions => {:lastname => "Manager"}
     end
 
   end

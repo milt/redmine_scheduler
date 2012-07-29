@@ -66,6 +66,12 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
     end        
   end
 
+  #prevent edits ot time entries locked to sheets, and prevent creation of new entries when a user already has a non-draft sheet
+  #def controller_timelog_edit_before_save(context={})
+  #  if context[:time_entry].safe_to_edit?
+  #  end
+  #end
+
     #render_on :view_layouts_base_html_head,
     #          :partial => 'hooks/redmine_scheduler/google'
 

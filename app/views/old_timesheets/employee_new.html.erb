@@ -1,0 +1,42 @@
+<%= render 'manage/nav'%>
+<h2>New Timesheet for <%= User.current.firstname %></h2>
+
+<% form_tag do %>
+    <%= select_year(@year_selected, :start_year => Time.current.year - 1, :end_year => Time.current.year + 1) %>
+    <%= select_tag :cweek, options_for_select(@weeks, @cweek - 1) %> <!--Defaults to the week before-->
+    <%= submit_tag "Update"%>
+<%end%>
+
+<br></br>
+<% if @year_selected.present? %>
+<ul>
+
+  <% (0..6).each do |i|%>
+
+    <% day = (@weekof + i.days) %><!--is using @weekof correct?-->
+    <% entries = @entries_by_day[i] %><!--is using @entries_by_day correct?-->
+    <li>  
+      <%= day.strftime("%A - %D") %>
+      <ul>
+        <% entries.each do |entry| %>
+          <li><%= entry.inspect %></li>
+        <% end %>
+      </ul>
+      <br>
+      <%= entries.inject(0) {|sum, x| sum + x.hours} %>
+      </br>
+    </li>
+
+  <%end%>
+
+</ul>
+<%end%>
+
+<br></br>
+<%if @year_selected %>
+<% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => @cweek} do |f| %>
+  <p><%= f.label "Signature" %><%= f.text_field :user_signature %></p>
+  <h5>note: your signature confirms that you have checked over the time entries listed. any deviation from the actual time worked will result to fines and disciplinary actions.</h5>
+  <p><%= submit_tag "Create"%></p>
+<% end %>
+<%end%>

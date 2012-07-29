@@ -1,0 +1,25 @@
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Staffer</th>
+      <th>Week Of</th>
+      <th>Hours</th>
+      <th>Printed</th>
+      <th>Submitted</th>
+      <th>Paid</th>
+      <th>Actions</th>
+    </tr>
+
+    <% timesheets.each do |sheet| %>
+      <tr>
+        <td><%= sheet.id.to_s %></td>
+        <td><%= sheet.user.name %></td>
+        <td><%= sheet.weekof.strftime("%D") %></td>
+        <td><%= sheet.find_total_hours.to_s %></td>
+        <td><%= sheet.print_date.strftime("%D") if sheet.printed? %></td>
+        <td><%= sheet.submitted.strftime("%D") if sheet.submitted? %></td>
+        <td><%= sheet.paid.strftime("%D") if sheet.paid? %></td>
+        <td>Edit | Print | Eat</td>
+      </tr>
+    <%end%>
+  </table>

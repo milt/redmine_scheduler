@@ -1,32 +1,14 @@
-<h1>Timesheet display</h1> 
-	<table> 	
-		<tr> 
-			<th>Employee id</th>
-			<th>Name</th> 
-			<th>Pay period</th>
-			<th>Submitted?</th> 
-			<th>Paid?</th>
-			<th>Wage</th>
-			<th>Edit timesheet</th>
-			<th>Delete</th>
-			<th>Print</th>	
-		</tr> 
+<%= render 'nav/nav' %>
+<h2>Timesheets</h2>
 
-	<% for timesheet in @timesheets %> 
-		<tr> 
-			<td><%=h timesheet.user_id %></td>
-			<td><%=h User.find(timesheet.user_id).firstname %></td> 
-			<td><%=h timesheet.weekof.strftime ("%D") %></td> 
-			<td><%=h (timesheet.submitted ? timesheet.submitted : "Not Submitted") %> </td>
-			<td><%=h (timesheet.paid ? timesheet.paid : "Not Paid") %></td>
-			<td><%=h User.find(timesheet.user_id).wage.amount %></td>
-			<td><%=h link_to 'Edit', {:action => 'edit', :weekof => timesheet.weekof} %></td>
-			<td><%=h link_to 'Delete', {:action => 'delete'} %></td>
-			<td><%=h link_to 'Print', {:action => 'print', :weekof => timesheet.weekof} %></td>
-		</tr> 
-	<% end %> 
-	</table> 
-	<%= will_paginate @timesheets, :param_name => 'timesheet_page' %>
-		<%= button_to "New Timesheet", {:action => 'new', :weekof => Time.current} %>
-		<%= button_to "Testing", {:action => 'show'}%>
-	<br /> 
+<% if @drafts %>
+  <h3>Drafts</h3>
+  <%= render 'table', :timesheets => @drafts %>
+<% end %>
+
+<h3>Printed</h3>
+<%= render 'table', :timesheets => @printed %>
+<h3>Submitted</h3>
+<%= render 'table', :timesheets => @submitted %>
+<h3>Paid</h3>
+<%= render 'table', :timesheets => @paid %>

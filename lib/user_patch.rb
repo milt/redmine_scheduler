@@ -34,8 +34,8 @@ module UserPatch
       self.groups.include?(Group.prostaff.first)
     end
 
-    def is_manager?
-      self.groups.include?(Group.mgrstaff.first)
+    def is_admstaff?
+      self.groups.include?(Group.admstaff.first)
     end
 
     def analyze_time(hours)

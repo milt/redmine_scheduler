@@ -1,4 +1,4 @@
-# Patches Redmine's Users dynamically.  Adds a relationship User +has_and_belongs_to_many+ Skill. 
+# Patches Redmine's Time Entries
 module TimeEntryPatch
   def self.included(base) # :nodoc:
     base.extend(ClassMethods)
@@ -14,6 +14,7 @@ module TimeEntryPatch
       named_scope :before, lambda {|d| { :conditions => ["spent_on <= ?", d] } }
       named_scope :ondate, lambda {|d| { :conditions => ["spent_on = ?", d] } }
       named_scope :on_tweek, lambda {|d| { :conditions => ["tweek = ?", d] } }
+      named_scope :on_tyear, lambda {|d| { :conditions => ["tyear = ?", d] } }
       named_scope :sort_by_date, :order => "spent_on ASC"
 
     end
@@ -25,6 +26,12 @@ module TimeEntryPatch
   end
 
   module InstanceMethods
+    def is_locked?
+      self.timesheet.present?
+    end
 
+    def is_extra?
+      Timesheet.weekof_on( Date.parse("1-1-#{DateTime.now.year}").to_datetime + (self.tweek - 1).weeks).present?
+    end
   end
 end

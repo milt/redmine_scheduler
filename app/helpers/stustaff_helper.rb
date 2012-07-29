@@ -1,0 +1,2 @@
+module StustaffHelper
+end

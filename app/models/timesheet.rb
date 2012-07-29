@@ -34,6 +34,18 @@ class Timesheet < ActiveRecord::Base
   named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
   named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
+  def submitted?
+    self.submitted.present?
+  end
+
+  def printed?
+    self.print_date.present?
+  end
+
+  def paid?
+    self.paid.present?
+  end
+
   #retrieves all time entries for the week in question
   def entries_for_week
     TimeEntry.foruser(self.user).on_tweek(self.weekof.to_date.cweek)
@@ -42,6 +54,19 @@ class Timesheet < ActiveRecord::Base
   #returns the total hours spent on the week
   def find_total_hours
     entries_for_week.inject(0) {|sum, x| sum + x.hours}
+  end
+
+  def print
+    self.time_entries << self.entries_for_week
+    self.print_date = DateTime.now
+  end
+
+  def submit
+    self.submitted = DateTime.now
+  end
+
+  def pay
+    self.paid = DateTime.now
   end
 
 

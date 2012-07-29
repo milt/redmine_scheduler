@@ -1,6 +1,5 @@
 require 'redmine'
 
-#this is matt changing some stuff
 # Patches to the redmine core
 require 'tracker_patch'
 require 'issue_patch'
@@ -47,9 +46,9 @@ Redmine::Plugin.register :redmine_scheduler do
   # permission :view_skills, :skills => :index
   # permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] }
   # permission :manage_wages, :wages => :all
-  menu :application_menu, :manage, { :controller => 'manage', :action => 'today' }, :caption => 'Staff', :if => Proc.new { User.current.is_stustaff? }
-  menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'ProStaff', :if => Proc.new { User.current.is_prostaff? }
-  menu :application_menu, :timesheet, { :controller => 'timesheets', :action => 'admin_index' }, :caption => 'Administrator', :if => Proc.new { User.current.is_manager? }
+  menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :if => Proc.new { User.current.is_stustaff? }
+  menu :application_menu, :prostaff, { :controller => 'prostaff', :action => 'index' }, :caption => 'ProStaff', :if => Proc.new { User.current.is_prostaff? }
+  menu :application_menu, :admstaff, { :controller => 'admstaff', :action => 'index' }, :caption => 'Administrator', :if => Proc.new { User.current.is_admstaff? }
   #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
   #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
   menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'
