@@ -16,7 +16,6 @@ class TimesheetsController < ApplicationController
   end
 
   def new
-
     if params[:date].present?
       @year_selected = params[:date][:year].to_i
     else
@@ -97,7 +96,7 @@ class TimesheetsController < ApplicationController
         :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
         :type => "application/pdf") and return
     else
-      flash[:warning] = 'Error, error! Either you are printing a timesheet with no need for payment or you got some wiring loose and logged too many hours.'
+      flash[:warning] = 'Could not commit or save the timesheet. I need some better error handling'
       redirect_to :action => 'index'
     end
   end
@@ -116,6 +115,11 @@ class TimesheetsController < ApplicationController
       flash[:warning] = 'Could not write new print timestamp for some reason.'
       redirect_to :action => 'index'
     end
+  end
+
+  def show
+    @timesheet = Timesheet.find(params[:id])
+
   end
 
   def edit
