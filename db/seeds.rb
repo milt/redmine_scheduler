@@ -99,6 +99,7 @@ staff_role_params = {
   	:view_changesets,
   	:log_time,
   	:view_time_entries,
+    :edit_own_time_entries,
   	:view_wiki_pages,
   	:view_wiki_edits,
   	:edit_wiki_pages,
@@ -217,7 +218,7 @@ pam_auth_source.save
 manager = User.create(:firstname => "Deborah", :lastname => "Manager", :mail => "mgr@fake.edu")
 manager.login = "manager"
 manager.password = "password"
-manager.admin = true
+manager.admin = false
 manager.save
 
 #prostaff
