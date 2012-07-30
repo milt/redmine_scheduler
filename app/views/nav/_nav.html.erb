@@ -3,22 +3,21 @@
     <tr>
       <% unless User.current.admin %>
         <% if User.current.is_stustaff? %>
-          <td><%= link_to "Today's Shifts", {:controller=> 'manage', :action => 'index'} %></td>
-          <td><%= link_to 'Employee Timesheet View', {:controller => 'timesheets', :action => 'employee_index'} %></td>
+          <td><%= link_to "Today's Shifts", {:controller=> 'stustaff'} %></td>
+          <td><%= link_to 'Timesheets', { :controller => 'timesheets' } %></td>
         <% end %>
         <% if User.current.is_prostaff? %>
-          <td><%= link_to "Analyze Time", {:controller=> 'command', :action => 'index'} %></td>
+          <td><%= link_to "Analyze Time", {:controller=> 'command'} %></td>
         <% end %>
         <% if User.current.is_admstaff? %>
-          <td><%= link_to 'Administrator Timesheet View', {:controller => 'timesheets', :action => 'admin_index'} %></td>
-          <td><%= link_to 'Skill Levels', {:controller => 'levels', :action => 'index'} %></td>
+          <td><%= link_to 'Timesheets', { :controller => 'timesheets' } %></td>
+          <td><%= link_to 'Skill Levels', { :controller => 'levels' } %></td>
         <% end %>
       <% else %>
-        <td><%= link_to "Today's Shifts", {:controller=> 'manage', :action => 'today'} %></td>
-        <td><%= link_to 'Employee Timesheet View', {:controller => 'timesheets', :action => 'employee_index'} %></td>
-        <td><%= link_to "Analyze Time", {:controller=> 'command', :action => 'index'} %></td>
-        <td><%= link_to 'Administrator Timesheet View', {:controller => 'timesheets', :action => 'admin_index'} %></td>
-        <td><%= link_to 'Skill Levels', {:controller => 'levels', :action => 'index'} %></td>
+        <td><%= link_to "Today's Shifts", {:controller=> 'stustaff'} %></td>
+        <td><%= link_to "Analyze Time", { :controller=> 'command' } %></td>
+        <td><%= link_to 'Timesheets', { :controller => 'timesheets' } %></td>
+        <td><%= link_to 'Skill Levels', { :controller => 'levels' } %></td>
       <% end %>
     </tr>
   </table>

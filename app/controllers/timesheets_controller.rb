@@ -45,7 +45,7 @@ class TimesheetsController < ApplicationController
     end
 
     @weekof = yearstart + (@cweek - 1).weeks
-
+    
     @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
 
     issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)

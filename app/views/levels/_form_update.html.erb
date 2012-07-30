@@ -1,6 +1,4 @@
-<% form_for :level, @level, :url => { :action => "update" }, :html => {:class => "nifty_form"} do |f| %>
-  <%= f.select :user_id, @users.map {|u| [u.name, u.id] } %>
-  <%= f.select :skill_id, @skills.map {|s| [ s.name, s.id ] } %>
+<% form_for(:level, level, :url => { :action => "update", :id => level }) do |f| %>
   <%= f.select :rating, 1..3 %>
-  <%= submit_tag "update" %>
+  <%= submit_tag "Update" %>
 <% end %>

@@ -18,8 +18,16 @@ class LevelsController < ApplicationController
 	#lists all the user's skills and what level is the user at
 
 	def update
-		current_level = level.find(:condition => ['user_id LIKE?', User.current.id])
-		changed_level = params[:changed_level]
+	  @level = Level.find(params[:id])
+      rating = params[:level][:rating].to_i
+      @level.rating = rating
+      if @level.save
+        flash[:notice] = 'Level was successfully updated.'
+        redirect_to :action => "index"
+      else                                               
+        flash[:warning] = 'Invalid Options... Try again!'
+        redirect_to :action => "index"
+      end
 	end
 
 	def new
@@ -40,6 +48,17 @@ class LevelsController < ApplicationController
         redirect_to :action => "index"
       end
 	end
+
+    def delete
+      @level = Level.find(params[:id])
+      if @level.delete
+      	flash[:notice] = "Level was successfully deleted."
+      	redirect_to :action => "index"
+      else
+      	flash[:warning] = 'Could not Delete!'
+        redirect_to :action => "index"
+      end
+    end
 
 	def user_new_skill
 		if params[:search]

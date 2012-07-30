@@ -3,11 +3,10 @@
 <%= render 'form' %>
 <br>
 <% @users.each do |user| %>
-	<h2><%= user.firstname %></h2>
-	<% user.levels.each do |level| %>
-		<p><%= level.skill.name %> : <%= level.rating.to_s %></p>
-	<%end%>
+  <h2><%= user.firstname %></h2>
+  <ul>
+  <% user.levels.each do |level| %>
+    <li><%= level.skill.name %> : <%= render 'form_update', :level => level %> <%= button_to 'Delete', {:action => 'delete', :id => level}, :confirm => "Really?" %></li>
+  <%end%>
+</ul>
 <%end%>
-
-
-
