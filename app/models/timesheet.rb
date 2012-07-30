@@ -56,6 +56,42 @@ class Timesheet < ActiveRecord::Base
     entries_for_week.inject(0) {|sum, x| sum + x.hours}
   end
 
+  def entries_for_day(day)
+    day = day.downcase.to_sym if day.class != Symbol
+    case day
+    when :monday
+      return self.entries_for_week.select {|e| e.spent_on == self.weekof.to_date}
+    when :tuesday
+      return self.entries_for_week.select {|e| e.spent_on == self.weekof.to_date + 1.days}
+    when :wednesday
+      return self.entries_for_week.select {|e| e.spent_on == self.weekof.to_date + 2.days}
+    when :thursday
+      return self.entries_for_week.select {|e| e.spent_on == self.weekof.to_date + 3.days}
+    when :friday
+      return self.entries_for_week.select {|e| e.spent_on == self.weekof.to_date + 4.days}
+    when :saturday
+      return self.entries_for_week.select {|e| e.spent_on == self.weekof.to_date + 5.days}
+    when :sunday
+      return self.entries_for_week.select {|e| e.spent_on == self.weekof.to_date + 6.days}
+    else
+      return nil
+    end
+  end
+
+  def hours_for_day(day)
+    self.entries_for_day(day).inject(0) {|sum, x| sum + x.hours}
+  end
+
+  def status_string
+    if self.paid?
+      return "Paid"
+    elsif !self.paid? && self.submitted?
+      return "Submitted, but not paid"
+    else
+      return "Not submitted and not paid"
+    end
+  end
+
   def print
     self.time_entries << self.entries_for_week
     self.print_date = DateTime.now

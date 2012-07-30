@@ -1,6 +1,8 @@
 class TimesheetsController < ApplicationController
   unloadable
-  before_filter :find_timesheets
+  before_filter :find_timesheets, :only => :index
+  include TimesheetHelper
+  require "prawn"   #needed for pdf generation
 
   #include SortHelper
   #include TimelogHelper
@@ -90,6 +92,43 @@ class TimesheetsController < ApplicationController
       flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
       redirect_to :action => 'new'
     end
+
+    if params[:print] == "1"
+      redirect_to :action => 'print', :id => timesheet
+    else
+      redirect_to :action => 'index'
+    end
+  end
+
+  def print
+    timesheet = Timesheet.find(params[:id])
+    weekof = timesheet.weekof.to_date
+    name = timesheet.user.name
+    wage = timesheet.user.wage.amount.to_s
+    current = Date.today
+
+    #TODO change the name of the default scopes on TimeEntry for dates, they need to express that the collection includes the dates indicated.
+    usrtiments = timesheet.entries_for_week #this use of before and after is cool
+
+    mon = timesheet.hours_for_day(:monday)
+    tue = timesheet.hours_for_day(:tuesday)
+    wed = timesheet.hours_for_day(:wednesday)
+    thu = timesheet.hours_for_day(:thursday)
+    fri = timesheet.hours_for_day(:friday)
+    sat = timesheet.hours_for_day(:saturday)
+    sun = timesheet.hours_for_day(:sunday)
+
+    hours = timesheet.find_total_hours
+    status = timesheet.status_string
+
+    if hours == 0 || hours > 100
+      flash[:warning] = 'Error, error! Either you are printing a timesheet with no need for payment or you got some wiring loose and logged too many hours.'
+      redirect_to :action => 'index'
+    else  #method in timesheethelper
+      send_data (generate_timesheet_pdf(name, wage, current, weekof, mon, tue, wed, thu, fri, sat, sun,status),
+        :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
+        :type => "application/pdf") and return
+    end
   end
 
   def edit
@@ -102,10 +141,10 @@ class TimesheetsController < ApplicationController
 
   def find_timesheets
     if User.current.is_stustaff?
-      @timesheets = Timesheet.weekof_from(DateTime.now - 1.year).for_user(User.current)
+      @timesheets = Timesheet.weekof_from(DateTime.now - 3.years).for_user(User.current)
       @drafts = @timesheets.is_not_printed.is_not_submitted.is_not_paid
     elsif User.current.is_admstaff?
-      @timesheets = Timesheet.weekof_from(DateTime.now - 1.year)
+      @timesheets = Timesheet.weekof_from(DateTime.now - 3.years)
     else
       render_403
       return false
