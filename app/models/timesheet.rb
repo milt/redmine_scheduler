@@ -34,6 +34,7 @@ class Timesheet < ActiveRecord::Base
   named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
   named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
+  #status bools
   def submitted?
     self.submitted.present?
   end
@@ -45,17 +46,21 @@ class Timesheet < ActiveRecord::Base
   def paid?
     self.paid.present?
   end
-
+  
+  #methods used before time entries are attached.
   #retrieves all time entries for the week in question
   def entries_for_week
     TimeEntry.foruser(self.user).on_tweek(self.weekof.to_date.cweek)
   end
+
 
   #returns the total hours spent on the week
   def find_total_hours
     entries_for_week.inject(0) {|sum, x| sum + x.hours}
   end
 
+  # THESE NEED TO GO AWAY----------------------------------------------
+  #can be used to find entries for a given day before commit.
   def entries_for_day(day)
     day = day.downcase.to_sym if day.class != Symbol
     case day
@@ -78,9 +83,11 @@ class Timesheet < ActiveRecord::Base
     end
   end
 
-  def hours_for_day(day)
+  def find_hours_for_day(day)
     self.entries_for_day(day).inject(0) {|sum, x| sum + x.hours}
   end
+  #--------------------------------------------------------------------------
+  
 
   def status_string
     if self.paid?
@@ -92,16 +99,77 @@ class Timesheet < ActiveRecord::Base
     end
   end
 
-  def print
-    self.time_entries << self.entries_for_week
+  #commit time entries to timesheet:
+  def commit
+    if self.time_entries.empty? && !self.entries_for_week.empty?
+      self.time_entries += self.entries_for_week
+      return true
+    else
+      return false
+    end
+  end
+  
+  #release entries from the sheet.
+  def release
+    if !self.time_entries.empty?
+      self.time_entries.clear
+      return true
+    else
+      return false
+    end
+  end
+
+  #returns the total hours spent on the week after commit
+  def total_hours
+    self.time_entries.inject(0) {|sum, x| sum + x.hours}
+  end
+
+  #can be used to find entries for a given day before commit.
+  def time_entries_for_day(day)
+    day = day.downcase.to_sym if day.class != Symbol
+    case day
+    when :monday
+      return self.time_entries.select {|e| e.spent_on == self.weekof.to_date}
+    when :tuesday
+      return self.time_entries.select {|e| e.spent_on == self.weekof.to_date + 1.days}
+    when :wednesday
+      return self.time_entries.select {|e| e.spent_on == self.weekof.to_date + 2.days}
+    when :thursday
+      return self.time_entries.select {|e| e.spent_on == self.weekof.to_date + 3.days}
+    when :friday
+      return self.time_entries.select {|e| e.spent_on == self.weekof.to_date + 4.days}
+    when :saturday
+      return self.time_entries.select {|e| e.spent_on == self.weekof.to_date + 5.days}
+    when :sunday
+      return self.time_entries.select {|e| e.spent_on == self.weekof.to_date + 6.days}
+    else
+      return nil
+    end
+  end
+
+  def hours_for_day(day)
+    self.time_entries_for_day(day).inject(0) {|sum, x| sum + x.hours}
+  end
+
+
+  def print_now
+    if self.commit
+      self.print_date = DateTime.now
+      return true
+    else
+     return false
+    end
+  end
+
+  def reprint
     self.print_date = DateTime.now
   end
 
-  def submit
-    self.submitted = DateTime.now
+  def submit_now
+     self.submitted = DateTime.now
   end
 
-  def pay
+  def pay_now
     self.paid = DateTime.now
   end
 

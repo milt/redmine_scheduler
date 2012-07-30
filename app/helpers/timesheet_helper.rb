@@ -1,5 +1,18 @@
 module TimesheetHelper
-  def generate_timesheet_pdf(name, wage, current, beginning, mon, tue, wed, thu, fri, sat, sun, status)
+  def generate_timesheet_pdf(timesheet)
+    name      = timesheet.user.name
+    wage      = timesheet.user.wage.amount.to_s
+    current   = Date.today
+    beginning = timesheet.weekof.to_date
+    mon = timesheet.hours_for_day(:monday)
+    tue = timesheet.hours_for_day(:tuesday)
+    wed = timesheet.hours_for_day(:wednesday)
+    thu = timesheet.hours_for_day(:thursday)
+    fri = timesheet.hours_for_day(:friday)
+    sat = timesheet.hours_for_day(:saturday)
+    sun = timesheet.hours_for_day(:sunday)
+    status    = timesheet.status_string
+
     Prawn::Document.new do
   	font_size(16)
   	text "DMC Student Employee Timesheet", :style => :bold, :align => :center

@@ -55,17 +55,9 @@ class TimesheetsController < ApplicationController
     @lcshifts = issues.lcshift
     @goals = Issue.foruser(@user).goals
     @tasks = Issue.foruser(@user).tasks
-
-    #@entries_by_day = []
-
-    # (0..6).each do |i| 
-    #   day = (@weekof + i.days)
-    #   @entries_by_day << cur_week_entries.select {|t| t.spent_on == day}
-    # end
   end
 
   def create
-
     yearstart = find_first_monday(Time.current.year)
 
     if params[:weekof].present?
@@ -92,42 +84,37 @@ class TimesheetsController < ApplicationController
       flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
       redirect_to :action => 'new'
     end
-
-    if params[:print] == "1"
-      redirect_to :action => 'print', :id => timesheet
-    else
-      redirect_to :action => 'index'
-    end
   end
 
   def print
     timesheet = Timesheet.find(params[:id])
+
     weekof = timesheet.weekof.to_date
     name = timesheet.user.name
-    wage = timesheet.user.wage.amount.to_s
-    current = Date.today
 
-    #TODO change the name of the default scopes on TimeEntry for dates, they need to express that the collection includes the dates indicated.
-    usrtiments = timesheet.entries_for_week #this use of before and after is cool
-
-    mon = timesheet.hours_for_day(:monday)
-    tue = timesheet.hours_for_day(:tuesday)
-    wed = timesheet.hours_for_day(:wednesday)
-    thu = timesheet.hours_for_day(:thursday)
-    fri = timesheet.hours_for_day(:friday)
-    sat = timesheet.hours_for_day(:saturday)
-    sun = timesheet.hours_for_day(:sunday)
-
-    hours = timesheet.find_total_hours
-    status = timesheet.status_string
-
-    if hours == 0 || hours > 100
-      flash[:warning] = 'Error, error! Either you are printing a timesheet with no need for payment or you got some wiring loose and logged too many hours.'
-      redirect_to :action => 'index'
-    else  #method in timesheethelper
-      send_data (generate_timesheet_pdf(name, wage, current, weekof, mon, tue, wed, thu, fri, sat, sun,status),
+    if timesheet.print_now && timesheet.save
+      send_data (generate_timesheet_pdf(timesheet),
         :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
         :type => "application/pdf") and return
+    else
+      flash[:warning] = 'Error, error! Either you are printing a timesheet with no need for payment or you got some wiring loose and logged too many hours.'
+      redirect_to :action => 'index'
+    end
+  end
+
+  def reprint
+    timesheet = Timesheet.find(params[:id])
+
+    weekof = timesheet.weekof.to_date
+    name = timesheet.user.name
+
+    if timesheet.reprint && timesheet.save
+      send_data (generate_timesheet_pdf(timesheet),
+        :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
+        :type => "application/pdf")
+    else
+      flash[:warning] = 'Could not write new print timestamp for some reason.'
+      redirect_to :action => 'index'
     end
   end
 
