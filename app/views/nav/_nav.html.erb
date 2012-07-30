@@ -2,18 +2,9 @@
   <table>
     <tr>
       <% unless User.current.admin %>
-        <% if User.current.is_stustaff? %>
-          <td><%= link_to "Today's Shifts", {:controller => 'stustaff'} %></td>
-          <td><%= link_to 'Timesheets', { :controller => 'timesheets' } %></td>
-          <td><%= link_to 'New Timesheet', { :controller => 'timesheets', :action => 'new' } %></td>
-        <% end %>
-        <% if User.current.is_prostaff? %>
-          <td><%= link_to "Analyze Time", {:controller=> 'command'} %></td>
-        <% end %>
-        <% if User.current.is_admstaff? %>
-          <td><%= link_to 'Timesheets', { :controller => 'timesheets' } %></td>
-          <td><%= link_to 'Skill Levels', { :controller => 'levels' } %></td>
-        <% end %>
+        <%= render 'nav/stustaff' if User.current.is_stustaff? %>
+        <%= render 'nav/prostaff' if User.current.is_prostaff? %>
+        <%= render 'nav/adminstaff' if User.current.is_admstaff? %>
       <% else %>
         <td><%= link_to "Today's Shifts", {:controller=> 'stustaff'} %></td>
         <td><%= link_to "Analyze Time", { :controller=> 'command' } %></td>
