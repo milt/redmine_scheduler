@@ -1,8 +1,0 @@
-<h2>Delete Page</h2>
-<p> 
-	<%= link_to "Index", {:action => 'index'} %> | <%= link_to "Edit timesheet", {:action => 'edit'} %> 
-</p><!--<hr> after this?-->
-<br>
-	<%= render 'timesheet' unless @timesheet.empty? %>
-	<%= will_paginate @timesheet, :param_name => 'timesheet_page' %>
-</br>

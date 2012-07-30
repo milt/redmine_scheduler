@@ -2,9 +2,9 @@ class TimesheetsController < ApplicationController
   unloadable
   before_filter :find_timesheets
 
-  include SortHelper
-  include TimelogHelper
-  include CustomFieldsHelper
+  #include SortHelper
+  #include TimelogHelper
+  #include CustomFieldsHelper
 
   def index
     @printed = @timesheets.is_printed.is_not_submitted.is_not_paid
@@ -14,13 +14,6 @@ class TimesheetsController < ApplicationController
   end
 
   def new
-    sort_init 'spent_on', 'desc'
-    sort_update 'spent_on' => 'spent_on',
-                'user' => 'user_id',
-                'activity' => 'activity_id',
-                'project' => "#{Project.table_name}.name",
-                'issue' => 'issue_id',
-                'hours' => 'hours'
 
     if params[:date].present?
       @year_selected = params[:date][:year].to_i
@@ -28,6 +21,13 @@ class TimesheetsController < ApplicationController
        @year_selected = Time.current.year
     end
 
+    if params[:timesheet].present?
+      @user = User.find(params[:timesheet][:user_id])
+    elsif params[:user].present?
+      @user = User.find(params[:user].to_i)
+    else
+      @user = User.current
+    end
 
     #get the first week of the current year
     yearstart = find_first_monday(@year_selected)
@@ -38,17 +38,21 @@ class TimesheetsController < ApplicationController
       @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
     end
 
-    #flash[:notice] = "all weeks? #{@weeks.inspect}"
     if params[:cweek].present?
       @cweek = params[:cweek].to_i + 1  #we add one, because select_tag returns zero-indexed
     else
       @cweek = Date.today.cweek
     end
 
-    #flash[:notice] = "cweek is #{@cweek.inspect}"
     @weekof = yearstart + (@cweek - 1).weeks
 
-    @entries = TimeEntry.foruser(User.current).on_tweek(@cweek).on_tyear(@year_selected)
+    @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
+
+    issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)
+    @fdshifts = issues.fdshift
+    @lcshifts = issues.lcshift
+    @goals = Issue.foruser(@user).goals
+    @tasks = Issue.foruser(@user).tasks
 
     #@entries_by_day = []
 
@@ -59,6 +63,33 @@ class TimesheetsController < ApplicationController
   end
 
   def create
+
+    yearstart = find_first_monday(Time.current.year)
+
+    if params[:weekof].present?
+      weekof = yearstart + (params[:weekof].to_i - 1).weeks
+    else
+      flash[:notice] = "You must specify a pay period."
+      redirect_to :action => 'new'
+    end
+
+    if params[:user].present?
+      user = User.find(params[:user].to_i)
+    else
+      user = User.current
+    end
+
+    timesheet = Timesheet.new
+    timesheet.user = user
+    timesheet.weekof = weekof
+
+    if timesheet.save
+      flash[:notice] = "Timesheet for #{user.name} for the week starting on #{timesheet.weekof} was successfully created."
+      redirect_to :action => 'index'
+    else                                            
+      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
+      redirect_to :action => 'new'
+    end
   end
 
   def edit

@@ -1,34 +1,23 @@
 <%= render 'nav/nav'%>
 
-<% if User.current.is_stustaff? %>
-  <h2>New Timesheet for <%= User.current.firstname %></h2>
-  <% form_tag do %>
-      <%= select_year(@year_selected, :start_year => Time.current.year - 1, :end_year => Time.current.year + 1) %>
-      <%= select_tag :cweek, options_for_select(@weeks, @cweek - 1) %> <!--Defaults to the week before-->
-      <%= submit_tag "Update"%>
-  <%end%>
+<h2>New Timesheet for <%= @user.name %></h2>
+<% form_tag do %>
+    <%= select_year(@year_selected, :start_year => Time.current.year - 1, :end_year => Time.current.year + 1) %>
+    <%= select_tag :cweek, options_for_select(@weeks, @cweek - 1) %> <!--Defaults to the week before-->
+    <%= hidden_field_tag 'user', @user.id.to_s %>
+    <%= submit_tag "Update"%>
+<%end%>
 
-  <br>
-  <% if @year_selected.present? %>
-      <%= render 'timelog/list', :entries => @entries %>
-  <%end%>
-
-  <br>
-  <%if @year_selected %>
-  <% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => @cweek} do |f| %>
-    <p><%= f.label "Signature" %><%= f.text_field :user_signature %></p>
-    <h5>note: your signature confirms that you have checked over the time entries listed. any deviation from the actual time worked will result to fines and disciplinary actions.</h5>
-    <p><%= submit_tag "Create"%></p>
-  <% end %>
-  <%end%>
-
-<% elsif User.current.admstaff? %>
-
-  <% form_tag do %>
-  <% end %>
-
-<% else %>
-
-  You shouldn't be here!
-
+<br>
+  <%= render 'weeklist', :entries => @entries %>
+<br>
+  <%= render 'shifts', { :fdshifts => @fdshifts, :lcshifts => @lcshifts } %>
+<br>
+  <%= render 'tasks', :tasks => @tasks %>
+<br>
+  <%= render 'goals', :goals => @goals %>
+<br>
+<% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => @cweek, :user => @user.id } do |f| %>
+  <p><%= label_tag :print, "Print" %><%= check_box_tag :print %></p>
+  <p><%= submit_tag "Create"%></p>
 <% end %>

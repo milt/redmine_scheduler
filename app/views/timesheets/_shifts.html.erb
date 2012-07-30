@@ -1,0 +1,21 @@
+<div>
+  <table class="list issues">
+    <th>Details</th>
+    <th>Shift</th>
+    <th>Log Time</th>
+    <% fdshifts.each do |shift| %>
+      <tr>
+        <td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></td>
+        <td><%= shift.tracker.name %></td>
+        <td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+      </tr>
+    <% end %>
+    <% lcshifts.each do |shift| %>
+      <tr>
+        <td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></td>
+        <td><%= shift.tracker.name %></td>
+        <td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+      </tr>
+    <% end %>
+  </table>
+</div>
