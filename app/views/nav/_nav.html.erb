@@ -3,8 +3,9 @@
     <tr>
       <% unless User.current.admin %>
         <% if User.current.is_stustaff? %>
-          <td><%= link_to "Today's Shifts", {:controller=> 'stustaff'} %></td>
+          <td><%= link_to "Today's Shifts", {:controller => 'stustaff'} %></td>
           <td><%= link_to 'Timesheets', { :controller => 'timesheets' } %></td>
+          <td><%= link_to 'New Timesheet', { :controller => 'timesheets', :action => 'new' } %></td>
         <% end %>
         <% if User.current.is_prostaff? %>
           <td><%= link_to "Analyze Time", {:controller=> 'command'} %></td>
