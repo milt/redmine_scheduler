@@ -4,11 +4,20 @@ class Timesheet < ActiveRecord::Base
   belongs_to :user       # possible to divide user between employee and staff/boss?
   has_one :wage, :through => :user
   attr_accessible :submitted, :paid    #not sure if necessary
-  #validates_uniqueness_of :user_id, :scope => :pay_period, # only one sheet can be entered for a given time period
-  #    :message => "Users can only have one timesheet per pay period."
+
   validates_uniqueness_of :user_id, :scope => :weekof,:message => "User can only have one timesheet per pay period"
   #validates_presence_of :user_id, :pay_period #, :print_date
   validates_presence_of :user_id, :weekof
+  validates_presence_of :print_date,
+    :on => :update,
+    :if => "submitted.present?",
+    :message => "Cannot submit before print."
+
+  validates_presence_of :submitted,
+    :on => :update,
+    :if => "paid.present?",
+    :message => "Cannot pay before submission."
+
   default_scope :order => 'weekof ASC'
   named_scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
   #named scopes for submitted
