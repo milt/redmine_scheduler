@@ -153,6 +153,20 @@ class TimesheetsController < ApplicationController
 
   def find_timesheet
     @timesheet = Timesheet.find(params[:id])
+    if User.current.is_admstaff?
+      unless @timesheet.actions[:admin].map {|a| a[1]}.include?(action_name.to_sym)
+        flash[:warning] = "Invalid action for this timesheet!"
+        redirect_to :action => 'index'
+      end
+    elsif User.current.is_stustaff?
+      unless @timesheet.actions[:staff].map {|a| a[1]}.include?(action_name.to_sym)
+        flash[:warning] = "Invalid action for this timesheet, or you don not have permission!"
+        redirect_to :action => 'index'
+      end
+    else
+      render_403
+      return false
+    end
   end
 
   def find_timesheets
