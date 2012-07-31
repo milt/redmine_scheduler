@@ -138,4 +138,3 @@ class WorkgroupsController < GroupsController
   end
   
 end
-

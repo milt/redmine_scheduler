@@ -6,4 +6,3 @@
 <!-- will_paginate @booked, :param_name => 'booked_page' -->
 <%= render 'cancelled' unless @cancelled.empty? %>
 <%= will_paginate @cancelled, :param_name => 'cancelled_page' %>
-
