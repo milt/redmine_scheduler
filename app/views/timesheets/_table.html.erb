@@ -19,7 +19,7 @@
         <td><%= sheet.print_date.strftime("%D") if sheet.printed? %></td>
         <td><%= sheet.submitted.strftime("%D") if sheet.submitted? %></td>
         <td><%= sheet.paid.strftime("%D") if sheet.paid? %></td>
-        <td><%= actions(sheet) %></td>
+        <td><%= render_actions(sheet) %></td>
       </tr>
     <%end%>
   </table>

@@ -35,10 +35,22 @@ class Timesheet < ActiveRecord::Base
   named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
   @@state_actions = {
-    :draft      => [['Print', :print], ['Edit', :edit], ['Show', :show], ['Delete', :delete]],
-    :printed    => [['Reprint', :reprint], ['Submit', :submit], ['Show', :show], ['Delete', :delete], ['Reject', :reject]],
-    :submitted  => [['Reprint', :reprint], ['Show', :show], ['Pay', :pay], ['Delete', :delete], ['Reject', :reject]],
-    :paid       => [['Reprint', :reprint], ['Show', :show]]
+    :draft      => {
+      :admin => [['Print', :print], ['Edit', :edit], ['Show', :show], ['Delete', :delete]],
+      :staff => [['Print', :print], ['Edit', :edit], ['Show', :show], ['Delete', :delete]]
+    },
+    :printed    => {
+      :admin => [['Reprint', :reprint], ['Submit', :submit], ['Show', :show], ['Delete', :delete], ['Reject', :reject]],
+      :staff => [['Reprint', :reprint], ['Show', :show]]
+    },
+    :submitted  => {
+      :admin => [['Reprint', :reprint], ['Show', :show], ['Pay', :pay], ['Delete', :delete], ['Reject', :reject]],
+      :staff => [['Reprint', :reprint], ['Show', :show]]
+    },
+    :paid       => {
+      :admin => [['Reprint', :reprint], ['Show', :show]],
+      :staff => [['Reprint', :reprint], ['Show', :show]]
+    }
   }
 
   #status bools
