@@ -45,8 +45,8 @@ class Timesheet < ActiveRecord::Base
 
   @@state_actions = {
     :draft      => {
-      :admin => [['Print', :print], ['Edit', :edit], ['Show', :show], ['Delete', :delete]],
-      :staff => [['Print', :print], ['Edit', :edit], ['Show', :show], ['Delete', :delete]]
+      :admin => [['Print', :print], ['Edit', :edit], ['Delete', :delete]],
+      :staff => [['Print', :print], ['Edit', :edit], ['Delete', :delete]]
     },
     :printed    => {
       :admin => [['Reprint', :reprint], ['Submit', :submit], ['Show', :show], ['Delete', :delete], ['Reject', :reject]],
