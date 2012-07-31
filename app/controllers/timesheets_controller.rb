@@ -1,6 +1,7 @@
 class TimesheetsController < ApplicationController
   unloadable
   before_filter :find_timesheets, :only => :index
+  before_filter :find_timesheet, :only => [:print, :reprint, :show, :edit, :update, :submit, :pay, :delete, :reject]
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
 
@@ -86,13 +87,11 @@ class TimesheetsController < ApplicationController
   end
 
   def print
-    timesheet = Timesheet.find(params[:id])
+    weekof = @timesheet.weekof.to_date
+    name = @timesheet.user.name
 
-    weekof = timesheet.weekof.to_date
-    name = timesheet.user.name
-
-    if timesheet.print_now && timesheet.save
-      send_data (generate_timesheet_pdf(timesheet),
+    if @timesheet.print_now && @timesheet.save
+      send_data (generate_timesheet_pdf(@timesheet),
         :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
         :type => "application/pdf") and return
     else
@@ -102,13 +101,11 @@ class TimesheetsController < ApplicationController
   end
 
   def reprint
-    timesheet = Timesheet.find(params[:id])
+    weekof = @timesheet.weekof.to_date
+    name = @timesheet.user.name
 
-    weekof = timesheet.weekof.to_date
-    name = timesheet.user.name
-
-    if timesheet.reprint && timesheet.save
-      send_data (generate_timesheet_pdf(timesheet),
+    if @timesheet.reprint && @timesheet.save
+      send_data (generate_timesheet_pdf(@timesheet),
         :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
         :type => "application/pdf")
     else
@@ -118,8 +115,6 @@ class TimesheetsController < ApplicationController
   end
 
   def show
-    @timesheet = Timesheet.find(params[:id])
-
   end
 
   def edit
@@ -128,7 +123,37 @@ class TimesheetsController < ApplicationController
   def update
   end
 
+  def submit
+    if @timesheet.submit_now && @timesheet.save
+      flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully submitted."
+      redirect_to :action => 'index'
+    else
+      flash[:warning] = @timesheet.errors.full_messages
+      redirect_to :action => 'index'
+    end
+  end
+
+  def pay
+    if @timesheet.pay_now && @timesheet.save
+      flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully paid."
+      redirect_to :action => 'index'
+    else
+      flash[:warning] = @timesheet.errors.full_messages
+      redirect_to :action => 'index'
+    end
+  end
+
+  def delete
+  end
+
+  def reject
+  end
+
   private
+
+  def find_timesheet
+    @timesheet = Timesheet.find(params[:id])
+  end
 
   def find_timesheets
     if User.current.is_stustaff?

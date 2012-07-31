@@ -34,19 +34,45 @@ class Timesheet < ActiveRecord::Base
   named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
   named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
-  #status bools
-  def submitted?
-    self.submitted.present?
-  end
+  @@state_actions = {
+    :draft      => [['Print', :print], ['Edit', :edit], ['Show', :show], ['Delete', :delete]],
+    :printed    => [['Reprint', :reprint], ['Submit', :submit], ['Show', :show], ['Delete', :delete], ['Reject', :reject]],
+    :submitted  => [['Reprint', :reprint], ['Show', :show], ['Pay', :pay], ['Delete', :delete], ['Reject', :reject]],
+    :paid       => [['Reprint', :reprint], ['Show', :show]]
+  }
 
+  #status bools
   def printed?
     self.print_date.present?
+  end
+
+  def submitted?
+    self.submitted.present?
   end
 
   def paid?
     self.paid.present?
   end
+
+  #status checker
+  def status
+    if !self.printed? && !self.submitted? && !self.paid?
+      return :draft
+    elsif self.printed? && !self.submitted? && !self.paid?
+      return :printed
+    elsif self.printed? && self.submitted? && !self.paid?
+      return :submitted
+    elsif self.printed? && self.submitted? && self.paid?
+      return :paid
+    else
+      return nil
+    end
+  end
   
+  def actions
+    @@state_actions[self.status]
+  end
+
   #methods used before time entries are attached.
   #retrieves all time entries for the week in question
   def entries_for_week
