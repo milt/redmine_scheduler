@@ -16,22 +16,21 @@ module TimeEntryPatch
       named_scope :on_tweek, lambda {|d| { :conditions => ["tweek = ?", d] } }
       named_scope :on_tyear, lambda {|d| { :conditions => ["tyear = ?", d] } }
       named_scope :sort_by_date, :order => "spent_on ASC"
-      validates_each :project_id,
-        :user_id,
-        :issue_id,
-        :hours,
-        :comments,
-        :activity_id,
-        :spent_on,
-        :tyear,
-        :tmonth,
-        :tweek,
-        :created_on,
-        :updated_on,
-        :on => :update,
-        :if => "timesheet_id.present?" do |model, attr, value|
-          model.errors.add(attr, 'can not change when entry is locked to a timesheet') if value.present?
-        end
+      # validates_each :project_id,
+      #   :user_id,
+      #   :issue_id,
+      #   :hours,
+      #   :comments,
+      #   :activity_id,
+      #   :spent_on,
+      #   :tyear,
+      #   :tmonth,
+      #   :tweek,
+      #   :created_on,
+      #   :on => :update,
+      #   :if => "timesheet_id.present?" do |model, attr, value|
+      #     model.errors.add(attr, 'can not change when entry is locked to a timesheet') if value.present?
+      #   end
       
     end
 
