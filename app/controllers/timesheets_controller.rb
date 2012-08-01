@@ -1,7 +1,7 @@
 class TimesheetsController < ApplicationController
   unloadable
   before_filter :find_timesheets, :only => :index
-  before_filter :find_timesheet, :only => [:print, :reprint, :show, :edit, :update, :submit, :pay, :delete, :reject]
+  before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
 
@@ -10,9 +10,8 @@ class TimesheetsController < ApplicationController
   #include CustomFieldsHelper
 
   def index
-    @printed = @timesheets.is_printed.is_not_submitted.is_not_paid
-    @submitted = @timesheets.is_printed.is_submitted.is_not_paid
-    @paid = @timesheets.is_printed.is_submitted.is_paid
+    @submitted = @timesheets.is_submitted.is_not_approved
+    @approved = @timesheets.is_submitted.is_approved
 
   end
 
@@ -95,21 +94,7 @@ class TimesheetsController < ApplicationController
         :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
         :type => "application/pdf") and return
     else
-      flash[:warning] = 'Could not commit or save the timesheet. I need some better error handling'
-      redirect_to :action => 'index'
-    end
-  end
-
-  def reprint
-    weekof = @timesheet.weekof.to_date
-    name = @timesheet.user.name
-
-    if @timesheet.reprint && @timesheet.save
-      send_data (generate_timesheet_pdf(@timesheet),
-        :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
-        :type => "application/pdf")
-    else
-      flash[:warning] = 'Could not write new print timestamp for some reason.'
+      flash[:warning] = 'Could not print timesheet. I need some better error handling'
       redirect_to :action => 'index'
     end
   end
@@ -133,9 +118,9 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  def pay
-    if @timesheet.pay_now && @timesheet.save
-      flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully paid."
+  def approve
+    if @timesheet.approve_now && @timesheet.save
+      flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully approved."
       redirect_to :action => 'index'
     else
       flash[:warning] = @timesheet.errors.full_messages
@@ -172,7 +157,7 @@ class TimesheetsController < ApplicationController
   def find_timesheets
     if User.current.is_stustaff?
       @timesheets = Timesheet.weekof_from(DateTime.now - 3.years).for_user(User.current)
-      @drafts = @timesheets.is_not_printed.is_not_submitted.is_not_paid
+      @drafts = @timesheets.is_not_submitted.is_not_approved
     elsif User.current.is_admstaff?
       @timesheets = Timesheet.weekof_from(DateTime.now - 3.years)
     else

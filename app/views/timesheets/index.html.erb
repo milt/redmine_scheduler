@@ -6,12 +6,10 @@
   <%= render 'table', :timesheets => @drafts %>
 <% end %>
 
-<h3>Printed</h3>
-<%= render 'table', :timesheets => @printed %>
 <h3>Submitted</h3>
 <%= render 'table', :timesheets => @submitted %>
 <h3>Paid</h3>
-<%= render 'table', :timesheets => @paid %>
+<%= render 'table', :timesheets => @approved %>
 
 <% if User.current.is_admstaff? %>
   <% form_for :timesheet, @timesheet, :url => { :action => 'new' } do |f| %>

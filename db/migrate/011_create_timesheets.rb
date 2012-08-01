@@ -7,7 +7,7 @@ class CreateTimesheets < ActiveRecord::Migration
       t.column :submitted, :datetime
       t.column :approved, :datetime
       t.column :notes, :text
-      t.column :paid_time_wage, :float
+      t.column :approve_time_wage, :float
       
       t.timestamps
     end

@@ -18,6 +18,5 @@
   <%= render 'goals', :goals => @goals %>
 <br>
 <% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => @cweek, :user => @user.id } do |f| %>
-  <p><%= label_tag :print, "Print" %><%= check_box_tag :print %></p>
   <p><%= submit_tag "Create"%></p>
 <% end %>

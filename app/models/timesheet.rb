@@ -3,20 +3,20 @@ class Timesheet < ActiveRecord::Base
   has_many :time_entries
   belongs_to :user       # possible to divide user between employee and staff/boss?
   has_one :wage, :through => :user
-  attr_accessible :submitted, :paid    #not sure if necessary
+  attr_accessible :submitted, :approved    #not sure if necessary
 
   validates_uniqueness_of :user_id, :scope => :weekof,:message => "User can only have one timesheet per pay period"
   #validates_presence_of :user_id, :pay_period #, :print_date
   validates_presence_of :user_id, :weekof
-  validates_presence_of :print_date,
-    :on => :update,
-    :if => "submitted.present?",
-    :message => "Cannot submit before print."
+  # validates_presence_of :print_date,
+  #   :on => :update,
+  #   :if => "submitted.present?",
+  #   :message => "Cannot submit before print."
 
   validates_presence_of :submitted,
     :on => :update,
-    :if => "paid.present?",
-    :message => "Cannot pay before submission."
+    :if => "approved.present?",
+    :message => "Cannot approve before submission."
 
   default_scope :order => 'weekof ASC'
   named_scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
@@ -32,12 +32,12 @@ class Timesheet < ActiveRecord::Base
   named_scope :printed_from, lambda {|d| { :conditions => ["print_date >= ?", d] } }
   named_scope :printed_to, lambda {|d| { :conditions => ["print_date <= ?", d] } }
   named_scope :printed_on, lambda {|d| { :conditions => ["print_date = ?", d] } }
-  #named scopes for paid
-  named_scope :is_paid, lambda { { :conditions => "paid IS NOT NULL" } }
-  named_scope :is_not_paid, lambda { { :conditions => "paid IS NULL" } }
-  named_scope :paid_from, lambda {|d| { :conditions => ["paid >= ?", d] } }
-  named_scope :paid_to, lambda {|d| { :conditions => ["paid <= ?", d] } }
-  named_scope :paid_on, lambda {|d| { :conditions => ["paid = ?", d] } }
+  #named scopes for approved
+  named_scope :is_approved, lambda { { :conditions => "approved IS NOT NULL" } }
+  named_scope :is_not_approved, lambda { { :conditions => "approved IS NULL" } }
+  named_scope :approved_from, lambda {|d| { :conditions => ["approved >= ?", d] } }
+  named_scope :approved_to, lambda {|d| { :conditions => ["approved <= ?", d] } }
+  named_scope :approved_on, lambda {|d| { :conditions => ["approved = ?", d] } }
   #named scopes for weekof
   named_scope :weekof_from, lambda {|d| {:conditions => ["weekof >= ?", d] } }
   named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
@@ -45,20 +45,16 @@ class Timesheet < ActiveRecord::Base
 
   @@state_actions = {
     :draft      => {
-      :admin => [['Print', :print], ['Edit', :edit], ['Delete', :delete]],
-      :staff => [['Print', :print], ['Edit', :edit], ['Delete', :delete]]
-    },
-    :printed    => {
-      :admin => [['Reprint', :reprint], ['Submit', :submit], ['Show', :show], ['Delete', :delete], ['Reject', :reject]],
-      :staff => [['Reprint', :reprint], ['Show', :show]]
+      :admin => [['Edit', :edit], ['Delete', :delete], ['Submit', :submit]],
+      :staff => [['Edit', :edit], ['Delete', :delete], ['Submit', :submit]]
     },
     :submitted  => {
-      :admin => [['Reprint', :reprint], ['Show', :show], ['Pay', :pay], ['Delete', :delete], ['Reject', :reject]],
-      :staff => [['Reprint', :reprint], ['Show', :show]]
+      :admin => [['Print', :print], ['Show', :show], ['Approve', :approve], ['Delete', :delete], ['Reject', :reject]],
+      :staff => [['Print', :print], ['Show', :show]]
     },
-    :paid       => {
-      :admin => [['Reprint', :reprint], ['Show', :show]],
-      :staff => [['Reprint', :reprint], ['Show', :show]]
+    :approved       => {
+      :admin => [['Print', :print], ['Show', :show]],
+      :staff => [['Print', :print], ['Show', :show]]
     }
   }
 
@@ -71,20 +67,18 @@ class Timesheet < ActiveRecord::Base
     self.submitted.present?
   end
 
-  def paid?
-    self.paid.present?
+  def approved?
+    self.approved.present?
   end
 
   #status checker
   def status
-    if !self.printed? && !self.submitted? && !self.paid?
+    if !self.submitted? && !self.approved?
       return :draft
-    elsif self.printed? && !self.submitted? && !self.paid?
-      return :printed
-    elsif self.printed? && self.submitted? && !self.paid?
+    elsif self.submitted? && !self.approved?
       return :submitted
-    elsif self.printed? && self.submitted? && self.paid?
-      return :paid
+    elsif self.submitted? && self.approved?
+      return :approved
     else
       return nil
     end
@@ -137,12 +131,12 @@ class Timesheet < ActiveRecord::Base
   
 
   def status_string
-    if self.paid?
-      return "Paid"
-    elsif !self.paid? && self.submitted?
-      return "Submitted, but not paid"
+    if self.approved?
+      return "approved"
+    elsif !self.approved? && self.submitted?
+      return "Submitted, but not approved"
     else
-      return "Not submitted and not paid"
+      return "Not submitted and not approved"
     end
   end
 
@@ -200,24 +194,20 @@ class Timesheet < ActiveRecord::Base
 
 
   def print_now
+    self.print_date = DateTime.now
+  end
+
+  def submit_now
     if self.commit
-      self.print_date = DateTime.now
+      self.submitted = DateTime.now
       return true
     else
      return false
     end
   end
 
-  def reprint
-    self.print_date = DateTime.now
-  end
-
-  def submit_now
-     self.submitted = DateTime.now
-  end
-
-  def pay_now
-    self.paid = DateTime.now
+  def approve_now
+    self.approved = DateTime.now
   end
 
 
