@@ -206,6 +206,15 @@ class Timesheet < ActiveRecord::Base
     end
   end
 
+  def reject_now
+    if self.release
+      self.submitted = nil
+      return true
+    else
+      return false
+    end
+  end
+
   def approve_now
     self.approved = DateTime.now
   end
