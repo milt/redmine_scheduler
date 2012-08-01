@@ -16,22 +16,20 @@ module TimeEntryPatch
       named_scope :on_tweek, lambda {|d| { :conditions => ["tweek = ?", d] } }
       named_scope :on_tyear, lambda {|d| { :conditions => ["tyear = ?", d] } }
       named_scope :sort_by_date, :order => "spent_on ASC"
-      # validates_each :project_id,
-      #   :user_id,
-      #   :issue_id,
-      #   :hours,
-      #   :comments,
-      #   :activity_id,
-      #   :spent_on,
-      #   :tyear,
-      #   :tmonth,
-      #   :tweek,
-      #   :created_on,
-      #   :on => :update,
-      #   :if => "timesheet_id.present?" do |model, attr, value|
-      #     model.errors.add(attr, 'can not change when entry is locked to a timesheet') if value.present?
-      #   end
+      validate_on_create :cannot_create_if_timesheet_exists
+      # validate_on_update :locked_when_attached_to_timesheet, :unless => "timesheet_id.present?"
+
       
+      # def locked_when_attached_to_timesheet
+      #   errors.add_to_base("Cannot edit because this time entry is attached to timesheet #{self.timesheet_id}.") if
+      #     !timesheet_id.blank?
+      # end
+
+      def cannot_create_if_timesheet_exists
+        errors.add_to_base("Cannot create time entry because there is already a timesheet submitted for this date.") if
+          Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.present?  
+      end
+
     end
 
   end
@@ -41,12 +39,6 @@ module TimeEntryPatch
   end
 
   module InstanceMethods
-    def is_locked?
-      self.timesheet.present?
-    end
 
-    def is_extra?
-      Timesheet.weekof_on( Date.parse("1-1-#{DateTime.now.year}").to_datetime + (self.tweek - 1).weeks).present?
-    end
   end
 end

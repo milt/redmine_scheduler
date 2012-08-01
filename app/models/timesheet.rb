@@ -99,6 +99,15 @@ class Timesheet < ActiveRecord::Base
   def find_total_hours
     entries_for_week.inject(0) {|sum, x| sum + x.hours}
   end
+  
+  #what days are covered by this timesheet? Return an array of dates, why don't you.
+  def dates
+    dates = []
+    for d in 0..6
+      dates << self.weekof.to_date + d.days
+    end
+    return dates
+  end
 
   # THESE NEED TO GO AWAY----------------------------------------------
   #can be used to find entries for a given day before commit.
@@ -218,6 +227,5 @@ class Timesheet < ActiveRecord::Base
   def approve_now
     self.approved = DateTime.now
   end
-
 
 end
