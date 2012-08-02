@@ -1,0 +1,20 @@
+<h3>Need to Be Rescheduled</h3>
+<table>
+  <tr>
+    <th><%= link_to 'Date & Time', {:action => 'index', :sort_o_col => 0} %></th>
+    <th>Staff Member</th>
+    <th><%= link_to 'Patron', {:action => 'index', :sort_o_col => 2} %></th>
+    <th>Shift</th>
+    <th>Actions</th>
+  </tr>
+  <% @orphaned.each do |booking| %>
+	  <tr>
+		<td><%= format_time(booking.apt_time) %></td>
+		<td>(none)</td>
+		<td><%= booking.name %></td>
+		<td>(none)</td>
+		<td><%= link_to 'Details', {:action => 'show', :booking_id => booking[:id]} %> - <%= link_to 'Cancel', {:action => 'cancel', :booking_id => booking[:id]}, :confirm => 'Please ensure that the patron has been rescheduled for another time slot!.' %></td>
+	  </tr>
+  <% end %>
+</table>
+<hr>

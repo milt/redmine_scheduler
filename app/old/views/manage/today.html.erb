@@ -1,0 +1,58 @@
+<%= render 'nav' %>
+<h2>Today's Shifts</h2>
+<div>
+<% if @todayshifts.empty? && @todaylcshifts.empty? %>
+<p>You don't have any shifts scheduled for today. If you believe that this is an error, please speak with your manager!</p>
+<% else %>
+<p>You have the following shift or shifts scheduled today. To log time spent, please click on the clock button for the appropriate shift.</p>
+<table class="list issues">
+<tr>
+	<th>Details<!--<%= link_to 'Details', {:action => 'index', :sort_col => 1} %>--></th>
+	<th>Shift<!--<%= link_to 'Shift', {:action => 'index', :sort_col => 0} %>--></th>
+	<th>Log Time<!--<%= link_to 'Log Time', {:action => 'index', :sort_col => 2} %>--></th>
+</tr>
+	<% @todayshifts.each do |shift| %>
+		<tr>
+			<td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></td>
+			<td><%= shift.tracker.name %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+		</tr>
+	<% end %>
+	<% @todaylcshifts.each do |shift| %>
+		<tr>
+			<td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %>
+			<td><%= shift.tracker.name %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+		</tr>
+		<!--<% shift.booked_slots.each do |slot| %>
+		  	<tr><%= format_time(slot.booking.apt_time) %> : <%= slot.booking.name %> <%= link_to 'Details...', {:action => 'show', :booking_id => slot.booking[:id]} %></tr>
+		<% end %>-->
+		<% end %>
+</table>
+<% end %>
+</br>
+<p>All scheduled shifts for today (use these links if you are covering someone else's shift!)</p>
+<table class="list issues">
+	<th>Details</th>
+	<th>Shift</th>
+	<th>Log Time</th>
+	<% @allshiftstoday.each do |shift| %>
+		<tr>
+			<td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></td>
+			<td><%= shift.tracker.name %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+		</tr>
+	<% end %>
+	<% @alllcshiftstoday.each do |shift| %>
+		<tr>
+			<td><%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] } %></td>
+			<td><%= shift.tracker.name %></td>
+			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
+		</tr>
+	<% end %>
+</table>
+</div>
+
+<%= render 'tasks' unless @mytasks.empty? %>
+
+<%= render 'goals' unless @mygoals.empty? %>
