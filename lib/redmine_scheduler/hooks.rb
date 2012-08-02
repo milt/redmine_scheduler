@@ -53,10 +53,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
     end
   end
 
-  def controller_issues_edit_after_save(context={}) #runs after save on issue edit
-    if context[:issue].is_labcoach_shift?
-      context[:issue].recreate_timeslots # see the Issue patch
-    end        
+  def controller_issues_edit_after_save(context={}) #runs after save on issue edit    
   end
 
   #prevent edits ot time entries locked to sheets, and prevent creation of new entries when a user already has a non-draft sheet
