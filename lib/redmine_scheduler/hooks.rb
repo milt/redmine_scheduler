@@ -32,14 +32,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
           i.subject = User.find(i.assigned_to_id).firstname + i.start_time.strftime(' %l:%M -') + i.end_time.strftime('%l:%M %p - ') + i.start_date.strftime('%a, %b %d')
           i.description = "Created by repeater"
           i.save
-          if context[:issue].is_labcoach_shift?
-            i.create_timeslots # create what is probably a shitload of timeslots
-          end
       end
-    end
-    # If the issue is on the Lab Coach tracker, make shift_duration x timeslots numbering from 0
-    if context[:issue].is_labcoach_shift?
-      context[:issue].create_timeslots # create timeslots for the first shift.
     end
   end
 

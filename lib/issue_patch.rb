@@ -21,6 +21,8 @@ module IssuePatch
       named_scope :by_start_date, lambda {|d| { :conditions => { :start_date => d } } }
       named_scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
       named_scope :from_date, lambda {|d| { :conditions => ["start_date >= ?", d] } }
+      after_create :create_timeslots, :if => :is_labcoach_shift?
+      after_update :recreate_timeslots, :if => :is_labcoach_shift?
 
     end
 
