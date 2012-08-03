@@ -129,9 +129,12 @@ class TimesheetsController < ApplicationController
   end
 
   def delete
+    Timesheet.destroy(@timesheet)
+    redirect_to :action => 'index'
   end
 
   def reject
+    
   end
 
   private
