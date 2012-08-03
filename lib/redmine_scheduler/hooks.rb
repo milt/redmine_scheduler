@@ -3,13 +3,24 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
   def controller_issues_new_before_save(context={}) #runs before a new issue saves
     if context[:issue].is_shift? # if the issue is a shift,
       #get times and date from form params
-      s_time = DateTime.parse(context[:params][:issue][:start_time])
-      e_time = DateTime.parse(context[:params][:issue][:end_time])
-      s_date = Date.parse(context[:params][:issue][:start_date])
-      context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift? # limits shifts to only have a due_date on the same day as the start, or none
-      context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min) #format and set start_time
-      context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min) #format and set end_time
-      context[:issue].write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).firstname + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
+      # s_time = DateTime.parse(context[:params][:issue][:start_time])
+      # e_time = DateTime.parse(context[:params][:issue][:end_time])
+      # s_date = Date.parse(context[:params][:issue][:start_date])
+      # context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift? # limits shifts to only have a due_date on the same day as the start, or none
+      # context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min) #format and set start_time
+      # context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min) #format and set end_time
+      # context[:issue].write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).firstname + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
+      @issue = context[:issue] 
+      s_date = Date.parse(context[:params][:issue][:start_date]) + 15.minutes
+      s_time = context[:params][:issue][:start_time].to_i
+      e_time = context[:params][:issue][:end_time].to_i
+      
+      @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
+      @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
+
+      @issue.write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date])
+      @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %l:%M -') + @issue.end_time.strftime('%l:%M %p - ') + @issue.start_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
+
     end
   end
   
@@ -39,17 +50,16 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
   def controller_issues_edit_before_save(context={}) #runs before save on issue edit
     if context[:issue].is_shift?
       #get times and date from form params
-      s_time = DateTime.parse(context[:params][:issue][:start_time])
-      e_time = DateTime.parse(context[:params][:issue][:end_time])
-      s_date = Date.parse(context[:params][:issue][:start_date])
-      context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift?
-      context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min)
-      context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min)
-      if context[:params][:issue][:assigned_to].present?
-        context[:issue].write_attribute :subject, context[:params][:issue][:assigned_to] + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d')
-      else
-        context[:issue].write_attribute :subject, context[:issue].assigned_to.firstname + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d')
-      end
+      @issue = context[:issue] 
+      s_date = Date.parse(context[:params][:issue][:start_date]) + 15.minutes
+      s_time = context[:params][:issue][:start_time].to_i
+      e_time = context[:params][:issue][:end_time].to_i
+      
+      @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
+      @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
+
+      @issue.write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date])
+      @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %l:%M -') + @issue.end_time.strftime('%l:%M %p - ') + @issue.start_date.strftime('%a, %b %d')
     end
   end
 

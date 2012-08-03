@@ -30,6 +30,15 @@ module IssuePatch
 
   module ClassMethods #we don't currently have any class methods for Issues
 
+    def time_list
+      list = []
+      t = Time.local(0,1,1,0,15)
+      for h in 0..49
+        list << [ (t + h*30.minutes).strftime("%I:%M %p"), h ]
+      end
+      return list
+    end
+
   end
 
   module InstanceMethods #methods to run on shifts. as is, we can run them on all issues which is not good.
@@ -65,17 +74,17 @@ module IssuePatch
       ((start_time && end_time) ? end_time - start_time : 0)/60/60
     end
     
-    # a thought occurs, it doesn't seem that this differentiates between LC and FD shifts, which maybe it should?
+    def shift_duration_index #duration in 1/2 hr increments
+      (shift_duration/0.5).to_i
+    end
+
+    #TODO: these two indexes don't work right sometimes. They are now only used for setting the selected value. Fix or rewrite
     def shift_start_index #integer expressing shift start time as one of 48 1/2 hr increments in a day
       (start_time.hour * 2) + (start_time.min/30)
     end
     
     def shift_end_index #same for end
       (end_time.hour * 2) + (end_time.min/30)
-    end
-
-    def shift_duration_index #duration in 1/2 hr increments
-      shift_end_index - shift_start_index
     end
     
     def validate_with_shift_times # see alias_method_chain above
