@@ -134,7 +134,15 @@ class TimesheetsController < ApplicationController
   end
 
   def reject
-    
+    if @timesheet.release
+      flash[:notice] = "Timesheet successfully rejected"
+      @timesheet.submitted = nil
+      @timesheet.save
+      redirect_to :action => 'index'
+    else
+      flash[:notice] = "An error occurred when rejecting timesheet"
+      redirect_to :action => 'index'
+    end
   end
 
   private
