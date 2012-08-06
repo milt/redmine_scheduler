@@ -1,5 +1,6 @@
 class LevelsController < ApplicationController
   unloadable
+  before_filter :role_check
 
 
   #need to add additional levels?
@@ -70,4 +71,11 @@ class LevelsController < ApplicationController
 
   private
 
+  def role_check
+    if !User.current.is_admstaff?
+      render_403
+      return false
+    end
+    true
+  end
 end
