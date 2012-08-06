@@ -1,6 +1,6 @@
 class LevelsController < ApplicationController
   unloadable
-  before_filter :role_check
+  before_filter :role_check, :except => :my_levels
 
 
   #need to add additional levels?
