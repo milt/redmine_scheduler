@@ -1,5 +1,6 @@
 # English strings go here for Rails i18n
 en:
+  label_my_levels: "My Skill Levels"
   field_start_time: "Start Time"
   field_end_time: "End Time"
   field_manager: "Group Manager"
