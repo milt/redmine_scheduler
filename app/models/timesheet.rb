@@ -1,6 +1,6 @@
 class Timesheet < ActiveRecord::Base
   unloadable
-  has_many :time_entries
+  has_many :time_entries, :dependent => :nullify
   belongs_to :user       # possible to divide user between employee and staff/boss?
   has_one :wage, :through => :user
   attr_accessible :submitted, :approved    #not sure if necessary
@@ -229,7 +229,7 @@ class Timesheet < ActiveRecord::Base
   end
 
   def delete_now
-    if Timesheet.destroy(self)
+    if self.destroy
       return true
     else
       return false
