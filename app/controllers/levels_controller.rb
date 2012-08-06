@@ -69,6 +69,10 @@ class LevelsController < ApplicationController
       end 
   end
 
+  def my_levels
+    @levels = Level.for_user(User.current)
+  end
+
   private
 
   def role_check

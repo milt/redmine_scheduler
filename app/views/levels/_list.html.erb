@@ -1,0 +1,5 @@
+<ul>
+  <% levels.each do |level| %>
+    <li>Level <em><%= level.rating.to_s %></em> in <em><%= level.skill.name %></em>, Updated: <%= level.updated_at.strftime("%D") %></li>
+  <% end %>
+</ul>
