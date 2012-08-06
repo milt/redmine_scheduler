@@ -100,9 +100,11 @@ class TimesheetsController < ApplicationController
   end
 
   def show
+    @edit = false
   end
 
   def edit
+    @edit = true
   end
 
   def update
@@ -129,15 +131,18 @@ class TimesheetsController < ApplicationController
   end
 
   def delete
-    Timesheet.destroy(@timesheet)
-    redirect_to :action => 'index'
+    if @timesheet.delete_now && @timesheet.save
+      flash[:notice] = "Timesheet has been successfully deleted!"
+      redirect_to :action => 'index'
+    else
+      flash[:warning] = "An error occurred when deleting the timesheet.."
+      redirect_to :action => 'index'
+    end
   end
 
   def reject
-    if @timesheet.release
+    if @timesheet.reject_now && @timesheet.save
       flash[:notice] = "Timesheet successfully rejected"
-      @timesheet.submitted = nil
-      @timesheet.save
       redirect_to :action => 'index'
     else
       flash[:notice] = "An error occurred when rejecting timesheet"
@@ -156,7 +161,7 @@ class TimesheetsController < ApplicationController
       end
     elsif User.current.is_stustaff?
       unless @timesheet.actions[:staff].map {|a| a[1]}.include?(action_name.to_sym)
-        flash[:warning] = "Invalid action for this timesheet, or you don not have permission!"
+        flash[:warning] = "Invalid action for this timesheet, or you do not have permission!"
         redirect_to :action => 'index'
       end
     else

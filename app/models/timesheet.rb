@@ -228,4 +228,11 @@ class Timesheet < ActiveRecord::Base
     self.approved = DateTime.now
   end
 
+  def delete_now
+    if Timesheet.destroy(self)
+      return true
+    else
+      return false
+    end
+  end
 end
