@@ -1,1 +1,7 @@
 <h2>Timeslots#index</h2>
+
+<ul>
+  <% @timeslots.each do |slot| %>
+    <li><%= slot.coach.name + " " + slot.start_time.strftime("%T") %></li>
+  <% end %>
+</ul>

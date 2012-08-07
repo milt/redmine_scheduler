@@ -13,6 +13,8 @@ class Booking < ActiveRecord::Base
   named_scope :orphaned, lambda { { :conditions => { :cancelled => nil, :timeslot_id => nil } } }
 
 
-  #self.per_page = 3
-  
+  def coach
+    self.issue.assigned_to
+  end
+
 end

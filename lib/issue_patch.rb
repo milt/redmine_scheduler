@@ -20,8 +20,11 @@ module IssuePatch
       named_scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
       named_scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
       named_scope :by_start_date, lambda {|d| { :conditions => { :start_date => d } } }
-      named_scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
       named_scope :from_date, lambda {|d| { :conditions => ["start_date >= ?", d] } }
+      named_scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
+      named_scope :from_start_time, lambda {|dt| {conditions => ["start_time >= ?", dt] } }
+      named_scope :until_start_time, lambda {|dt| {conditions => ["start_time <= ?", dt] } }
+
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => :is_labcoach_shift?
 
