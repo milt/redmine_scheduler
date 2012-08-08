@@ -3,7 +3,7 @@
   <p><%= label_tag 'To' %><%= select_date @to, :prefix => :to %></p>
 
   <% @coaches.each do |coach| %>
-    <p><%= label_tag coach.name %><%= check_box_tag 'coach_ids[]', coach.id %></p>
+    <p><%= label_tag coach.name %><%= check_box_tag 'coach_ids[]', coach.id, @coaches_selected.include?(coach) %></p>
   <% end %>
 
   <%= submit_tag("Search") %>
