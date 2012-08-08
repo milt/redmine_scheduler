@@ -1,0 +1,21 @@
+<div>
+
+  <div>
+    <p><%= shift.assigned_to.name %></p>
+    <p><%= shift.start_time.strftime("%T") + " to " + shift.end_time.strftime("%T") %></p>
+  </div>
+
+  <div>
+    <table>
+      <tr>
+        <th>Time</th>
+      </tr>
+
+      <% shift.timeslots.each do |slot| %>
+        <%= render 'slot_row', :slot => slot unless slot.start_time <= DateTime.now %>
+      <% end %>
+
+    </table>
+  </div>
+
+</div>
