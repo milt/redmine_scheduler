@@ -21,6 +21,8 @@ class TimeslotsController < ApplicationController
       @to = Date.today + 4.weeks
     end
 
+    @coaches = Group.stustaff.first.users
+
     @shifts = Issue.lcshift.from_date(@from).until_date(@to)
   end
 end
