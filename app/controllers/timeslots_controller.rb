@@ -22,7 +22,8 @@ class TimeslotsController < ApplicationController
     end
 
     @coaches = Group.stustaff.first.users
-
     @shifts = Issue.lcshift.from_date(@from).until_date(@to)
+    @dates = @shifts.map {|s| s.start_date }
+    
   end
 end
