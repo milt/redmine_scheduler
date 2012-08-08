@@ -22,8 +22,14 @@ class TimeslotsController < ApplicationController
     end
 
     @coaches = Group.stustaff.first.users
+    if params[:coach_ids].present?
+      @coaches_selected = params[:coach_ids].map {|id| User.find(id.to_s)}
+    else
+      @coaches_selected = @coaches
+    end
+
     @shifts = Issue.lcshift.from_date(@from).until_date(@to)
     @dates = @shifts.map {|s| s.start_date }
-    
+
   end
 end

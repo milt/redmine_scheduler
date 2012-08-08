@@ -24,7 +24,8 @@ module IssuePatch
       named_scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
       named_scope :from_start_time, lambda {|dt| {conditions => ["start_time >= ?", dt] } }
       named_scope :until_start_time, lambda {|dt| {conditions => ["start_time <= ?", dt] } }
-
+      named_scope :omit_user, lambda {|u| { :conditions => ["assigned_to_id != ?", u.id] } } # not used
+      named_scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => :is_labcoach_shift?
 
@@ -32,7 +33,15 @@ module IssuePatch
 
   end
 
-  module ClassMethods #we don't currently have any class methods for Issues
+  module ClassMethods
+
+    def omit_user_ids(ids)
+      c = self
+      ids.each do |id|
+        c = c.send :omit_user_id, id
+      end
+      return c
+    end
 
     def time_list
       list = []
