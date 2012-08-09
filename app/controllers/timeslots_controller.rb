@@ -21,7 +21,7 @@ class TimeslotsController < ApplicationController
     filter_coaches(@shifts)
     filter_skills(@shifts) unless @skills_selected.empty?
 
-    @dates = @shifts.map {|s| s.start_date }
+    @dates = (((@shifts.sort_by {|s| s.start_date})).map {|s| s.start_date }).uniq
 
     @shifts_by_date = @shifts.group_by(&:start_date)
     @slots_by_shift = @shifts.map {|s| s.timeslots}.flatten.group_by(&:issue)
