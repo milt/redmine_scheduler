@@ -11,7 +11,7 @@
         <th>Time</th>
       </tr>
 
-      <% shift.timeslots.each do |slot| %>
+      <% @slots_by_shift[shift].each do |slot| %>
         <%= render 'slot_row', :slot => slot unless slot.start_time <= DateTime.now %>
       <% end %>
 

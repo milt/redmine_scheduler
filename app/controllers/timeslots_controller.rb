@@ -24,6 +24,7 @@ class TimeslotsController < ApplicationController
     @dates = @shifts.map {|s| s.start_date }
 
     @shifts_by_date = @shifts.group_by(&:start_date)
+    @slots_by_shift = @shifts.map {|s| s.timeslots}.flatten.group_by(&:issue)
 
   end
 
