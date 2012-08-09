@@ -5,7 +5,7 @@
 <% @dates.each do |date| %>
   <h3><%= date.strftime("%D") %></h3>
 
-  <% @shifts.by_start_date(date).each do |shift| %>
+  <% @shifts_by_date[date].each do |shift| %>
     <%= render 'shift', :shift => shift unless shift.end_time <= DateTime.now %>
   <% end %>
 
