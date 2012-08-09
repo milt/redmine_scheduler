@@ -1,5 +1,5 @@
 <tr>
   <td>
-    <%= slot.start_time.strftime("%T") %>
+    <%= slot.start_time.strftime("%T") %><%= check_box_tag('slot_ids[]', slot.id) unless slot.booked? %><%= link_to(' See Booking...', :controller => 'bookings', :action => 'show', :id => slot.booking) if slot.booked? %>
   </td>
 </tr>

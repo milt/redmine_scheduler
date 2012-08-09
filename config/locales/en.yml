@@ -8,4 +8,7 @@ en:
   helpers:
     label:
       booking:
+        name: "Patron or Staff Name"
+        phone: "Phone"
+        email: "Email"
         project_desc: "Project Description"

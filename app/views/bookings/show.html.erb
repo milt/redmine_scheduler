@@ -1,1 +1,16 @@
-<h2>Bookings#show</h2>
+<h2>Booking <%= @booking.id %></h2>
+
+<div>
+  <p><%= @booking.name %></p>
+  <p><%= @booking.phone %></p>
+  <p><%= @booking.email %></p>
+  <p><%= @booking.project_desc %></p>
+</div>
+
+<div>
+  <ul>
+    <% @booking.timeslots.each do |slot| %>
+      <li><%= [slot.start_time.strftime("%D - %T"), slot.coach.name, "Available skills:" + slot.skills.map(&:name).join(", ")].join(", ") %></li>
+    <% end %>
+  </ul>
+</div>

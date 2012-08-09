@@ -2,11 +2,17 @@
 
 <%= render 'search_form' %>
 
-<% @dates.each do |date| %>
-  <h3><%= date.strftime("%D") %></h3>
+<% form_tag(:controller => 'bookings', :action => 'new') do %>
+  <h3>Select a time or times below and click "Book..." to make a new Booking</h3>
+  <%= submit_tag("Book...") %>
 
-  <% @shifts_by_date[date].each do |shift| %>
-    <%= render 'shift', :shift => shift unless shift.end_time <= DateTime.now %>
+  <% @dates.each do |date| %>
+    <h3><%= date.strftime("%D") %></h3>
+
+    <% @shifts_by_date[date].each do |shift| %>
+      <%= render 'shift', :shift => shift unless shift.end_time <= DateTime.now %>
+    <% end %>
+
   <% end %>
 
 <% end %>
