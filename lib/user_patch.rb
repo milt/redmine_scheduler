@@ -11,7 +11,7 @@ module UserPatch
       #has_and_belongs_to_many :skills
       has_many :levels, :dependent => :destroy
       has_many :skills, :through => :levels
-      belongs_to :wage
+      has_one :wage
       has_many :workgroups, :class_name => "Group",
         :foreign_key => "manager_id"
       has_many :time_entries

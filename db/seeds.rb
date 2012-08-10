@@ -266,12 +266,9 @@ User.find(:all, :conditions => ["lastname = ?", "Prostaff"]).map {|u| prostaffgr
 User.find(:all, :conditions => ["lastname = ?", "Stustaff"]).map {|u| stustaffgroup.users << u}
 User.find(:all, :conditions => ["lastname = ?", "Manager"]).map {|u| managergroup.users << u}
 
-#create a wage
-wage = Wage.create(:amount => 12.5)
-#give it to all stustaff
+#give wages to all stustaff
 stustaffgroup.users.each do |u|
-  u.wage = wage
-  u.save
+  u.create_wage(:amount => 12.0)
 end
 
 

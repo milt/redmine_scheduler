@@ -1,26 +1,20 @@
 <% render 'nav/nav' %>
 <h2>Wages</h2>
 
-<% form_for :wage, @wage, :url => { :action => "create" }, :html => {:class => "nifty_form"} do |f| %>
-  <%= f.text_field :amount %>
-  <%= submit_tag "Create" %>
-<% end %>
-
 <ul>
-	<% @wages.each do |wage| %>
-		<li><%= wage.amount %></li>
-	<% end %>
-</ul>
-
-<ul>
-	<% @users.each do |user| %>
-		<li><%= user.firstname + " " + user.lastname %> :
-			<% form_for :user, :url => { :action => "change" }, :html => {:class => "nifty_form"} do |f| %>
-			  <%= f.select :wage_id, @wages.map {|w| [w.amount, w.id] }, :selected => user.wage.id unless user.wage.nil? %>
-			  <%= f.hidden_field :id, {:value => user.id} %>
-			  <%= submit_tag "Update" %>
-			<% end %>
-		
-		</li>
-	<% end %>
+  <% @users.each do |user| %>
+    <li><%= user.name %>
+    <% if user.wage.present? %>
+        <% form_for(:wage, user.wage, :url => { :action => "update", :id => user.wage }) do |f| %>
+          <%= f.text_field :amount %>
+        <%= submit_tag "Update" %>
+      <% end %>
+    <% else %>
+      <% form_for(:wage, @wage, :url => { :action => "create", :user_id => user }) do |f| %>
+        <%= f.text_field :amount %>
+        <%= submit_tag "Assign" %>
+      <% end %>
+    <% end %>
+  </li>
+  <% end %>
 </ul>
