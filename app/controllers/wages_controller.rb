@@ -1,7 +1,8 @@
 class WagesController < ApplicationController
   unloadable
   
-  before_filter :require_admstaff, :find_users
+  before_filter :require_admstaff
+  before_filter :find_users, :only => :index
   
   def index
   end
