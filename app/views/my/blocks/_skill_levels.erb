@@ -1,4 +1,4 @@
 <h3><%=l(:label_my_levels)%></h3>
 
-<h1>hellos</h1>
-A list of assigned skill levels should go here.
+<%= render 'levels/list', :levels => Level.for_user(User.current) %>
+<!--A list of assigned skill levels should go here.-->

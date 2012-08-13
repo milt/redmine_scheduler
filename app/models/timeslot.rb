@@ -43,6 +43,7 @@ class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during whic
       return true
     end
   end
+
   def booked? #is the timeslot booked? I guess I was just too lazy to use open?
     if self.booking.present? #&& ( self.start_time < DateTime.now )
       return true
@@ -50,4 +51,5 @@ class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during whic
       return false
     end
   end
+
 end

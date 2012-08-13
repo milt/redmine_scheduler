@@ -1,3 +1,4 @@
 # English strings go here. This doesn't appear to work any more, use config/locales/ instead
 my_label: "My label"
 label_my_levels: "My Skill Levels"
+#label_latest_news: "Latest News"
