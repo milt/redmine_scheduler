@@ -12,7 +12,9 @@ class TimesheetsController < ApplicationController
   def index
     @submitted = @timesheets.is_submitted.is_not_approved
     @approved = @timesheets.is_submitted.is_approved
-
+    if !@drafts.empty?
+      flash[:warning] = "This is a reminder that you have an unsubmitted timesheet"
+    end
   end
 
   def new
@@ -48,6 +50,8 @@ class TimesheetsController < ApplicationController
     @weekof = yearstart + (@cweek - 1).weeks
     
     @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
+    @days_of_week = @entries.map(&:spent_on).uniq.sort
+    @entries_by_day = @entries.group_by(&:spent_on)
 
     issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)
     @fdshifts = issues.fdshift
