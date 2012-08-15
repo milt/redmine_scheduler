@@ -1,0 +1,18 @@
+<div>
+  <table class="list issues">
+    <h3>Shifts Sorted by Day</h3>
+
+      <% @shifts_day_of_week.each do |day| %>
+      <tr>
+        <th><%= Date::DAYNAMES[day.wday] %></th>
+        <td>
+          <% @shifts_by_day[day].each do |shift| %>
+            <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %><br>
+            <%= shift.tracker.name %><br>
+            <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %>
+          <%end%>
+        </td>
+      </tr>
+      <% end %>
+  </table>
+</div>

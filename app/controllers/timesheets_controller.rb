@@ -56,6 +56,11 @@ class TimesheetsController < ApplicationController
     issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)
     @fdshifts = issues.fdshift
     @lcshifts = issues.lcshift
+    
+    myissues = Issue.foruser(@user).from_date(@weekof).until_date(@weekof + 6.days)
+    @shifts_day_of_week = myissues.map(&:end_time).uniq.sort
+    @shifts_by_day = myissues.group_by(&:end_time)
+
     @goals = Issue.foruser(@user).goals
     @tasks = Issue.foruser(@user).tasks
   end
