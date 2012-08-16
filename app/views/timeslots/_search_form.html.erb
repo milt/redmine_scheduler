@@ -5,10 +5,12 @@
   <h3>Include Staff:</h3>
 
   <% @coaches.each do |coach| %>
-    <p><%= label_tag coach.name %><%= check_box_tag 'coach_ids[]', coach.id, @coaches_selected.include?(coach) %></p>
+    <p><%= check_box_tag 'coach_ids[]', coach.id, @coaches_selected.include?(coach) %><%= label_tag coach.name %></p>
   <% end %>
 
   <h3>Restrict to Staff with Skills:</h3>
+
+  
 
   <% @skillcats.each do |cat| %>
     <h4><%= cat.name %></h4>

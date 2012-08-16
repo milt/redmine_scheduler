@@ -12,9 +12,6 @@ class TimesheetsController < ApplicationController
   def index
     @submitted = @timesheets.is_submitted.is_not_approved
     @approved = @timesheets.is_submitted.is_approved
-    if !@drafts.empty?
-      flash[:warning] = "This is a reminder that you have an unsubmitted timesheet"
-    end
   end
 
   def new
@@ -183,6 +180,9 @@ class TimesheetsController < ApplicationController
     if User.current.is_stustaff?
       @timesheets = Timesheet.weekof_from(DateTime.now - 3.years).for_user(User.current)
       @drafts = @timesheets.is_not_submitted.is_not_approved
+      if !@drafts.empty?
+        flash[:warning] = "This is a reminder that you have an unsubmitted timesheet"
+      end
     elsif User.current.is_admstaff?
       @timesheets = Timesheet.weekof_from(DateTime.now - 3.years)
     else
