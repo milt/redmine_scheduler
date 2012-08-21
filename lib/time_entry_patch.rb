@@ -26,7 +26,7 @@ module TimeEntryPatch
       end
 
       def cannot_create_if_timesheet_exists
-        errors.add_to_base("Cannot create time entry because there is already a timesheet submitted for this date.") if
+        errors.add_to_base("Cannot create time entry because there is already a timesheet submitted for the given week: #{Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.first.id}") if
           Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.present?  
       end
 
