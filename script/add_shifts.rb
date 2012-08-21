@@ -34,3 +34,23 @@ for p in 0..21 do
 
   end
 end
+
+for p in 0..60 do
+  date = Date.today + p.days
+  start = date.to_datetime + 12.hours
+  finish = start + 4.hours
+
+  stustaff.each do |staffer|
+      #make a shift
+      i = Issue.new
+      i.tracker = lc_tracker
+      i.project = lc_project
+      i.assigned_to = staffer
+      i.subject = "#{staffer.firstname} #{date.strftime("%D")} : #{start.strftime("%T")} to #{finish.strftime("%T")}"
+      i.author = manager
+      i.start_date = date
+      i.start_time = start
+      i.end_time = finish
+      i.save
+  end
+end

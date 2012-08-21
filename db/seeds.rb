@@ -271,6 +271,15 @@ stustaffgroup.users.each do |u|
   u.create_wage(:amount => 12.0)
 end
 
+# assign 3 random skill levels to stustaff
+stustaff = stustaffgroup.users
+
+stustaff.each do |staffer|
+  3.times do
+    level = Level.create(:user => staffer, :skill => Skill.find(rand(Skill.count)+1), :rating => rand(4))
+  end
+end
+
 
 #add groups to project roles
 fd_managermember = Member.new(:principal => managergroup, :project => front_desk_project)
