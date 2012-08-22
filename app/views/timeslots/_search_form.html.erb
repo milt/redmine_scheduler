@@ -10,12 +10,19 @@
 
   <h3>Restrict to Staff with Skills:</h3>
 
-  
+  <% @skillcats.each do |cat| %>
+    <h4><%= cat.name %></h4>
+    <% skill_names = [] %>
+    <% cat.skills.each do |skill| %>
+      <% skill_names << skill.name %> 
+    <% end %>
+    <%= select_tag (:sel_skills, options_for_select(skill_names.insert(0,"")) ) %>
+  <% end %>
 
   <% @skillcats.each do |cat| %>
     <h4><%= cat.name %></h4>
     <% cat.skills.each do |skill| %>
-      <p><%= label_tag skill.name %><%= check_box_tag 'skill_ids[]', skill.id, @skills_selected.include?(skill) %></p>
+      <p><%= check_box_tag 'skill_ids[]', skill.id, @skills_selected.include?(skill) %><%= label_tag skill.name %></p>
     <% end %>
   <% end %>
 

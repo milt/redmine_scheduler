@@ -47,19 +47,20 @@ class TimesheetsController < ApplicationController
     @weekof = yearstart + (@cweek - 1).weeks
     
     @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
-    @days_of_week = @entries.map(&:spent_on).uniq.sort
-    @entries_by_day = @entries.group_by(&:spent_on)
+    #@entries_days_of_week = @entries.map(&:spent_on).uniq.sort   #uniq.sort doesn't seem to be needed, converts array of timeentries to array of dates
+    @entries_by_day = @entries.group_by(&:spent_on)  
 
     issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)
     @fdshifts = issues.fdshift
     @lcshifts = issues.lcshift
     
-    myissues = Issue.foruser(@user).from_date(@weekof).until_date(@weekof + 6.days)
-    @shifts_day_of_week = myissues.map(&:end_time).uniq.sort
-    @shifts_by_day = myissues.group_by(&:end_time)
+    #@shifts_day_of_week = issues.map(&:start_date).uniq.sort
+    @shifts_by_day = issues.group_by(&:start_date)
 
     @goals = Issue.foruser(@user).goals
     @tasks = Issue.foruser(@user).tasks
+
+    @edit = false
   end
 
   def create
@@ -111,6 +112,7 @@ class TimesheetsController < ApplicationController
 
   def edit
     @edit = true
+
   end
 
   def update

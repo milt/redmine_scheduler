@@ -52,4 +52,13 @@ class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during whic
     end
   end
 
+  #tried using this with search form partial, doesn't work
+  def get_skill_names(skill)
+    skill_names = []
+    skills.each do |skill|
+      skill_names << skill.name
+    end
+    return skill_names
+  end
+
 end

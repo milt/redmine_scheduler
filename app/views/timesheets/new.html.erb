@@ -9,13 +9,11 @@
 <%end%>
 
 <br>
-  <%= render 'weeklist', :entries => @entries %>
+  <!--<%= render 'weeklist', :entries => @entries %>-->
 <br>
-  <%= render 'entries_by_day' %> 
+  <%= render 'entries_shifts_by_weekdays' %> 
 <br>
-  <%= render 'shifts_by_day' %>
-<br>
-  <%= render 'shifts', { :fdshifts => @fdshifts, :lcshifts => @lcshifts } %>
+  <!--<%= render 'shifts', { :fdshifts => @fdshifts, :lcshifts => @lcshifts } %>-->
 <br>
   <%= render 'tasks', :tasks => @tasks %>
 <br>
