@@ -14,9 +14,9 @@
     <h4><%= cat.name %></h4>
     <% skill_names = [] %>
     <% cat.skills.each do |skill| %>
-      <% skill_names << skill.name %> 
+      <% skill_names << [skill.name, skill.id] %> 
     <% end %>
-    <%= select_tag (:sel_skill, options_for_select(skill_names.insert(0,""))) %>
+    <%= select_tag (:sel_skill, options_for_select(skill_names.insert(0,["",nil]))) %>
   <% end %>
 
   <% @skillcats.each do |cat| %>

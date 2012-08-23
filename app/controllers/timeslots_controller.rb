@@ -52,10 +52,8 @@ class TimeslotsController < ApplicationController
       @coaches_selected = @coaches
     end
 
-    if params[:skill_ids].present?
-      @skills_selected = params[:skill_ids].map {|id| Skill.find(id.to_s)}
-    else
-      @skills_selected = []
+    if params[:sel_skill].present?
+      @skill_selected = Skill.find(params[:sel_skill].to_i)
     end
 
   end
@@ -73,10 +71,8 @@ class TimeslotsController < ApplicationController
   end
 
   def filter_skills(shifts)
-    #skill_ids = @skills_selected.map(&:id)   #used previously with checkboxes
-    skill_id = Skill.all(:conditions => ["name = ?", sel_skill])
-    #@shifts = shifts.reject {|s| (s.skills.map(&:id) & skill_ids).empty?}
-    @shifts = shifts.reject {|s| (s.skills.map(&:id) & skill_id).empty?}
-  
+    if @skill_selected?
+      @shifts = shifts.reject {|s| s.skills.map(&:id).include?(@skill_selected.id)}
+    end
   end
 end
