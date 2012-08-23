@@ -61,6 +61,7 @@ class TimesheetsController < ApplicationController
     @tasks = Issue.foruser(@user).tasks
 
     @edit = false
+    @show = false
   end
 
   def create
@@ -108,10 +109,21 @@ class TimesheetsController < ApplicationController
 
   def show
     @edit = false
+    @show = true
+
+    issues = Issue.from_date(@timesheet.weekof).until_date(@timesheet.weekof + 6.days)
+
+    @shifts_by_day = issues.group_by(&:start_date)
+
   end
 
   def edit
     @edit = true
+    @show = false
+
+    issues = Issue.from_date(@timesheet.weekof).until_date(@timesheet.weekof + 6.days)
+
+    @shifts_by_day = issues.group_by(&:start_date)
 
   end
 

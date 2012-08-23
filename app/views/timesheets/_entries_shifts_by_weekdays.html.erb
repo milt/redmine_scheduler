@@ -1,8 +1,11 @@
+<!-- something to consider: can I merge the if edit statements to simplify code??-->
+<!--check formatting inside old timecards view-->
+
 <div>
   <table class="list issues">
     <h3>Shifts and Time Entries Sorted by Day</h3>
 
-    <% if !@edit %>
+    <% if !@edit && !@show %>
       <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
       
         <th><%= Date.commercial(@year_selected, @cweek, day).strftime("%A")  %></th>
@@ -37,10 +40,28 @@
               <%= entry.activity %>
               <%= link_to_project(entry.project) %>
               <%= link_to_issue(entry.issue, :truncate => 30) %>
-              <strong>Hours: </strong><%= entry.hours %><br />
+              <strong>Hours: </strong><%= entry.hours %>
+              <% if @edit %>
+              <% if entry.editable_by?(User.current) -%>
+                <%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => entry, :project_id => nil}, :title => l(:button_edit) %>
+                <%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => entry, :project_id => nil},
+                                    :confirm => l(:text_are_you_sure),
+                                    :method => :delete,
+                                    :title => l(:button_delete) %><br />
+              <%end%>
+              <% else %>
+                <br />
+              <% end %>
+
             <%end%>
           <%end%>
-          
+          <% if !@shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
+            <% @shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |shift| %>
+              <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
+              <%= shift.tracker.name %>
+              <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %><br />
+            <%end%>
+          <%end%>
         </td>
         </tr>
       <%end%>  

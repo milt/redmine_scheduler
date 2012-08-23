@@ -16,7 +16,7 @@
     <% cat.skills.each do |skill| %>
       <% skill_names << skill.name %> 
     <% end %>
-    <%= select_tag (:sel_skills, options_for_select(skill_names.insert(0,"")) ) %>
+    <%= select_tag (:sel_skill, options_for_select(skill_names.insert(0,""))) %>
   <% end %>
 
   <% @skillcats.each do |cat| %>

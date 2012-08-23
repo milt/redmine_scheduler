@@ -5,6 +5,13 @@ class BookingsController < ApplicationController
 
   def index
     @bookings = Booking.all
+    @time = []
+
+    for i in 0..23 do
+      for j in 0..3 do
+        @time << [DateTime.new(2012, 1, 1, i, j * 15, 0).strftime("%H:%M:%S")]  #need to fix this
+      end
+    end
   end
 
   def new

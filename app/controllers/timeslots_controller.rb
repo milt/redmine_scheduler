@@ -73,7 +73,10 @@ class TimeslotsController < ApplicationController
   end
 
   def filter_skills(shifts)
-    skill_ids = @skills_selected.map(&:id)
-    @shifts = shifts.reject {|s| (s.skills.map(&:id) & skill_ids).empty?}
+    #skill_ids = @skills_selected.map(&:id)   #used previously with checkboxes
+    skill_id = Skill.all(:conditions => ["name = ?", sel_skill])
+    #@shifts = shifts.reject {|s| (s.skills.map(&:id) & skill_ids).empty?}
+    @shifts = shifts.reject {|s| (s.skills.map(&:id) & skill_id).empty?}
+  
   end
 end
