@@ -14,7 +14,7 @@ class Booking < ActiveRecord::Base
 
 
   def coach
-    self.issue.first.assigned_to
+    self.timeslots.first.coach
   end
 
 end
