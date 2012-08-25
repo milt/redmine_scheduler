@@ -1,6 +1,6 @@
 <h2>New Booking</h2>
 
-<table width = "900" border = "0">
+<table width = "1000" border = "0">
 	<tr>
 	<td width="700"><% form_for :booking, @booking, :url => { :action => "create", :slot_ids => @timeslots }, :html => {:class => "nifty_form"} do |f| %>
   	<p><%= f.label :name %> <%= f.text_field :name %></p>
@@ -10,7 +10,7 @@
   	<p><%= submit_tag "Create" %></p>
 	<% end %>
 	</td>
-	<td width="200"><%= render 'show_timeslots' %>
+	<td width="300"><%= render 'show_timeslots' %>
 	</td>
 	</tr>
 </table>

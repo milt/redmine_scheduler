@@ -14,15 +14,28 @@ class BookingsController < ApplicationController
         @time << [DateTime.new(2012, 1, 1, i, j * 15, 0).strftime("%H:%M:%S")]  #need to fix this
       end
     end
+
+    if params[:sel_date].present?
+      @date = Date.new(params[:sel_date][:year].to_i, params[:sel_date][:month].to_i, params[:sel_date][:day].to_i)
+    end
+
+    filter_date(@bookings, @date) unless @date.nil?
+    flash[:notice] = "the date selected is #{@date}"
+
+    if @date.nil?
+      @bookings = []
+      flash[:warning] = "No date selected"
+    end 
   end
 
   def new
     #@booking = Booking.new
-    @bookings = Booking.all
+    #@bookings = Booking.all
     same_day(@timeslots)
     same_issue(@timeslots)
   end
 
+  #somehow this method is creating a nasting parameter mismatch error.
   def create
     @booking = Booking.new(params[:booking])
     @booking.timeslots << @timeslots
@@ -50,6 +63,10 @@ class BookingsController < ApplicationController
 
   private
 
+  def filter_date(bookings, date)
+    @bookings = bookings.select {|s| s.apt_time.to_date == date}
+  end
+  
   def same_issue(timeslots)
     same_issue = true
     issue_id = timeslots.first.issue_id

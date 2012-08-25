@@ -1,3 +1,19 @@
 <h2>Bookings#index</h2>
 
 <%= render 'search_form' %>
+
+<table>
+    <th>Patron Name</th>
+    <th>Coach</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    
+    <% @bookings.each do |booking| %>
+   	  <tr>
+   	  	<td><%= booking.name %></td>
+        <td><%= booking.coach %></td><!--somehow coach doesn't work??-->
+		<td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
+        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
+      </tr>
+  	<% end %>
+</table>

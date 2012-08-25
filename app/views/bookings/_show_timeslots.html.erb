@@ -7,8 +7,8 @@
     <% @timeslots.each do |timeslot| %>
       <tr>
         <td><%= timeslot.id %></td>
-        <td><%= timeslot.coach.firstname %>&nbsp;<%= timeslot.coach.lastname %></td>
-	      <td><%= timeslot.slot_date %></td>
+        <td><%= timeslot.coach %></td>
+	    <td><%= timeslot.slot_date %></td>
         <td><%= timeslot.start_time.strftime("%H:%M:%S") %></td>
         <td><%= timeslot.end_time.strftime("%H:%M:%S") %></td>
       </tr>
