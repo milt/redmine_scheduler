@@ -12,6 +12,20 @@ class Booking < ActiveRecord::Base
   named_scope :cancelled, lambda { { :conditions => { :cancelled => true } } }
   named_scope :orphaned, lambda { { :conditions => { :cancelled => nil, :timeslot_id => nil } } }
 
+  #not working, switched to controller.
+  #validate :same_day(@timeslots)
+  # def same_day(timeslots)
+  #   same_date = true
+  #   date = timeslots.first.slot_date
+
+  #   timeslots.each do |timeslot|
+  #     if (timeslot.slot_date != date)
+  #       same_date = false
+  #       break
+  #     end
+  #   end
+  #   flash[:warning] = "timeslots need to on the same day" if same_date == false
+  # end
 
   def coach
     self.timeslots.first.coach

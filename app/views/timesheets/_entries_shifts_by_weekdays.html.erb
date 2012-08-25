@@ -33,7 +33,7 @@
       <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
         <% entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on) %>
         <th><%= Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day).strftime("%A")  %></th>
-        <tr>
+        <tr> 
           <td>
           <% if !entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
             <% entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |entry| %>

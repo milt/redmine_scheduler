@@ -19,7 +19,8 @@ class BookingsController < ApplicationController
   def new
     #@booking = Booking.new
     @bookings = Booking.all
-
+    same_day(@timeslots)
+    same_issue(@timeslots)
   end
 
   def create
@@ -48,6 +49,38 @@ class BookingsController < ApplicationController
   end
 
   private
+
+  def same_issue(timeslots)
+    same_issue = true
+    issue_id = timeslots.first.issue_id
+
+    timeslots.each do |timeslot|
+      if (timeslot.issue_id != issue_id)
+        same_issue = false
+        break
+      end
+    end
+    if same_issue == false
+      flash[:warning] = "timeslots need to on the same issue"
+      redirect_to :controller => 'timeslots', :action => 'find'
+    end
+  end
+
+  def same_day(timeslots)
+    same_date = true
+    date = timeslots.first.slot_date
+
+    timeslots.each do |timeslot|
+      if (timeslot.slot_date != date)
+        same_date = false
+        break
+      end
+    end
+    if same_date == false
+      flash[:warning] = "timeslots need to on the same day"
+      redirect_to :controller => 'timeslots', :action => 'find'
+    end
+  end
 
   def find_timeslots
     if params[:slot_ids].present?

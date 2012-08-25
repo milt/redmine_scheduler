@@ -1,11 +1,16 @@
 <h2>New Booking</h2>
 
-<%= render 'show_timeslots' %>
-
-<% form_for :booking, @booking, :url => { :action => "create", :slot_ids => @timeslots }, :html => {:class => "nifty_form"} do |f| %>
-  <p><%= f.label :name %> <%= f.text_field :name %></p>
-  <p><%= f.label :phone %> <%= f.text_field :phone %></p>
-  <p><%= f.label :email %> <%= f.text_field :email %></p>
-  <p><%= f.label :project_desc %></p><p><%= f.text_area :project_desc %></p>
-  <p><%= submit_tag "Create" %></p>
-<% end %>
+<table width = "900" border = "0">
+	<tr>
+	<td width="700"><% form_for :booking, @booking, :url => { :action => "create", :slot_ids => @timeslots }, :html => {:class => "nifty_form"} do |f| %>
+  	<p><%= f.label :name %> <%= f.text_field :name %></p>
+  	<p><%= f.label :phone %> <%= f.text_field :phone %></p>
+  	<p><%= f.label :email %> <%= f.text_field :email %></p>
+  	<p><%= f.label :project_desc %></p><p><%= f.text_area :project_desc %></p>
+  	<p><%= submit_tag "Create" %></p>
+	<% end %>
+	</td>
+	<td width="200"><%= render 'show_timeslots' %>
+	</td>
+	</tr>
+</table>

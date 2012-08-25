@@ -1,19 +1,16 @@
 <table>
-  <% @bookings.each do |booking| %>
-    <h3>Booking ID: <%= booking.name %></h3>
     <th>Timeslot ID</th>
-    <th>Assignee</th>
+    <th>Coach</th>
     <th>Timeslot Date</th>
     <th>Timeslot Start Time</th>
     <th>Timeslot End Time</th>
-    <% booking.timeslots.each do |timeslot| %>
+    <% @timeslots.each do |timeslot| %>
       <tr>
         <td><%= timeslot.id %></td>
-        <td><%= timeslot.coach.firstname %></td>
+        <td><%= timeslot.coach.firstname %>&nbsp;<%= timeslot.coach.lastname %></td>
 	      <td><%= timeslot.slot_date %></td>
         <td><%= timeslot.start_time.strftime("%H:%M:%S") %></td>
         <td><%= timeslot.end_time.strftime("%H:%M:%S") %></td>
       </tr>
     <% end %>
-  <% end %>
 </table>
