@@ -5,6 +5,8 @@ class BookingsController < ApplicationController
 
   def index
     @bookings = Booking.all
+    
+    #code block used for search form
     @time = []
 
     for i in 0..23 do
@@ -15,7 +17,9 @@ class BookingsController < ApplicationController
   end
 
   def new
-    @booking = Booking.new
+    #@booking = Booking.new
+    @bookings = Booking.all
+
   end
 
   def create

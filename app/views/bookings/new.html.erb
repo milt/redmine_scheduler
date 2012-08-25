@@ -1,4 +1,7 @@
 <h2>New Booking</h2>
+
+<%= render 'show_timeslots' %>
+
 <% form_for :booking, @booking, :url => { :action => "create", :slot_ids => @timeslots }, :html => {:class => "nifty_form"} do |f| %>
   <p><%= f.label :name %> <%= f.text_field :name %></p>
   <p><%= f.label :phone %> <%= f.text_field :phone %></p>
