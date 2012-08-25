@@ -19,12 +19,5 @@
     <%= select_tag (:sel_skill, options_for_select(skill_names.insert(0,["",nil]))) %>
   <% end %>
 
-  <% @skillcats.each do |cat| %>
-    <h4><%= cat.name %></h4>
-    <% cat.skills.each do |skill| %>
-      <p><%= check_box_tag 'skill_ids[]', skill.id, @skills_selected.include?(skill) %><%= label_tag skill.name %></p>
-    <% end %>
-  <% end %>
-
   <%= submit_tag("Search") %>
 <% end %>

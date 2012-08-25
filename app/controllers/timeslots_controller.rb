@@ -19,7 +19,7 @@ class TimeslotsController < ApplicationController
     #apply filtering to shifts. each one of these methods modifies @shifts
     filter_dates(@shifts)
     filter_coaches(@shifts)
-    filter_skills(@shifts) unless @skills_selected.empty?
+    filter_skills(@shifts) unless @skill_selected.nil?   #this might be where error occurred
 
     @dates = @shifts.map(&:start_date).uniq.sort
 
@@ -53,7 +53,7 @@ class TimeslotsController < ApplicationController
     end
 
     if params[:sel_skill].present?
-      @skill_selected = Skill.find(params[:sel_skill].to_i)
+      @skill_selected = Skill.find(params[:sel_skill])
     end
 
   end
@@ -71,8 +71,8 @@ class TimeslotsController < ApplicationController
   end
 
   def filter_skills(shifts)
-    if @skill_selected?
+    #if !@skill_selected.nil?
       @shifts = shifts.reject {|s| s.skills.map(&:id).include?(@skill_selected.id)}
-    end
+    #end
   end
 end
