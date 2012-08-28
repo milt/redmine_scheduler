@@ -16,7 +16,7 @@
     <% cat.skills.each do |skill| %>
       <% skill_names << [skill.name, skill.id] %> 
     <% end %>
-    <%= select_tag (:sel_skill, options_for_select(skill_names.insert(0,["",nil]))) %>
+    <%= select_tag (:sel_skill, options_for_select(skill_names.insert(0,["",nil]), @skill_choice)) %>
   <% end %>
 
   <%= submit_tag("Search") %>

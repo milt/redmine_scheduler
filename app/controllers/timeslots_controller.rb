@@ -54,6 +54,9 @@ class TimeslotsController < ApplicationController
 
     if params[:sel_skill].present?
       @skill_selected = Skill.find(params[:sel_skill])
+      @skill_choice = @skill_selected.id
+    else
+      @skill_choice = 0
     end
 
   end
@@ -72,7 +75,7 @@ class TimeslotsController < ApplicationController
 
   def filter_skills(shifts)
     #if !@skill_selected.nil?
-      @shifts = shifts.reject {|s| s.skills.map(&:id).include?(@skill_selected.id)}
+      @shifts = shifts.select {|s| s.skills.map(&:id).include?(@skill_selected.id)}
     #end
   end
 end
