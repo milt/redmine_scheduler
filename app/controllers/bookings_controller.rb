@@ -29,10 +29,14 @@ class BookingsController < ApplicationController
   end
 
   def new
+    #@booking = Booking.new
     #@bookings = Booking.all
     #same_day(@timeslots)
     #same_issue(@timeslots)
     
+    # Booking.cannot_create_across_issues()
+    # Booking.cannot_create_on_multiple_days()
+
     # if @same_issue == false
     #   redirect_to :controller => 'timeslots', :action => 'find'
     # end
@@ -46,7 +50,11 @@ class BookingsController < ApplicationController
   def create
     @booking = Booking.new(params[:booking])
     @booking.timeslots << @timeslots
-    @booking.apt_time=(Issue.find(@timeslots.first.issue_id).start_time)
+    @booking.apt_time=(@timeslots.first.start_time)
+
+    # if !@booking.save
+    #   redirect_to :controller => 'timeslots', :action => 'find'
+    # end
 
     respond_to do |format|
       if @booking.save
@@ -54,13 +62,15 @@ class BookingsController < ApplicationController
         format.html { redirect_to :action => "index" }
         format.xml  { render :xml => @booking, :status => :created,
                     :location => @booking }
-      else                                               
-        flash[:warning] = 'Invalid Options... Try again!'
-        format.html { redirect_to :action => "new" }
-        format.xml  { render :xml => @booking.errors,
-                    :status => :unprocessable_entity }
       end
     end
+      # else                                               
+    #     flash[:warning] = 'Invalid Options... Try again!'
+    #     format.html { redirect_to :action => "new" }
+    #     format.xml  { render :xml => @booking.errors,
+    #                 :status => :unprocessable_entity }
+    #   end
+    # end
   end
 
   def show

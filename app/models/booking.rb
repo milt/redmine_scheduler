@@ -11,9 +11,9 @@ class Booking < ActiveRecord::Base
   #named_scope :booked, lambda { { :conditions => "timeslot_id IS NOT NULL" } }
   named_scope :cancelled, lambda { { :conditions => { :cancelled => true } } }
   named_scope :orphaned, lambda { { :conditions => { :cancelled => nil, :timeslot_id => nil } } }
-  #validate_on_create :cannot_create_across_issues
-  #validate_on_create :cannot_create_on_multiple_days
-
+  validate_on_create :cannot_create_across_issues
+  validate_on_create :cannot_create_on_multiple_days
+  
   def apt_time=(time)
     write_attribute :apt_time, (time)
   end
