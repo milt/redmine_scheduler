@@ -4,6 +4,6 @@
   <p><%= label_tag 'Select Start Time' %><%= select_tag (:sel_time, options_for_select(@time)) %></p>
   <p><%= label_tag 'Select Date Time' %><%= select_datetime @datetime, :prompt => ' ' %></p>
  -->  
-  <p><%= label_tag 'Select Date: ' %><%= select_date @date, :prompt => "", :prefix => :sel_date %></p>
+  <p><%= label_tag 'Select Date: ' %><%= select_date(Time.now, :prefix => :sel_date) %></p>
   <%= submit_tag("Search") %>
 <%end%>
