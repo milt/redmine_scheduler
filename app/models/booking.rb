@@ -11,6 +11,44 @@ class Booking < ActiveRecord::Base
   #named_scope :booked, lambda { { :conditions => "timeslot_id IS NOT NULL" } }
   named_scope :cancelled, lambda { { :conditions => { :cancelled => true } } }
   named_scope :orphaned, lambda { { :conditions => { :cancelled => false } } }
+  validate_on_create :cannot_create_across_issues
+  validate_on_create :cannot_create_on_multiple_days
+  
+  def apt_time=(time)
+    write_attribute :apt_time, (time)
+  end
+
+  def cannot_create_across_issues
+    @same_issue = true
+    issue_id = @timeslots.first.issue_id
+
+    @timeslots.each do |timeslot|
+      if (timeslot.issue_id != issue_id)
+        same_issue = false
+        break
+      end
+    end
+
+    errors.add_to_base("Cannot create booking because there timeslots across multiple issue categories") if
+      @same_issue == false
+
+  end
+
+  def cannot_create_on_multiple_days
+    @same_date = true
+    date = @timeslots.first.slot_date
+
+    @timeslots.each do |timeslot|
+      if (timeslot.slot_date != date)
+        same_date = false
+        break
+      end
+    end
+    
+    errors.add_to_base("Cannot create booking because the timeslots span multiple days") if 
+      @same_date == false
+  end
+
 
   #not working, switched to controller.
   #validate :same_day(@timeslots)

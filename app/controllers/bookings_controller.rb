@@ -31,14 +31,30 @@ class BookingsController < ApplicationController
   def new
     #@booking = Booking.new
     #@bookings = Booking.all
-    same_day(@timeslots)
-    same_issue(@timeslots)
+    #same_day(@timeslots)
+    #same_issue(@timeslots)
+    
+    # Booking.cannot_create_across_issues()
+    # Booking.cannot_create_on_multiple_days()
+
+    # if @same_issue == false
+    #   redirect_to :controller => 'timeslots', :action => 'find'
+    # end
+
+    # if @same_date == false
+    #   redirect_to :controller => 'timeslots', :action => 'find'
+    # end
   end
 
   #somehow this method is creating a nasting parameter mismatch error.
   def create
     @booking = Booking.new(params[:booking])
     @booking.timeslots << @timeslots
+    @booking.apt_time=(@timeslots.first.start_time)
+
+    # if !@booking.save
+    #   redirect_to :controller => 'timeslots', :action => 'find'
+    # end
 
     respond_to do |format|
       if @booking.save
@@ -46,13 +62,15 @@ class BookingsController < ApplicationController
         format.html { redirect_to :action => "index" }
         format.xml  { render :xml => @booking, :status => :created,
                     :location => @booking }
-      else                                               
-        flash[:warning] = 'Invalid Options... Try again!'
-        format.html { redirect_to :action => "new" }
-        format.xml  { render :xml => @booking.errors,
-                    :status => :unprocessable_entity }
       end
     end
+      # else                                               
+    #     flash[:warning] = 'Invalid Options... Try again!'
+    #     format.html { redirect_to :action => "new" }
+    #     format.xml  { render :xml => @booking.errors,
+    #                 :status => :unprocessable_entity }
+    #   end
+    # end
   end
 
   def show
@@ -67,37 +85,37 @@ class BookingsController < ApplicationController
     @bookings = bookings.select {|s| s.apt_time.to_date == date}
   end
   
-  def same_issue(timeslots)
-    same_issue = true
-    issue_id = timeslots.first.issue_id
+  # def same_issue(timeslots)
+  #   same_issue = true
+  #   issue_id = timeslots.first.issue_id
 
-    timeslots.each do |timeslot|
-      if (timeslot.issue_id != issue_id)
-        same_issue = false
-        break
-      end
-    end
-    if same_issue == false
-      flash[:warning] = "timeslots need to on the same issue"
-      redirect_to :controller => 'timeslots', :action => 'find'
-    end
-  end
+  #   timeslots.each do |timeslot|
+  #     if (timeslot.issue_id != issue_id)
+  #       same_issue = false
+  #       break
+  #     end
+  #   end
+  #   if same_issue == false
+  #     flash[:warning] = "timeslots need to on the same issue"
+  #     redirect_to :controller => 'timeslots', :action => 'find'
+  #   end
+  # end
 
-  def same_day(timeslots)
-    same_date = true
-    date = timeslots.first.slot_date
+  # def same_day(timeslots)
+  #   same_date = true
+  #   date = timeslots.first.slot_date
 
-    timeslots.each do |timeslot|
-      if (timeslot.slot_date != date)
-        same_date = false
-        break
-      end
-    end
-    if same_date == false
-      flash[:warning] = "timeslots need to on the same day"
-      redirect_to :controller => 'timeslots', :action => 'find'
-    end
-  end
+  #   timeslots.each do |timeslot|
+  #     if (timeslot.slot_date != date)
+  #       same_date = false
+  #       break
+  #     end
+  #   end
+  #   if same_date == false
+  #     flash[:warning] = "timeslots need to on the same day"
+  #     redirect_to :controller => 'timeslots', :action => 'find'
+  #   end
+  # end
 
   def find_timeslots
     if params[:slot_ids].present?
