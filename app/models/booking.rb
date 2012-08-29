@@ -10,7 +10,7 @@ class Booking < ActiveRecord::Base
   named_scope :future, lambda { { :conditions => ["apt_time >= ?", Date.today] } }
   #named_scope :booked, lambda { { :conditions => "timeslot_id IS NOT NULL" } }
   named_scope :cancelled, lambda { { :conditions => { :cancelled => true } } }
-  named_scope :orphaned, lambda { { :conditions => { :cancelled => nil, :timeslot_id => nil } } }
+  named_scope :orphaned, lambda { { :conditions => { :cancelled => false } } }
 
   #not working, switched to controller.
   #validate :same_day(@timeslots)
@@ -26,6 +26,18 @@ class Booking < ActiveRecord::Base
   #   end
   #   flash[:warning] = "timeslots need to on the same day" if same_date == false
   # end
+
+  def cancel
+    self.timeslots.clear
+    self.cancelled = true
+    self.save
+  end
+
+  def orphan
+    self.timeslots.clear
+    self.cancelled = false
+    self.save
+  end
 
   def coach
     self.timeslots.first.coach

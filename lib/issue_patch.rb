@@ -8,7 +8,7 @@ module IssuePatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
-      has_many :timeslots, :dependent => :nullify # Establish a relationship with timeslots, destroy timeslot if issue destroyed
+      has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
       has_many :bookings, :through => :timeslots
       safe_attributes 'start_time', 'end_time' #since our migration adds start_time and end_time to issues for use as shifts, we need to mark these as safe for editing.
       alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
@@ -27,7 +27,7 @@ module IssuePatch
       named_scope :omit_user, lambda {|u| { :conditions => ["assigned_to_id != ?", u.id] } } # not used
       named_scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
       after_create :create_timeslots, :if => :is_labcoach_shift?
-      after_update :recreate_timeslots, :if => :is_labcoach_shift?
+      after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
 
     end
 
@@ -119,6 +119,14 @@ module IssuePatch
       end
         return true
     end
+
+    def times_changed?
+      if self.start_time_changed? || self.end_time_changed?
+        return true
+      else
+        return false
+      end
+    end
     
     def is_shift? #is this a shift at all?
       if self.is_labcoach_shift? || self.is_frontdesk_shift?
@@ -132,33 +140,11 @@ module IssuePatch
       self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
     end
     
-    def recreate_timeslots #when a shift changes time dimensions and is saved (see hook), any timeslots associated with it must be checked and updated. Right now, only timeslots with bookings are kept, otherwise new ones are made
-      cache = [] #make an empty array to cache timeslots we are keeping
-      self.timeslots.each do |slot| #for each timeslot on this shift,
-        if slot.booked? # if the timeslot has a booking associated, hold on to it
-          cache << slot
-        else
-          slot.destroy # if not, destroy it
-        end
+    def recreate_timeslots # for now, just orphans all bookings and runs create again.
+      self.bookings.uniq.each do |booking|
+        booking.orphan
       end
-      
-      #for each slot_time index, check to see if there is a matching time among the cached (booked) timeslots. If none, make a new slot. If there is one, change it's slot time to the proper index and remove from the cache.
-      self.shift_duration_index.times do |i| #for each 30 min interval in the updated and saved shift
-        match = cache.detect {|s| s.booking.apt_time == (self.start_time + (i * 30).minutes)} #detect whether any slots in the cache fall within the new shift times
-        if match.nil? #if none match, make a new slot
-          self.timeslots << Timeslot.create(:slot_time => i)
-        else #if there is a match
-          cache = cache.reject {|s| s.id == match.id} #remove it from the cache
-          match.slot_time = i #set its slot time to the current index
-          match.save #save the timeslot, preserving the booking at the correct apt_time
-        end
-      end
-      
-      #destroy the remaining slots in the cache, orphaning their bookings. Put better stuff here later, but for now it shows up in the Manage controller.
-      cache.each do |slot|
-        slot.destroy
-      end
-      
+      self.create_timeslots
     end
         
   end
