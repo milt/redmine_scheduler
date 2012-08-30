@@ -29,6 +29,7 @@ class BookingsController < ApplicationController
   end
 
   def new
+    @booking = Booking.new(params[:booking])
     #@booking = Booking.new
     #@bookings = Booking.all
     #same_day(@timeslots)
@@ -50,7 +51,7 @@ class BookingsController < ApplicationController
   def create
     @booking = Booking.new(params[:booking])
     @booking.timeslots << @timeslots
-    @booking.apt_time=(@timeslots.first.start_time)
+    #@booking.apt_time=(@timeslots.first.start_time)
 
     # if !@booking.save
     #   redirect_to :controller => 'timeslots', :action => 'find'
@@ -62,15 +63,13 @@ class BookingsController < ApplicationController
         format.html { redirect_to :action => "index" }
         format.xml  { render :xml => @booking, :status => :created,
                     :location => @booking }
+      else                                               
+        flash[:warning] = 'Invalid options'
+        format.html { redirect_to :action => "new", :slot_ids => params[:slot_ids] }
+        format.xml  { render :xml => @booking.errors,
+                    :status => :unprocessable_entity }
       end
     end
-      # else                                               
-    #     flash[:warning] = 'Invalid Options... Try again!'
-    #     format.html { redirect_to :action => "new" }
-    #     format.xml  { render :xml => @booking.errors,
-    #                 :status => :unprocessable_entity }
-    #   end
-    # end
   end
 
   def show
@@ -84,38 +83,6 @@ class BookingsController < ApplicationController
   def filter_date(bookings, date)
     @bookings = bookings.select {|s| s.apt_time.to_date == date}
   end
-  
-  # def same_issue(timeslots)
-  #   same_issue = true
-  #   issue_id = timeslots.first.issue_id
-
-  #   timeslots.each do |timeslot|
-  #     if (timeslot.issue_id != issue_id)
-  #       same_issue = false
-  #       break
-  #     end
-  #   end
-  #   if same_issue == false
-  #     flash[:warning] = "timeslots need to on the same issue"
-  #     redirect_to :controller => 'timeslots', :action => 'find'
-  #   end
-  # end
-
-  # def same_day(timeslots)
-  #   same_date = true
-  #   date = timeslots.first.slot_date
-
-  #   timeslots.each do |timeslot|
-  #     if (timeslot.slot_date != date)
-  #       same_date = false
-  #       break
-  #     end
-  #   end
-  #   if same_date == false
-  #     flash[:warning] = "timeslots need to on the same day"
-  #     redirect_to :controller => 'timeslots', :action => 'find'
-  #   end
-  # end
 
   def find_timeslots
     if params[:slot_ids].present?
@@ -127,6 +94,12 @@ class BookingsController < ApplicationController
 
     if @timeslots.detect {|slot| slot.booked?}
       flash[:warning] = 'One or more timeslots is already booked. Please select available slots here and click "Book..."'
+      redirect_to :controller => 'timeslots', :action => 'find'
+    end
+
+    # send user back if the timeslots cover more than one shift. Suspenders and a belt.
+    if @timeslots.map(&:issue_id).uniq.count > 1
+      flash[:warning] = 'You can not make a booking that covers more than one shift. Please try again.'
       redirect_to :controller => 'timeslots', :action => 'find'
     end
   end

@@ -11,59 +11,22 @@ class Booking < ActiveRecord::Base
   #named_scope :booked, lambda { { :conditions => "timeslot_id IS NOT NULL" } }
   named_scope :cancelled, lambda { { :conditions => { :cancelled => true } } }
   named_scope :orphaned, lambda { { :conditions => { :cancelled => false } } }
-  validate_on_create :cannot_create_across_issues
-  validate_on_create :cannot_create_on_multiple_days
-  
-  def apt_time=(time)
-    write_attribute :apt_time, (time)
-  end
+  validate :cannot_create_across_issues, :cannot_create_without_timeslots
+  after_validation_on_create :set_apt_time
 
   def cannot_create_across_issues
-    @same_issue = true
-    issue_id = @timeslots.first.issue_id
-
-    @timeslots.each do |timeslot|
-      if (timeslot.issue_id != issue_id)
-        same_issue = false
-        break
-      end
-    end
-
-    errors.add_to_base("Cannot create booking because there timeslots across multiple issue categories") if
-      @same_issue == false
-
+    errors.add_to_base("Bookings cannot span multiple shifts.") if
+          lambda { self.issues.uniq.count > 1 }
   end
 
-  def cannot_create_on_multiple_days
-    @same_date = true
-    date = @timeslots.first.slot_date
-
-    @timeslots.each do |timeslot|
-      if (timeslot.slot_date != date)
-        same_date = false
-        break
-      end
-    end
-    
-    errors.add_to_base("Cannot create booking because the timeslots span multiple days") if 
-      @same_date == false
+  def cannot_create_without_timeslots
+    errors.add_to_base("Bookings cannot span multiple shifts.") if
+          lambda { self.issues.uniq.count > 1 }
   end
 
-
-  #not working, switched to controller.
-  #validate :same_day(@timeslots)
-  # def same_day(timeslots)
-  #   same_date = true
-  #   date = timeslots.first.slot_date
-
-  #   timeslots.each do |timeslot|
-  #     if (timeslot.slot_date != date)
-  #       same_date = false
-  #       break
-  #     end
-  #   end
-  #   flash[:warning] = "timeslots need to on the same day" if same_date == false
-  # end
+  def set_apt_time
+    self.apt_time = self.timeslots.sort_by(&:slot_time).first.start_time
+  end
 
   def cancel
     self.timeslots.clear
