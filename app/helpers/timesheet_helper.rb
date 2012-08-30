@@ -38,8 +38,11 @@ module TimesheetHelper
 		[" ",  "", ""],
 		["Sunday",  beginning + 6.days, sun],
 		[" ",  "", ""],
-		["", "", "Total Hours: " + (mon + tue + wed + thu + fri + sat + sun).to_s]], :column_widths => [108, 216, 216], :cell_style => {:height => 21})
-	pad_top(30) { table([[" "],["*Student's signature                                                      Date"]], :column_widths=> [360]) } 
+		["", "", "Total Hours: " + (mon + tue + wed + thu + fri + sat + sun).to_s]], :column_widths => [108, 216, 216], :cell_style => {:height => 21}) do |table|
+      table.column(2).style(:align => :center)
+  end
+	
+  pad_top(30) { table([[" "],["*Student's signature                                                      Date"]], :column_widths=> [360]) } 
 
 	pad_top(20) { text "*NOTE: Your signature certifies that this document reflects actual hours worked in accordance with wage and hours laws" }
 	pad_top(10) { dash(7, :space => 7, :phase => 0) }
