@@ -30,32 +30,12 @@ class BookingsController < ApplicationController
 
   def new
     @booking = Booking.new(params[:booking])
-    #@booking = Booking.new
-    #@bookings = Booking.all
-    #same_day(@timeslots)
-    #same_issue(@timeslots)
-    
-    # Booking.cannot_create_across_issues()
-    # Booking.cannot_create_on_multiple_days()
-
-    # if @same_issue == false
-    #   redirect_to :controller => 'timeslots', :action => 'find'
-    # end
-
-    # if @same_date == false
-    #   redirect_to :controller => 'timeslots', :action => 'find'
-    # end
   end
 
   #somehow this method is creating a nasting parameter mismatch error.
   def create
     @booking = Booking.new(params[:booking])
     @booking.timeslots << @timeslots
-    #@booking.apt_time=(@timeslots.first.start_time)
-
-    # if !@booking.save
-    #   redirect_to :controller => 'timeslots', :action => 'find'
-    # end
 
     respond_to do |format|
       if @booking.save

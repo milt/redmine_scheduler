@@ -20,8 +20,8 @@ class Booking < ActiveRecord::Base
   end
 
   def cannot_create_without_timeslots
-    errors.add_to_base("Bookings cannot span multiple shifts.") if
-          lambda { self.issues.uniq.count > 1 }
+    errors.add_to_base("Bookings must have timeslots.") if
+          lambda { self.issues.uniq.count < 1 }
   end
 
   def set_apt_time
