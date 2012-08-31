@@ -32,7 +32,6 @@ class BookingsController < ApplicationController
     @booking = Booking.new(params[:booking])
   end
 
-  #somehow this method is creating a nasting parameter mismatch error.
   def create
     @booking = Booking.new(params[:booking])
     @booking.timeslots << @timeslots
@@ -45,7 +44,7 @@ class BookingsController < ApplicationController
                     :location => @booking }
       else                                               
         flash[:warning] = 'Invalid options'
-        format.html { redirect_to :action => "new", :slot_ids => params[:slot_ids] }
+        format.html { render :action => "new", :booking => params[:booking], :slot_ids => params[:slot_ids] }
         format.xml  { render :xml => @booking.errors,
                     :status => :unprocessable_entity }
       end

@@ -13,7 +13,7 @@ from_date = Date.today - 3.weeks
 
 for p in 0..21 do
   date = Date.today - p.days
-  start = date.to_datetime + 9.hours
+  start = date + 9.hours + 15.minutes
   finish = start + 8.hours
 
   stustaff.each do |staffer|
@@ -35,9 +35,9 @@ for p in 0..21 do
   end
 end
 
-for p in 0..60 do
+for p in 0..20 do
   date = Date.today + p.days
-  start = date.to_datetime + 12.hours
+  start = date + 12.hours + 15.minutes
   finish = start + 4.hours
 
   stustaff.each do |staffer|

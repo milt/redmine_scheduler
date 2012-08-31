@@ -40,7 +40,7 @@ class TimeslotsController < ApplicationController
     if params[:to].present?
       @to = Date.new(params[:to][:year].to_i,params[:to][:month].to_i,params[:to][:day].to_i)
     else
-      @to = Date.today + 4.weeks
+      @to = Date.today + 2.weeks
     end
 
     if params[:coach_ids].present?

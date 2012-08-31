@@ -28,7 +28,6 @@ module IssuePatch
       named_scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
-
     end
 
   end
@@ -69,11 +68,11 @@ module IssuePatch
     end
     
     def shift_duration #get the duration of a shift
-      ((start_time && end_time) ? end_time - start_time : 0)/60/60
+      ((self.start_time && self.end_time) ? self.end_time - self.start_time : 0)/60/60
     end
     
     def shift_duration_index #duration in 1/2 hr increments
-      (shift_duration/0.5).to_i
+      (self.shift_duration/0.5).to_i
     end
 
     #TODO: these two indexes don't work right sometimes. They are now only used for setting the selected value. Fix or rewrite
@@ -144,6 +143,7 @@ module IssuePatch
       self.bookings.uniq.each do |booking|
         booking.orphan
       end
+      self.timeslots.clear
       self.create_timeslots
     end
         
