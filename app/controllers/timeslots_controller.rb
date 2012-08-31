@@ -11,7 +11,7 @@ class TimeslotsController < ApplicationController
   def find
     #make a find for all labcoach shifts
     @shifts = Issue.lcshift
-    @coaches = Group.stustaff.first.users #find student staff (lab coaches)
+    @coaches = Group.stustaff.first.users.active #find student staff (lab coaches)
     @skillcats = Skillcat.all
 
     find_params

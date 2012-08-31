@@ -64,7 +64,7 @@ class WagesController < ApplicationController
   # end
   
   def find_users #find the student staff
-    @users = Group.stustaff.first.users
+    @users = Group.stustaff.first.users.active
     @users = @users.sort_by {|u| u.lastname }
   end
 end

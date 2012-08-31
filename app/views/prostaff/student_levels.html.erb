@@ -1,0 +1,31 @@
+<%= render 'nav/nav' %>
+<h2>Student Skill Levels</h2>
+
+<% @students.each do |student| %>
+  <h4><%= student.name %> : <%= link_to 'Assign Training Goal...', {:controller => 'issues', :action => 'new', :issue => {:project_id => @training_project.id, :assigned_to_id => student} } %></h4>
+
+  <div class="student-levels">
+    <table>
+      <tr><th>Skill/Auth</th><th>Level</th><th>Updated</th></tr>
+      <% student.levels.sort_by(&:rating).each do |level| %>
+        <tr>
+          <td><%= level.skill.name %></td><td><%= level.rating %></td><td><%= level.updated_at.strftime("%D") %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <% if !@goals_by_student[student].nil? %>
+    <div class="student-goals">
+      <ul>
+        <% @goals_by_student[student].each do |goal| %>
+          <li><%= link_to goal.subject, goal %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+<% end %>
+
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'prostaff', :plugin => 'redmine_scheduler' %>
+<% end %>

@@ -226,6 +226,7 @@ class Timesheet < ActiveRecord::Base
 
   def approve_now
     self.approved = DateTime.now
+    self.approve_time_wage = self.user.wage
   end
 
   def delete_now

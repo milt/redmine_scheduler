@@ -6,11 +6,9 @@
         <%= render 'nav/prostaff' if User.current.is_prostaff? %>
         <%= render 'nav/adminstaff' if User.current.is_admstaff? %>
       <% else %>
-        <td><%= link_to "Today's Shifts", {:controller=> 'stustaff'} %></td>
-        <td><%= link_to "Analyze Time", { :controller=> 'command' } %></td>
-        <td><%= link_to 'Timesheets', { :controller => 'timesheets' } %></td>
-        <td><%= link_to 'Skill Levels', { :controller => 'levels' } %></td>
-        <td><%= link_to 'Book Student Time', { :controller => 'timeslots', :action => 'find' } %></td>
+        <%= render 'nav/stustaff' %>
+        <%= render 'nav/prostaff' %>
+        <%= render 'nav/adminstaff' %>
       <% end %>
     </tr>
   </table>
