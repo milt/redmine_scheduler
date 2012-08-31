@@ -1,0 +1,13 @@
+<%= render 'nav/nav' %>
+<h2>Student Skill Levels</h2>
+
+<table>
+  <% @students.each do |student| %>
+    <tr><th><%= student.name %></th></tr>
+    <% student.levels.sort_by(&:rating).each do |level| %>
+      <tr>
+        <td></td><td><%= level.skill.name %></td><td><%= level.rating %></td><td><%= level.updated_at.strftime("%D") %></td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>
