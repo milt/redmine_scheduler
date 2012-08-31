@@ -3,7 +3,7 @@
 
 <table>
   <% @students.each do |student| %>
-    <tr><th><%= student.name %></th></tr>
+    <tr><th><%= student.name %> : <%= link_to 'Assign Training Goal...', {:controller => 'issues', :action => 'new', :issue => {:project_id => @training_project.id, :assigned_to_id => student} } %></th></tr>
     <% student.levels.sort_by(&:rating).each do |level| %>
       <tr>
         <td></td><td><%= level.skill.name %></td><td><%= level.rating %></td><td><%= level.updated_at.strftime("%D") %></td>
