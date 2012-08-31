@@ -1,7 +1,7 @@
 class SkillcatsController < ApplicationController #management of skill categories. pretty boring
   unloadable
 
-  before_filter :require_admin
+  before_filter :require_admstaff
 
   def index #index of skill cats
     @skillcats = Skillcat.all #find all skill categories
@@ -34,5 +34,16 @@ class SkillcatsController < ApplicationController #management of skill categorie
     @skill.destroy
     flash[:notice] = 'Skill Category deleted.'
     redirect_to :action => 'index'
+  end
+
+  private
+
+  def require_admstaff
+    return unless require_login
+    if !User.current.is_admstaff?
+      render_403
+      return false
+    end
+    true
   end
 end
