@@ -5,7 +5,7 @@ class LevelsController < ApplicationController
 
   #need to add additional levels?
   def index
-    @users = Group.stustaff.first.users
+    @users = Group.stustaff.first.users.active
     @skills = Skill.all
   end
 
