@@ -1,9 +1,77 @@
 <%= render 'nav/nav' %>
-<h2>Bookings#index</h2>
-
+<h2>Your Bookings</h2>
 <%= render 'search_form' %>
 
-<table>
+<!--On orphaned bookings-->
+<!--way too unoriginal-->
+<div>
+  <table class = "list issue">
+    <h3>Your Orphaned Bookings</h3>
+    <th>Patron Name</th>
+    <th>Coach</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    
+    <% @orph_bookings.each do |booking| %>
+      <tr>
+        <td><%= booking.name %></td>
+        <td><%= booking.coach %></td>
+        <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
+        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
+      </tr>
+    <% end %>
+    <!--<%= will_paginate @orph_bookings, :param_name => 'orph_bookings' %>-->
+  </table>
+</div>
+
+<!--On active bookings-->
+<!--way too unoriginal-->
+<div>
+  <table class = "list issue">
+    <h3>Your Active Bookings</h3>
+    <th><%= link_to 'Patron Name', {:action => 'index', :sort => 'act_by_name'} %></th>
+    <th>Coach</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    
+    <% @act_bookings.each do |booking| %>
+      <tr>
+        <td><%= booking.name %></td>
+        <td><%= booking.coach %></td>
+        <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
+        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
+      </tr>
+    <% end %>
+  </table>
+  <%= will_paginate @act_bookings, :param_name => 'act_bookings' %>
+</div>
+
+<!--On cancelled bookings-->
+<!--way too unoriginal-->
+<div>
+  <table class = "list issue">
+    <h3>Your Cancelled Bookings</h3>
+    <th>Patron Name</th>
+    <th>Coach</th>
+    <th>Start Time</th>
+    <th>End Time</th>
+    
+    <% @canc_bookings.each do |booking| %>
+      <tr>
+        <td><%= booking.name %></td>
+        <td><%= booking.coach %></td>
+        <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
+        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
+      </tr>
+    <% end %>
+    <!--<%= will_paginate @canc_bookings, :param_name => 'canc_bookings' %>-->
+  </table>
+</div>
+
+<!--On all bookings-->
+<div>
+<table class = "list issue">
+    <h3>List of all bookings</h3>
     <th>Patron Name</th>
     <th>Coach</th>
     <th>Start Time</th>
@@ -12,9 +80,10 @@
     <% @bookings.each do |booking| %>
    	  <tr>
    	  	<td><%= booking.name %></td>
-        <td><%= booking.coach %></td><!--somehow coach doesn't work??-->
-		<td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
+        <td><%= booking.coach %></td>
+		    <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
         <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
       </tr>
-  	<% end %>
+    <% end %>
 </table>
+</div>

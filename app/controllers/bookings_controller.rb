@@ -4,28 +4,23 @@ class BookingsController < ApplicationController
   before_filter :find_booking, :only => [:show, :edit]
 
   def index
+    if @date.nil?
+      @date = Date.new(Time.now.year, Time.now.month, Time.now.day)  #default selected date
+      #flash[:warning] = "No date selected"
+    end 
+
     @bookings = Booking.all
-    
-    #code block used for search form
-    @time = []
-
-    for i in 0..23 do
-      for j in 0..3 do
-        @time << [DateTime.new(2012, 1, 1, i, j * 15, 0).strftime("%H:%M:%S")]  #need to fix this
-      end
-    end
-
+  
     if params[:sel_date].present?
       @date = Date.new(params[:sel_date][:year].to_i, params[:sel_date][:month].to_i, params[:sel_date][:day].to_i)
+      flash[:notice] = "the date selected is #{@date}"
     end
 
     filter_date(@bookings, @date) unless @date.nil?
-    flash[:notice] = "the date selected is #{@date}"
+    filter_active(@bookings)
+    filter_orphaned(@bookings)
+    filter_cancelled(@bookings)
 
-    if @date.nil?
-      @bookings = []
-      flash[:warning] = "No date selected"
-    end 
   end
 
   def new
@@ -60,7 +55,24 @@ class BookingsController < ApplicationController
   private
 
   def filter_date(bookings, date)
-    @bookings = bookings.select {|s| s.apt_time.to_date == date}
+    @bookings = bookings.select {|b| b.apt_time.to_date >= date}
+  end
+
+  def filter_orphaned(bookings)
+    @orph_bookings = bookings.select {|b| b.cancelled == false}.paginate(:page => params[:orph_bookings], :per_page => 1)
+  end
+
+  def filter_cancelled(bookings)
+    @canc_bookings = bookings.select {|b| b.cancelled == true}.paginate(:page => params[:canc_bookings], :per_page => 1)
+  end
+
+  #ordering not working
+  def filter_active(bookings)
+    if params[:sort] == 'act_by_name'
+      @act_bookings = bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4)
+    else
+      @act_bookings = bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4)
+    end
   end
 
   def find_timeslots
