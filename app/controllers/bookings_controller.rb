@@ -6,7 +6,6 @@ class BookingsController < ApplicationController
   def index
     if @date.nil?
       @date = Date.new(Time.now.year, Time.now.month, Time.now.day)  #default selected date
-      #flash[:warning] = "No date selected"
     end 
 
     @bookings = Booking.all

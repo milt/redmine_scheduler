@@ -12,8 +12,12 @@ class TimeslotsController < ApplicationController
     #make a find for all labcoach shifts
     @shifts = Issue.lcshift
     @coaches = Group.stustaff.first.users.active #find student staff (lab coaches)
-    @skillcats = Skillcat.all
+    @skillcats = Skillcat.all.sort_by(&:name)
 
+    @skills_list = []
+
+    @skills_list = skill_arr_create
+    
     find_params
 
     #apply filtering to shifts. each one of these methods modifies @shifts
@@ -29,6 +33,22 @@ class TimeslotsController < ApplicationController
   end
 
   private #lot of crazy in here.
+
+  def skill_arr_create
+    skill_arr = []
+
+    @skillcats.each do |cat|
+      skill_arr << ["", nil]
+      skill_arr << [cat.name, nil]
+      skills_sorted = cat.skills.sort_by(&:name)
+
+      skills_sorted.each do |skill|
+        skill_arr << [skill.name, skill.id] 
+      end
+    end
+
+    skill_arr   #returns with sorted skills array
+  end
 
   def find_params
     if params[:from].present?
