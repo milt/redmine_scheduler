@@ -37,9 +37,10 @@ class TimeslotsController < ApplicationController
   def skill_arr_create
     skill_arr = []
 
+
     @skillcats.each do |cat|
       skill_arr << ["", nil]
-      skill_arr << [cat.name, nil]
+      skill_arr << ["-------" + cat.name + "-------", nil]
       skills_sorted = cat.skills.sort_by(&:name)
 
       skills_sorted.each do |skill|

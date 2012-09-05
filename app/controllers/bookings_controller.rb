@@ -4,19 +4,26 @@ class BookingsController < ApplicationController
   before_filter :find_booking, :only => [:show, :edit]
 
   def index
-    if @date.nil?
-      @date = Date.new(Time.now.year, Time.now.month, Time.now.day)  #default selected date
-    end 
-
-    @bookings = Booking.all
-  
+    flash[:warning] = "the selected date is #{params[:sel_date]}"
     if params[:sel_date].present?
       @date = Date.new(params[:sel_date][:year].to_i, params[:sel_date][:month].to_i, params[:sel_date][:day].to_i)
       flash[:notice] = "the date selected is #{@date}"
     end
 
+    if params[:pag_date].present?
+      @date = params[:pag_date]
+    end
+
+    if @date.nil?
+      @date = Date.new(Time.now.year, Time.now.month, Time.now.day)  #default selected date
+    end 
+
+    @bookings = Booking.all
+    @act_bookings = Booking.all
+
     filter_date(@bookings, @date) unless @date.nil?
     filter_active(@bookings)
+    #flash[:warning] = "the current date selected is #{@bookings}"
     filter_orphaned(@bookings)
     filter_cancelled(@bookings)
 
@@ -68,9 +75,9 @@ class BookingsController < ApplicationController
   #ordering not working
   def filter_active(bookings)
     if params[:sort] == 'act_by_name'
-      @act_bookings = bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4)
+      @act_bookings = params[:bookings].select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4).order("name")
     else
-      @act_bookings = bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4)
+      @act_bookings = @bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4)
     end
   end
 

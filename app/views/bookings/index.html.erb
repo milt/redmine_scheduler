@@ -3,7 +3,6 @@
 <%= render 'search_form' %>
 
 <!--On orphaned bookings-->
-<!--way too unoriginal-->
 <div>
   <table class = "list issue">
     <h3>Your Orphaned Bookings</h3>
@@ -25,7 +24,6 @@
 </div>
 
 <!--On active bookings-->
-<!--way too unoriginal-->
 <div>
   <table class = "list issue">
     <h3>Your Active Bookings</h3>
@@ -43,11 +41,10 @@
       </tr>
     <% end %>
   </table>
-  <%= will_paginate @act_bookings, :param_name => 'act_bookings' %>
+  <%= will_paginate @act_bookings, :params => {:param_name => 'act_bookings', :pag_sel_date => @date} %>
 </div>
 
 <!--On cancelled bookings-->
-<!--way too unoriginal-->
 <div>
   <table class = "list issue">
     <h3>Your Cancelled Bookings</h3>
