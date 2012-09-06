@@ -5,27 +5,34 @@ class BookingsController < ApplicationController
 
   def index
     flash[:warning] = "the selected date is #{params[:sel_date]}"
-    if params[:sel_date].present?
-      @date = Date.new(params[:sel_date][:year].to_i, params[:sel_date][:month].to_i, params[:sel_date][:day].to_i)
-      flash[:notice] = "the date selected is #{@date}"
-    end
+    
+    find_params
+
+    #this block is substitute with from and to search parameters
+    # if params[:sel_date].present?
+    #   @date = Date.new(params[:sel_date][:year].to_i, params[:sel_date][:month].to_i, params[:sel_date][:day].to_i)
+    #   flash[:notice] = "the date selected is #{@date}"
+    # end
 
     if params[:pag_date].present?
       @date = params[:pag_date]
     end
 
     if @date.nil?
-      @date = Date.new(Time.now.year, Time.now.month, Time.now.day)  #default selected date
+      @date = Date.today  #default selected date
     end 
 
-    @bookings = Booking.all
-    @act_bookings = Booking.all
+    @bookings = Booking.from_date(@from).until_date(@to)
+    @act_bookings = @bookings
+    @orph_bookings = []
+    @canc_bookings = []
+    
+    #@act_bookings = Booking.all
 
-    filter_date(@bookings, @date) unless @date.nil?
-    filter_active(@bookings)
-    #flash[:warning] = "the current date selected is #{@bookings}"
-    filter_orphaned(@bookings)
-    filter_cancelled(@bookings)
+    # filter_date(@bookings, @date) unless @date.nil?
+    # filter_active(@bookings)
+    # filter_orphaned(@bookings)
+    # filter_cancelled(@bookings)
 
   end
 
@@ -59,6 +66,20 @@ class BookingsController < ApplicationController
   end
 
   private
+
+  def find_params
+    if params[:from].present?
+      @from = Date.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i)
+    else
+      @from = Date.today
+    end
+
+    if params[:to].present?
+      @to = Date.new(params[:to][:year].to_i, params[:to][:month].to_i, params[:to][:day].to_i)
+    else
+      @to = Date.today + 2.weeks
+    end
+  end
 
   def filter_date(bookings, date)
     @bookings = bookings.select {|b| b.apt_time.to_date >= date}

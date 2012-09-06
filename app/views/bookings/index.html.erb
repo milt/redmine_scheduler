@@ -19,7 +19,6 @@
         <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
       </tr>
     <% end %>
-    <!--<%= will_paginate @orph_bookings, :param_name => 'orph_bookings' %>-->
   </table>
 </div>
 
@@ -41,7 +40,6 @@
       </tr>
     <% end %>
   </table>
-  <%= will_paginate @act_bookings, :params => {:param_name => 'act_bookings', :pag_sel_date => @date} %>
 </div>
 
 <!--On cancelled bookings-->
@@ -61,7 +59,6 @@
         <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
       </tr>
     <% end %>
-    <!--<%= will_paginate @canc_bookings, :param_name => 'canc_bookings' %>-->
   </table>
 </div>
 

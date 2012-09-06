@@ -11,6 +11,8 @@ class Booking < ActiveRecord::Base
   #named_scope :booked, lambda { { :conditions => "timeslot_id IS NOT NULL" } }
   named_scope :cancelled, lambda { { :conditions => { :cancelled => true } } }
   named_scope :orphaned, lambda { { :conditions => { :cancelled => false } } }
+  named_scope :from_date, lambda {|d| {:conditions => ["apt_time >= ?", d]}}    #similar to from/until date in issue_patch.rb
+  named_scope :until_date, lambda {|d| {:conditions => ["apt_time <= ?", d]}}
   validate :cannot_create_across_issues, :cannot_create_without_timeslots
   after_validation_on_create :set_apt_time
 
@@ -23,6 +25,13 @@ class Booking < ActiveRecord::Base
     errors.add_to_base("Bookings must have timeslots.") if
           self.timeslots.empty?
   end
+
+  #not really being useful
+  # def self.from_time(date)
+  #   bookings = []
+  #   Booking.from_date(date).map{|i| bookings << i}
+  #   bookings  #returns bookings
+  # end
 
   def set_apt_time
     self.apt_time = self.timeslots.sort_by(&:slot_time).first.start_time
