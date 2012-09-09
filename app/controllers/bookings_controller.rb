@@ -6,25 +6,27 @@ class BookingsController < ApplicationController
   def index
     find_params
 
-    #this block is substitute with from and to search parameters
-    # if params[:sel_date].present?
-    #   @date = Date.new(params[:sel_date][:year].to_i, params[:sel_date][:month].to_i, params[:sel_date][:day].to_i)
-    #   flash[:notice] = "the date selected is #{@date}"
-    # end
-
     if @date.nil?
       @date = Date.today  #default selected date
     end 
 
     @bookings = Booking.from_date(@from).until_date(@to)
-    @orph_bookings = []
-    @canc_bookings = []
-    
-    # filter_date(@bookings, @date) unless @date.nil?  #this is substituted with from/to filtering
-    filter_active(@bookings)
-    # filter_orphaned(@bookings)
-    # filter_cancelled(@bookings)
 
+    if params[:sort_by] == 'name'
+        @bookings = @bookings.sort_by(&:name)
+    end    
+    
+    if params[:sort_by] == 'coach'
+        @bookings = @bookings.sort_by(&:coach)
+    end    
+    
+    if params[:sort_by] == 'start_time'
+        @bookings = @bookings.sort_by(&:apt_time)
+    end    
+    
+    filter_active(@bookings)
+    filter_orphaned(@bookings)
+    filter_cancelled(@bookings)
   end
 
   def new
@@ -77,16 +79,15 @@ class BookingsController < ApplicationController
   end
 
   def filter_orphaned(bookings)
-    @orph_bookings = bookings.select {|b| b.cancelled == false}.paginate(:page => params[:orph_bookings], :per_page => 1)
+    @orph_bookings = bookings.select {|b| b.cancelled == false}.paginate(:page => params[:page], :per_page => 4)
   end
 
   def filter_cancelled(bookings)
-    @canc_bookings = bookings.select {|b| b.cancelled == true}.paginate(:page => params[:canc_bookings], :per_page => 1)
+    @canc_bookings = bookings.select {|b| b.cancelled == true}.paginate(:page => params[:page], :per_page => 4)
   end
 
-  #ordering not working
   def filter_active(bookings)
-    @act_bookings = @bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:page], :per_page => 2)
+    @act_bookings = bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:page], :per_page => 4)
   end
 
   def find_timeslots
