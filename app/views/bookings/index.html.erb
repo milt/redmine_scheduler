@@ -26,7 +26,7 @@
 <div>
   <table class = "list issue">
     <h3>Your Active Bookings</h3>
-    <th><%= link_to 'Patron Name', {:action => 'index', :sort => 'act_by_name'} %></th>
+    <th><%= link_to 'Patron Name', {:action => 'index'} %></th>
     <th>Coach</th>
     <th>Start Time</th>
     <th>End Time</th>
@@ -41,6 +41,7 @@
     <% end %>
   </table>
 </div>
+<%= will_paginate @act_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}%>
 
 <!--On cancelled bookings-->
 <div>

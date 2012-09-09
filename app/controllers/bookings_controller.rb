@@ -4,8 +4,6 @@ class BookingsController < ApplicationController
   before_filter :find_booking, :only => [:show, :edit]
 
   def index
-    flash[:warning] = "the selected date is #{params[:sel_date]}"
-    
     find_params
 
     #this block is substitute with from and to search parameters
@@ -14,23 +12,16 @@ class BookingsController < ApplicationController
     #   flash[:notice] = "the date selected is #{@date}"
     # end
 
-    if params[:pag_date].present?
-      @date = params[:pag_date]
-    end
-
     if @date.nil?
       @date = Date.today  #default selected date
     end 
 
     @bookings = Booking.from_date(@from).until_date(@to)
-    @act_bookings = @bookings
     @orph_bookings = []
     @canc_bookings = []
     
-    #@act_bookings = Booking.all
-
-    # filter_date(@bookings, @date) unless @date.nil?
-    # filter_active(@bookings)
+    # filter_date(@bookings, @date) unless @date.nil?  #this is substituted with from/to filtering
+    filter_active(@bookings)
     # filter_orphaned(@bookings)
     # filter_cancelled(@bookings)
 
@@ -95,11 +86,7 @@ class BookingsController < ApplicationController
 
   #ordering not working
   def filter_active(bookings)
-    if params[:sort] == 'act_by_name'
-      @act_bookings = params[:bookings].select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4).order("name")
-    else
-      @act_bookings = @bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:act_bookings], :per_page => 4)
-    end
+    @act_bookings = @bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:page], :per_page => 2)
   end
 
   def find_timeslots
