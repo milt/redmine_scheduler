@@ -16,6 +16,8 @@ module UserPatch
         :foreign_key => "manager_id"
       has_many :time_entries
       has_many :timesheets
+      has_many :bookings, :foreign_key => "coach_id"
+      has_many :authored_bookings, :class_name => "Booking", :foreign_key => "author_id"
 
     end
 

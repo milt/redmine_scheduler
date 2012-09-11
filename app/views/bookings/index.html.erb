@@ -35,7 +35,7 @@
       <% @act_bookings.each do |booking| %>
         <tr>
           <td><%= link_to booking.name, {:action => 'show', :id => booking} %></td>
-          <td><%= booking.coach %></td>
+          <td><%= link_to booking.coach, user_path(booking.coach) %></td>
           <td><%= booking.apt_time.strftime("%D - %H:%M:%S") %></td>
         </tr>
       <% end %>

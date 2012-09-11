@@ -1,4 +1,6 @@
 class Booking < ActiveRecord::Base
+  belongs_to :coach, :class_name => "User"
+  belongs_to :author, :class_name => "User"
   has_many :timeslots, :dependent => :nullify
   has_many :issues, :through => :timeslots
   attr_accessible :name, :phone, :email, :project_desc
@@ -14,7 +16,7 @@ class Booking < ActiveRecord::Base
   named_scope :from_date, lambda {|d| {:conditions => ["apt_time >= ?", d]}}    #similar to from/until date in issue_patch.rb
   named_scope :until_date, lambda {|d| {:conditions => ["apt_time <= ?", d]}}
   validate_on_create :cannot_create_across_issues, :cannot_create_without_timeslots
-  after_validation_on_create :set_apt_time
+  after_validation_on_create :set_apt_time, :set_coach, :set_author
 
   def cannot_create_across_issues
     errors.add_to_base("Bookings cannot span multiple shifts.") if
@@ -37,6 +39,14 @@ class Booking < ActiveRecord::Base
     self.apt_time = self.timeslots.sort_by(&:slot_time).first.start_time
   end
 
+  def set_coach
+    self.coach = self.timeslots.sort_by(&:slot_time).first.coach
+  end
+
+  def set_author
+    self.author = User.current
+  end
+
   def cancel
     self.timeslots.clear
     self.cancelled = true
@@ -49,12 +59,12 @@ class Booking < ActiveRecord::Base
     self.save
   end
 
-  def coach
-    if self.timeslots.present?
-      self.timeslots.first.coach
-    else
-      return "dunno"
-    end
-  end
+  # def coach
+  #   if self.timeslots.present?
+  #     self.timeslots.first.coach
+  #   else
+  #     return "dunno"
+  #   end
+  # end
 
 end
