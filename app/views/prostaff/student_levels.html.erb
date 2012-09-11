@@ -4,7 +4,7 @@
 <% @students.each do |student| %>
   <h4><%= student.name %> : <%= link_to 'Assign Training Goal...', {:controller => 'issues', :action => 'new', :issue => {:project_id => @training_project.id, :assigned_to_id => student} } %></h4>
 
-  <div class="student-levels">
+  <div id="student-levels">
     <table>
       <tr><th>Skill/Auth</th><th>Level</th><th>Updated</th></tr>
       <% student.levels.sort_by(&:rating).each do |level| %>
@@ -16,7 +16,7 @@
   </div>
 
   <% if !@goals_by_student[student].nil? %>
-    <div class="student-goals">
+    <div id="student-goals">
       <ul>
         <% @goals_by_student[student].each do |goal| %>
           <li><%= link_to goal.subject, goal %></li>
@@ -24,6 +24,7 @@
       </ul>
     </div>
   <% end %>
+  <hr>
 <% end %>
 
 <% content_for :header_tags do %>

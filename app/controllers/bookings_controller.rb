@@ -1,7 +1,7 @@
 class BookingsController < ApplicationController
   unloadable
   before_filter :find_timeslots, :only => [:new, :create]
-  before_filter :find_booking, :only => [:show, :edit]
+  before_filter :find_booking, :only => [:show, :edit, :update, :cancel]
 
   def index
     find_params
@@ -56,6 +56,39 @@ class BookingsController < ApplicationController
   end
 
   def edit
+  end
+
+  def update
+
+    respond_to do |format|
+      if @booking.update_attributes(params[:booking])
+        flash[:notice] = 'Booking was successfully updated.'
+        format.html { redirect_to :action => "index" }
+        format.xml  { render :xml => @booking, :status => :updated,
+                    :location => @booking }
+      else                                               
+        flash[:warning] = 'Invalid options'
+        format.html { render :action => "edit", :booking => @booking }
+        format.xml  { render :xml => @booking.errors,
+                    :status => :unprocessable_entity }
+      end
+    end
+  end
+
+  def cancel
+    respond_to do |format|
+      if @booking.cancel
+        flash[:notice] = 'Booking was successfully cancelled.'
+        format.html { redirect_to :action => "index" }
+        format.xml  { render :xml => @booking, :status => :updated,
+                    :location => @booking }
+      else                                               
+        flash[:warning] = "Couldn't cancel."
+        format.html { render :action => "index" }
+        format.xml  { render :xml => @booking.errors,
+                    :status => :unprocessable_entity }
+      end
+    end
   end
 
   private
@@ -113,6 +146,7 @@ class BookingsController < ApplicationController
   def find_booking
     if params[:id].present?
       @booking = Booking.find(params[:id])
+      @timeslots = @booking.timeslots
     else
       flash[:warning] = 'No ID specified.'
       redirect_to :action => 'index'

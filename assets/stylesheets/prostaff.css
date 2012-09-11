@@ -1,7 +1,7 @@
-div#student-levels {
+div.student-levels {
   float: left;
 }
 
-div#student-goals {
+div.student-goals {
   float: right;
 }
