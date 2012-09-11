@@ -13,9 +13,9 @@
       
       <% @orph_bookings.each do |booking| %>
         <tr>
-          <td><%= booking.name %></td>
+          <td><%= link_to booking.name, {:action => 'show', :id => booking} %></td>
           <td><%= booking.coach %></td>
-          <td><%= booking.apt_time.strftime("%H:%M:%S") %></td><!--probably can do with apt_time as well-->
+          <td><%= booking.apt_time.strftime("%D - %H:%M:%S") %></td><!--probably can do with apt_time as well-->
         </tr>
       <% end %>
     </table>
@@ -34,9 +34,9 @@
       
       <% @act_bookings.each do |booking| %>
         <tr>
-          <td><%= booking.name %></td>
+          <td><%= link_to booking.name, {:action => 'show', :id => booking} %></td>
           <td><%= booking.coach %></td>
-          <td><%= booking.apt_time.strftime("%H:%M:%S") %></td>
+          <td><%= booking.apt_time.strftime("%D - %H:%M:%S") %></td>
         </tr>
       <% end %>
     </table>
@@ -55,9 +55,9 @@
       
       <% @canc_bookings.each do |booking| %>
         <tr>
-          <td><%= booking.name %></td>
+          <td><%= link_to booking.name, {:action => 'show', :id => booking} %></td>
           <td><%= booking.coach %></td>
-          <td><%= booking.apt_time.strftime("%H:%M:%S") %></td>
+          <td><%= booking.apt_time.strftime("%D - %H:%M:%S") %></td>
         </tr>
       <% end %>
     </table>
