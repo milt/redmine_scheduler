@@ -1,0 +1,12 @@
+<table>
+    <th>Include?</th>
+    <th>Timeslot Start Time</th>
+    <th>Timeslot End Time</th>
+    <% @shift.timeslots.each do |timeslot| %>
+      <tr>
+        <td><%= check_box_tag('slot_ids[]', timeslot.id, @timeslots.include?(timeslot) ) if timeslot.open? || @timeslots.include?(timeslot) %></td>
+        <td><%= timeslot.start_time.strftime("%H:%M:%S") %></td>
+        <td><%= timeslot.end_time.strftime("%H:%M:%S") %></td>
+      </tr>
+    <% end %>
+</table>

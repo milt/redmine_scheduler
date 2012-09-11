@@ -59,6 +59,11 @@ class BookingsController < ApplicationController
   end
 
   def update
+    if params[:slot_ids].present?
+      @timeslots = params[:slot_ids].map {|id| Timeslot.find(id)}
+    end
+
+    #TODO.. process the changes in timeslot
 
     respond_to do |format|
       if @booking.update_attributes(params[:booking])
@@ -68,7 +73,7 @@ class BookingsController < ApplicationController
                     :location => @booking }
       else                                               
         flash[:warning] = 'Invalid options'
-        format.html { render :action => "edit", :booking => @booking }
+        format.html { render :action => "edit", :booking => @booking, :slot_ids => params[:slot_ids] }
         format.xml  { render :xml => @booking.errors,
                     :status => :unprocessable_entity }
       end
@@ -147,6 +152,7 @@ class BookingsController < ApplicationController
     if params[:id].present?
       @booking = Booking.find(params[:id])
       @timeslots = @booking.timeslots
+      @shift = @timeslots.first.issue
     else
       flash[:warning] = 'No ID specified.'
       redirect_to :action => 'index'

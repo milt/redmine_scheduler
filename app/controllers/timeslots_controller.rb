@@ -79,6 +79,10 @@ class TimeslotsController < ApplicationController
     else
       @skill_choice = 0
     end
+    
+    if params[:extant_booking_id].present?
+      @extant_booking = Booking.find(params[:extant_booking_id])
+    end
 
   end
 

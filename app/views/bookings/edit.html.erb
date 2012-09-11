@@ -4,15 +4,16 @@
 
 <table width = "1000" border = "0">
   <tr>
-  <td width="700"><% form_for :booking, @booking, :url => { :action => "update", :id => @booking } do |f| %>
+  <td width="700">
+    <% form_for :booking, @booking, :url => { :action => "update", :id => @booking } do |f| %>
     <p><%= f.label :name %> <%= f.text_field :name %></p>
     <p><%= f.label :phone %> <%= f.text_field :phone %></p>
     <p><%= f.label :email %> <%= f.text_field :email %></p>
     <p><%= f.label :project_desc %></p><p><%= f.text_area :project_desc %></p>
     <p><%= submit_tag "Update" %></p>
-  <% end %>
   </td>
-  <td width="300"><%= render 'show_timeslots' %>
+  <td width="300"><%= render 'edit_timeslots' %>
   </td>
   </tr>
 </table>
+  <% end %>

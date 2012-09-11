@@ -16,6 +16,7 @@ class Booking < ActiveRecord::Base
   named_scope :from_date, lambda {|d| {:conditions => ["apt_time >= ?", d]}}    #similar to from/until date in issue_patch.rb
   named_scope :until_date, lambda {|d| {:conditions => ["apt_time <= ?", d]}}
   validate_on_create :cannot_create_across_issues, :cannot_create_without_timeslots
+  validate_on_update :cannot_update_active_without_timeslots
   after_validation_on_create :set_apt_time, :set_coach, :set_author
 
   def cannot_create_across_issues
@@ -26,6 +27,11 @@ class Booking < ActiveRecord::Base
   def cannot_create_without_timeslots
     errors.add_to_base("Bookings must have timeslots.") if
           self.timeslots.empty?
+  end
+
+  def cannot_update_active_without_timeslots
+    errors.add_to_base("Bookings must have at least one timeslot") if
+          self.timeslots.empty? && self.cancelled.nil?
   end
 
   #not really being useful
