@@ -13,7 +13,7 @@ class Booking < ActiveRecord::Base
   named_scope :orphaned, lambda { { :conditions => { :cancelled => false } } }
   named_scope :from_date, lambda {|d| {:conditions => ["apt_time >= ?", d]}}    #similar to from/until date in issue_patch.rb
   named_scope :until_date, lambda {|d| {:conditions => ["apt_time <= ?", d]}}
-  validate :cannot_create_across_issues, :cannot_create_without_timeslots
+  validate_on_create :cannot_create_across_issues, :cannot_create_without_timeslots
   after_validation_on_create :set_apt_time
 
   def cannot_create_across_issues
@@ -50,7 +50,11 @@ class Booking < ActiveRecord::Base
   end
 
   def coach
-    self.timeslots.first.coach
+    if self.timeslots.present?
+      self.timeslots.first.coach
+    else
+      return "dunno"
+    end
   end
 
 end

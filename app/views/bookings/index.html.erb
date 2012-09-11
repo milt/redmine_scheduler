@@ -3,84 +3,65 @@
 <%= render 'search_form' %>
 
 <!--On orphaned bookings-->
-<div>
-  <table class = "list issue">
-    <h3>Your Orphaned Bookings</h3>
-    <th><%= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th><%= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th><%= link_to 'Start Time', {:action => 'index', :sort_by => 'start_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th>End Time</th>
-    
-    <% @orph_bookings.each do |booking| %>
-      <tr>
-        <td><%= booking.name %></td>
-        <td><%= booking.coach %></td>
-        <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td><!--probably can do with apt_time as well-->
-        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
-      </tr>
-    <% end %>
-  </table>
-</div>
-<%= will_paginate @orph_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}%>
+<% unless @orph_bookings.empty? %>
+  <div>
+    <table class = "list issue">
+      <h3>Orphaned Bookings</h3>
+      <th><%= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      <th><%= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      <th><%= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      
+      <% @orph_bookings.each do |booking| %>
+        <tr>
+          <td><%= booking.name %></td>
+          <td><%= booking.coach %></td>
+          <td><%= booking.apt_time.strftime("%H:%M:%S") %></td><!--probably can do with apt_time as well-->
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <%= will_paginate @orph_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}%>
+<% end %>
 
 <!--On active bookings-->
-<div>
-  <table class = "list issue">
-    <h3>Your Active Bookings</h3>
-    <th><%= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th><%= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th><%= link_to 'Start Time', {:action => 'index', :sort_by => 'start_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th>End Time</th>
-    
-    <% @act_bookings.each do |booking| %>
-      <tr>
-        <td><%= booking.name %></td>
-        <td><%= booking.coach %></td>
-        <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
-        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
-      </tr>
-    <% end %>
-  </table>
-</div>
-<%= will_paginate @act_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}%>
+<% unless @act_bookings.empty? %>
+  <div>
+    <table class = "list issue">
+      <h3>Active Bookings</h3>
+      <th><%= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      <th><%= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      <th><%= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      
+      <% @act_bookings.each do |booking| %>
+        <tr>
+          <td><%= booking.name %></td>
+          <td><%= booking.coach %></td>
+          <td><%= booking.apt_time.strftime("%H:%M:%S") %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <%= will_paginate @act_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}%>
+<% end %>
 
 <!--On cancelled bookings-->
-<div>
-  <table class = "list issue">
-    <h3>Your Cancelled Bookings</h3>
-    <th><%= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th><%= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th><%= link_to 'Start Time', {:action => 'index', :sort_by => 'start_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
-    <th>End Time</th>
-    
-    <% @canc_bookings.each do |booking| %>
-      <tr>
-        <td><%= booking.name %></td>
-        <td><%= booking.coach %></td>
-        <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
-        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
-      </tr>
-    <% end %>
-  </table>
-</div>
-<%= will_paginate @canc_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}%>
+<% unless @canc_bookings.empty? %>
+  <div>
+    <table class = "list issue">
+      <h3>Cancelled Bookings</h3>
+      <th><%= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      <th><%= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      <th><%= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}} %></th>
+      
+      <% @canc_bookings.each do |booking| %>
+        <tr>
+          <td><%= booking.name %></td>
+          <td><%= booking.coach %></td>
+          <td><%= booking.apt_time.strftime("%H:%M:%S") %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <%= will_paginate @canc_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}%>
+<% end %>
 
-<!--On all bookings-->
-<!-- <div>
-<table class = "list issue">
-    <h3>List of all bookings</h3>
-    <th>Patron Name</th>
-    <th>Coach</th>
-    <th>Start Time</th>
-    <th>End Time</th>
-    
-    <% @bookings.each do |booking| %>
-   	  <tr>
-   	  	<td><%= booking.name %></td>
-        <td><%= booking.coach %></td>
-		    <td><%= booking.timeslots.sort_by(&:slot_time).first.start_time.strftime("%H:%M:%S") %></td>
-        <td><%= booking.timeslots.sort_by(&:slot_time).last.end_time.strftime("%H:%M:%S") %></td>
-      </tr>
-    <% end %>
-</table>
-</div> -->

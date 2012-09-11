@@ -20,7 +20,7 @@ class BookingsController < ApplicationController
         @bookings = @bookings.sort_by(&:coach)
     end    
     
-    if params[:sort_by] == 'start_time'
+    if params[:sort_by] == 'apt_time'
         @bookings = @bookings.sort_by(&:apt_time)
     end    
     
@@ -84,7 +84,7 @@ class BookingsController < ApplicationController
                     :location => @booking }
       else                                               
         flash[:warning] = "Couldn't cancel."
-        format.html { render :action => "index" }
+        format.html { redirect_to :action => "index" }
         format.xml  { render :xml => @booking.errors,
                     :status => :unprocessable_entity }
       end
