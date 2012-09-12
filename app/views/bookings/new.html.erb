@@ -5,7 +5,7 @@
 <table width = "1000" border = "0">
 	<tr>
 	<td width="700"><% form_for :booking, @booking, :url => { :action => "create", :slot_ids => @timeslots } do |f| %>
-  	<p><%= f.label :name %> <%= f.text_field :name %></p>
+  	<p><%= f.label :name %> <%= f.text_field :name %><%= check_box_tag('me') %>Me</p>
   	<p><%= f.label :phone %> <%= f.text_field :phone %></p>
   	<p><%= f.label :email %> <%= f.text_field :email %></p>
   	<p><%= f.label :project_desc %></p><p><%= f.text_area :project_desc %></p>
@@ -16,3 +16,5 @@
 	</td>
 	</tr>
 </table>
+<hr>
+<%= link_to 'Return to index...', {:action => 'index'} %>

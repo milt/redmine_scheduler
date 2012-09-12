@@ -1,17 +1,42 @@
 <%= render 'nav/nav' %>
 <h2>Booking <%= @booking.id %></h2>
 
-<div>
-  <p><%= @booking.name %></p>
-  <p><%= @booking.phone %></p>
-  <p><%= @booking.email %></p>
-  <p><%= @booking.project_desc %></p>
-</div>
+<table>
+  <tr>
+    <td>
+      <table>
+        <tr>
+          <th>Patron/Staff Name</th><td><%= @booking.name %></td>
+        </tr>
+        <tr>
+          <th>Lab Coach</th><td><%= @booking.coach.name %> - Skills: <%= @booking.coach.skills.map(&:name).join(", ") %></td>
+        </tr>
+        <tr>
+          <th>Booked By</th><td><%= @booking.author.name %></td>
+        </tr>
+        <tr>
+          <th>Phone</th><td><%= @booking.phone %></td>
+        </tr>
+        <tr>
+          <th>email</th><td><%= @booking.email %></td>
+        </tr>
+        <tr>
+          <th>Project Description</th><td><%= @booking.project_desc %></td>
+        </tr>
+      </table>
+    </td>
+    <td>
+      <ul>
+        <% @booking.timeslots.each do |slot| %>
+          <li><%= slot.start_time.strftime("%D - %T") %></li>
+        <% end %>
+      </ul>
+    </td>
+  </tr>
+</table>
 
-<div>
-  <ul>
-    <% @booking.timeslots.each do |slot| %>
-      <li><%= [slot.start_time.strftime("%D - %T"), slot.coach.name, "Available skills:" + slot.skills.map(&:name).join(", ")].join(", ") %></li>
-    <% end %>
-  </ul>
-</div>
+<%= button_to 'Edit', {:action => :edit, :id => @booking} %>
+<hr>
+<%= link_to 'Return to index...', {:action => 'index'} %>
+
+

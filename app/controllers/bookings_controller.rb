@@ -35,6 +35,11 @@ class BookingsController < ApplicationController
 
   def create
     @booking = Booking.new(params[:booking])
+
+    if params[:me].present?
+      @booking.name = User.current.name
+    end
+
     @booking.timeslots << @timeslots
 
     respond_to do |format|
@@ -59,6 +64,9 @@ class BookingsController < ApplicationController
   end
 
   def update
+
+    @old_slots = @booking.timeslots
+    
     if params[:slot_ids].present?
       @timeslots = params[:slot_ids].map {|id| Timeslot.find(id)}
     end
@@ -66,14 +74,19 @@ class BookingsController < ApplicationController
     #TODO.. process the changes in timeslot
     @booking.attributes = params[:booking]
 
+    if params[:me].present?
+      @booking.name = User.current.name
+    end
+    
+    @booking.timeslots = @timeslots
     respond_to do |format|
       if @booking.save
-        @booking.timeslots = @timeslots
         flash[:notice] = 'Booking was successfully updated.'
-        format.html { redirect_to :action => "index" }
+        format.html { redirect_to :action => "show", :id => @booking }
         format.xml  { render :xml => @booking, :status => :updated,
                     :location => @booking }
-      else                                               
+      else
+        @booking.timeslots = @old_slots #go back to orig slots
         flash[:warning] = 'Invalid options'
         format.html { render :action => "edit", :booking => @booking, :slot_ids => params[:slot_ids] }
         format.xml  { render :xml => @booking.errors,
