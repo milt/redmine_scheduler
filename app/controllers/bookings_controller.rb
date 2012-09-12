@@ -64,9 +64,11 @@ class BookingsController < ApplicationController
     end
 
     #TODO.. process the changes in timeslot
+    @booking.attributes = params[:booking]
 
     respond_to do |format|
-      if @booking.update_attributes(params[:booking])
+      if @booking.save
+        @booking.timeslots = @timeslots
         flash[:notice] = 'Booking was successfully updated.'
         format.html { redirect_to :action => "index" }
         format.xml  { render :xml => @booking, :status => :updated,
