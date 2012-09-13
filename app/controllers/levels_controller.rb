@@ -70,7 +70,7 @@ class LevelsController < ApplicationController
   end
 
   def my_levels
-    @levels = Level.for_user(User.current)
+    @levels = Level.for_user(User.current).group_by(&:skillcat)
   end
 
   private

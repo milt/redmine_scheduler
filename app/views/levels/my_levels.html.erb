@@ -1,4 +1,7 @@
 <%= render 'nav/nav' %>
 <h2>My Skill Levels</h2>
 
-<%= render 'list', :levels => @levels %>
+<% Skillcat.all.each do |skillcat| %>
+  <h3><%= skillcat.name %></h3>
+  <%= render 'list', :levels => @levels[skillcat] %>
+<% end %>

@@ -1,5 +1,5 @@
 class Level < ActiveRecord::Base
-  belongs_to :skill
+  belongs_to :skill, :include => :skillcat
   belongs_to :user
   validates_presence_of :rating
   validates_numericality_of :rating, 
@@ -9,4 +9,8 @@ class Level < ActiveRecord::Base
   validates_uniqueness_of :skill_id, :scope => :user_id, 
     :message => "Only one skill level per skill per user."
   named_scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
+
+  def skillcat
+    self.skill.skillcat
+  end
 end
