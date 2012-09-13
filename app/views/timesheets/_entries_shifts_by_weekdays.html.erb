@@ -11,6 +11,7 @@
         <th><%= Date.commercial(@year_selected, @cweek, day).strftime("%A")  %></th>
         <tr>
           <td>
+            <p>Time Entries This Day</p>
           <% if !@entries_by_day[Date.commercial(@year_selected, @cweek, day)].nil? %>
             <% @entries_by_day[Date.commercial(@year_selected, @cweek, day)].each do |entry| %>
               <%= entry.activity %>
@@ -19,6 +20,8 @@
               <strong>Hours: </strong><%= entry.hours %><br />
             <%end%>
           <%end%>
+          <hr>
+          <p>Shifts This Day</p>
           <% if !@shifts_by_day[Date.commercial(@year_selected, @cweek, day)].nil? %>
             <% @shifts_by_day[Date.commercial(@year_selected, @cweek, day)].each do |shift| %>
               <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
@@ -35,6 +38,7 @@
         <th><%= Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day).strftime("%A")  %></th>
         <tr> 
           <td>
+            <p>Time Entries This Day</p>
           <% if !entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
             <% entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |entry| %>
               <%= entry.activity %>
@@ -50,6 +54,8 @@
               <%end%>
             <%end%>
           <%end%>
+          <hr>
+          <p>Shifts This Day</p>
           <% if !@shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
             <% @shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |shift| %>
               <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
@@ -66,6 +72,7 @@
         <th><%= Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day).strftime("%A")  %></th>
         <tr>
           <td>
+            <p>Time Entries This Day</p>
           <% if !entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
             <% entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |entry| %>
               <%= entry.activity %>
@@ -74,6 +81,8 @@
               <strong>Hours: </strong><%= entry.hours %>
             <%end%>
           <%end%>
+          <hr>
+          <p>Shifts This Day</p>
           <% if !@shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
             <% @shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |shift| %>
               <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
