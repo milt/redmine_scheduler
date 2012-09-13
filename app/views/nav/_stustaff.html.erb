@@ -1,4 +1,5 @@
           <th><%= link_to "Today's Shifts", {:controller => 'stustaff'} %></th>
+          <th><%= link_to 'Book Student Time', { :controller => 'timeslots', :action => 'find' } %></th>
           <th><%= link_to 'Timesheets', { :controller => 'timesheets' } %></th>
           <th><%= link_to 'New Timesheet', { :controller => 'timesheets', :action => 'new' } %></th>
-          <th><%= link_to 'Book Student Time', { :controller => 'timeslots', :action => 'find' } %></th>
+          <th><%= link_to 'My Skills', { :controller => 'levels', :action => 'my_levels' } %></th>
