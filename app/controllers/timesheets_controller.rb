@@ -45,7 +45,13 @@ class TimesheetsController < ApplicationController
     end
 
     @weekof = yearstart + (@cweek - 1).weeks
-    
+    @existing = Timesheet.for_user(User.current).weekof_on(@weekof)
+
+    if !@existing.empty?
+      flash.now[:warning] = "There is already a timesheet for the selected week. Please select another."
+    end
+    #flash.discard(:warning)
+
     @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
     #@entries_days_of_week = @entries.map(&:spent_on).uniq.sort   #uniq.sort doesn't seem to be needed, converts array of timeentries to array of dates
     @entries_by_day = @entries.group_by(&:spent_on)  
