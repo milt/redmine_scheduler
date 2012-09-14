@@ -28,6 +28,11 @@ module UserPatch
   end
 
   module InstanceMethods
+
+    def skillcats
+      (self.skills.collect {|s|s.skillcat}).uniq
+    end
+
     def is_stustaff?
       self.groups.include?(Group.stustaff.first)
     end
