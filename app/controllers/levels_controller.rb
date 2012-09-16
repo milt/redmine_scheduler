@@ -2,11 +2,14 @@ class LevelsController < ApplicationController
   unloadable
   before_filter :role_check, :except => :my_levels
 
-
-  #need to add additional levels?
   def index
     @users = Group.stustaff.first.users.active
     @skills = Skill.all
+  
+    @skillcats = Skillcat.all.sort_by(&:name)  #sorts skill categories by name
+    @skills_list = []
+
+    @skills_list = skill_sorted_create
   end
 
   def edit
@@ -32,12 +35,11 @@ class LevelsController < ApplicationController
   end
 
   def new
-
   end
 
   def create
       user = User.find(params[:level][:user_id].to_i)
-      skill = Skill.find(params[:level][:skill_id].to_i)
+      skill = Skill.find(params[:skill_id])
       rating = params[:level][:rating].to_i
 
       @level = Level.new(:user => user, :skill => skill, :rating => rating)
@@ -74,6 +76,31 @@ class LevelsController < ApplicationController
   end
 
   private
+
+  def skill_sorted_create
+    skill_arr = []
+    @skillcats.each do |cat|
+      skill_arr << ["", nil]
+      skill_arr << ["-------" + cat.name + "-------", nil]
+      skills_sorted = cat.skills.sort_by(&:name)
+
+      skills_sorted.each do |skill|
+        skill_arr << [skill.name, skill.id] 
+      end
+    end
+    skill_arr
+    
+    #tried with another method, although not working
+    #skills_sorted = []
+    #@skillcats.each do |cat|
+      #skills_sorted << cat   #kind of cheating here as the category itself is not a skill
+      #skills_sorted = skills_sorted + cat.skills.sort_by(&:name)   #somehow only '=' works '<<' does not work here
+    #end
+    #skills_sorted  #returns with sorted skills array
+
+    #in view, had
+    #<%= f.select :sel_skill, @skills_list.map {|s| [s.name, s.id]}, :disabled => [4,2], :include_blank => '' %>
+  end
 
   def role_check
     if !User.current.is_admstaff?
