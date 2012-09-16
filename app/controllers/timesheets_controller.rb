@@ -60,7 +60,6 @@ class TimesheetsController < ApplicationController
     @fdshifts = issues.fdshift
     @lcshifts = issues.lcshift
     
-    #@shifts_day_of_week = issues.map(&:start_date).uniq.sort
     @shifts_by_day = issues.group_by(&:start_date)
 
     @goals = Issue.foruser(@user).goals
@@ -68,6 +67,7 @@ class TimesheetsController < ApplicationController
 
     @edit = false
     @show = false
+
   end
 
   def create
@@ -90,12 +90,26 @@ class TimesheetsController < ApplicationController
     timesheet.user = user
     timesheet.weekof = weekof
 
-    if timesheet.save
-      flash[:notice] = "Timesheet for #{user.name} for the week starting on #{timesheet.weekof} was successfully created."
-      redirect_to :action => 'index'
-    else                                            
-      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
-      redirect_to :action => 'new'
+
+    #need to check whether the timesheet has already been submitted..
+    #need to check whether there is hour to the timesheet before saving, else cannot submit
+    #might not be the best way to code, the block should be replaced a call to submit method
+    if params[:creatensubmit] == 'yes'
+      if timesheet.submit_now && timesheet.save
+        flash[:notice] = "Timesheet for #{timesheet.user.name} for the week starting on #{timesheet.weekof} was successfully submitted."
+        redirect_to :action => 'index'
+      else
+        flash[:warning] = timesheet.errors.full_messages
+        redirect_to :action => 'index'
+      end
+    else
+      if timesheet.save
+        flash[:notice] = "Timesheet for #{user.name} for the week starting on #{timesheet.weekof} was successfully created."
+        redirect_to :action => 'index'
+      else                                            
+        flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
+        redirect_to :action => 'new'
+      end
     end
   end
 
