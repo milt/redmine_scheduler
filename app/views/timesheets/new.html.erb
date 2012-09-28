@@ -19,7 +19,7 @@
 <br>
   <%= render 'goals', :goals => @goals %>
 <br>
-<% form_for :timesheet, @timesheet, :url => { :action => 'create', :weekof => @cweek, :user => @user.id } do |f| %>
-  <p><%= check_box_tag 'creatensubmit','yes'%><%= label_tag "Immediate Submission" %></p>
-  <p><%= submit_tag "Create", :onclick =>{:confirm => 'Do you really want to directly submit?'}%></p>
+<% form_for :timesheet, @timesheet, :url => {:action => 'create', :weekof => @cweek, :user => @user.id} do |f| %>
+  <p><%= check_box_tag 'creatensubmit','yes'%><%= label_tag "Immediate Submission, note: there will be no draft created in this case" %></p>
+  <p><%= submit_tag "Create"%></p>
 <% end %>

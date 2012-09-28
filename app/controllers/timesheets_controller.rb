@@ -94,23 +94,19 @@ class TimesheetsController < ApplicationController
     #need to check whether the timesheet has already been submitted..
     #need to check whether there is hour to the timesheet before saving, else cannot submit
     #might not be the best way to code, the block should be replaced a call to submit method
-    if params[:creatensubmit] == 'yes'
-      if timesheet.submit_now && timesheet.save
-        flash[:notice] = "Timesheet for #{timesheet.user.name} for the week starting on #{timesheet.weekof} was successfully submitted."
-        redirect_to :action => 'index'
+    
+    if timesheet.save
+      if params[:creatensubmit] == 'yes'
+        @timesheet = timesheet
+        submit  
       else
-        flash[:warning] = timesheet.errors.full_messages
         redirect_to :action => 'index'
       end
-    else
-      if timesheet.save
-        flash[:notice] = "Timesheet for #{user.name} for the week starting on #{timesheet.weekof} was successfully created."
-        redirect_to :action => 'index'
-      else                                            
-        flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
-        redirect_to :action => 'new'
-      end
+    else                                            
+      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
+      redirect_to :action => 'new'
     end
+
   end
 
   def print
@@ -193,7 +189,9 @@ class TimesheetsController < ApplicationController
   private
 
   def find_timesheet
-    @timesheet = Timesheet.find(params[:id])
+    if params[:id].present?
+      @timesheet = Timesheet.find(params[:id])
+    end
     if User.current.is_admstaff?
       unless @timesheet.actions[:admin].map {|a| a[1]}.include?(action_name.to_sym)
         flash[:warning] = "Invalid action for this timesheet!"
