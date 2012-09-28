@@ -2,6 +2,7 @@ class TimesheetsController < ApplicationController
   unloadable
   before_filter :find_timesheets, :only => :index
   before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
+  before_filter :wage_check, :only => [:create, :print]
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
 
@@ -187,6 +188,13 @@ class TimesheetsController < ApplicationController
   end
 
   private
+
+  def wage_check
+    if User.current.wage.nil?
+      flash[:warning] = "You don't seem to be assigned a wage. Please speak to your manager."
+      redirect_to :action => 'index'
+    end
+  end
 
   def find_timesheet
     if params[:id].present?
