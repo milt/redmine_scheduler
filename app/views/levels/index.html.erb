@@ -25,9 +25,10 @@
 <br>
 <% @users.each do |user| %>
   <h2><%= user.firstname %></h2>
-  <ul>
-  <% user.levels.each do |level| %>
-    <li><%= level.skill.name %> : <%= render 'form_update', :level => level %> <%= button_to 'Delete', {:action => 'delete', :id => level}, :confirm => "Really?" %></li>
-  <%end%>
-</ul>
+  <table>
+    <tr><th>Skill</th><th></th><th></th></tr>
+    <% user.levels.each do |level| %>
+      <tr><td><%= level.skill.name %></td><td><%= render 'form_update', :level => level %></td><td><%= button_to 'Delete', {:action => 'delete', :id => level}, :confirm => "Really?" %></td></tr>
+    <%end%>
+  </table>
 <%end%>
