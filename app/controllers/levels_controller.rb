@@ -10,6 +10,7 @@ class LevelsController < ApplicationController
     @skills_list = []
 
     @skills_list = skill_sorted_create
+    @goals = Issue.goals.feedback
   end
 
   def edit

@@ -14,16 +14,20 @@
       <% end %>
     </table>
   </div>
-
+  
   <% if !@goals_by_student[student].nil? %>
-    <div id="student-goals">
-      <ul>
-        <% @goals_by_student[student].each do |goal| %>
-          <li><%= link_to goal.subject, goal %></li>
-        <% end %>
-      </ul>
-    </div>
+    <h5>Goals:</h5>
+      <div id="student-goals">
+        <table>
+          <tr><th>Goal</th><th>Assigned By</th><th>Assigned</th></tr>
+          <% @goals_by_student[student].each do |goal| %>
+            <tr><td><%= link_to goal.subject, goal %></td><td><%= link_to goal.author.name, goal.author %></td><td><%= goal.created_on.strftime("%D") %></td></tr>
+          <% end %>
+        </table>
+      </div>
   <% end %>
+
+
   <hr>
 <% end %>
 

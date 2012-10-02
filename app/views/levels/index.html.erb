@@ -1,6 +1,26 @@
 <%= render 'nav/nav' %>
 <h1>Skill Levels</h1>
+<% if !@goals.empty? %>
+  <h4>Completed Training Goals Awaiting Signoff:</h4>
+  <table>
+    <tr>
+      <th>StuStaff</th>
+      <th>ProStaff</th>
+      <th>Description</th>
+      <th>Assigned</th>
+    </tr>
+    <% @goals.each do |goal| %>
+      <tr>
+        <td><%= goal.assigned_to.name %></td>
+        <td><%= goal.author.name %></td>
+        <td><%= link_to goal.subject, goal %></td>
+        <td><%= goal.created_on.strftime("%D") %></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
 
+<h2>Assign Level:</h2>
 <%= render 'form' %>
 <br>
 <% @users.each do |user| %>

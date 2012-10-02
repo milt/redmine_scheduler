@@ -28,6 +28,7 @@ module IssuePatch
       named_scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
+      named_scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
     end
 
   end
