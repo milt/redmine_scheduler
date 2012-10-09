@@ -2,7 +2,7 @@ class TimesheetsController < ApplicationController
   unloadable
   before_filter :find_timesheets, :only => :index
   before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
-  before_filter :wage_check, :only => [:create, :print]
+  before_filter :wage_check, :except => [:approve,:delete,:reject]
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
 
@@ -11,11 +11,13 @@ class TimesheetsController < ApplicationController
   #include CustomFieldsHelper
 
   def index
+    #session[:return_to] = request.referer
     @submitted = @timesheets.is_submitted.is_not_approved
     @approved = @timesheets.is_submitted.is_approved
   end
 
   def new
+    #session[:return_to] = request.referer
     if params[:date].present?
       @year_selected = params[:date][:year].to_i
     else
@@ -72,6 +74,7 @@ class TimesheetsController < ApplicationController
   end
 
   def create
+    #session[:return_to] = request.referer
     yearstart = find_first_monday(Time.current.year)
 
     if params[:weekof].present?
@@ -111,6 +114,7 @@ class TimesheetsController < ApplicationController
   end
 
   def print
+    #session[:return_to] = request.referer
     weekof = @timesheet.weekof.to_date
     name = @timesheet.user.name
 
@@ -125,6 +129,7 @@ class TimesheetsController < ApplicationController
   end
 
   def show
+    #session[:return_to] = request.referer
     @edit = false
     @show = true
 
@@ -135,6 +140,7 @@ class TimesheetsController < ApplicationController
   end
 
   def edit
+    #session[:return_to] = request.referer
     @edit = true
     @show = false
 
@@ -148,6 +154,7 @@ class TimesheetsController < ApplicationController
   end
 
   def submit
+    #session[:return_to] = request.referer
     if @timesheet.submit_now && @timesheet.save
       flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully submitted."
       redirect_to :action => 'index'
@@ -190,9 +197,11 @@ class TimesheetsController < ApplicationController
   private
 
   def wage_check
+    session[:return_to] = request.referer
     if User.current.wage.nil?
       flash[:warning] = "You don't seem to be assigned a wage. Please speak to your manager."
-      redirect_to :action => 'index'
+      redirect_to session[:return_to]
+      #redirect_to :action => 'index'  #works well with all actions except when triggered going into timesheet index
     end
   end
 
