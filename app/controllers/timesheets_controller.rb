@@ -61,7 +61,7 @@ class TimesheetsController < ApplicationController
     @fdshifts = issues.fdshift
     @lcshifts = issues.lcshift
     
-    @shifts_by_day = issues.group_by(&:start_date)
+    @shifts_by_day = (@fdshifts+@lcshifts).group_by(&:start_date)   #concatenating the arrays of lc and fd shifts should solve bug 1240
 
     @goals = Issue.foruser(@user).goals
     @tasks = Issue.foruser(@user).tasks
