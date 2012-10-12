@@ -2,7 +2,7 @@ class TimesheetsController < ApplicationController
   unloadable
   before_filter :find_timesheets, :only => :index
   before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
-  before_filter :require_admstaff, :only => [:approve,:delete,:reject]
+  before_filter :require_admstaff, :only => [:approve,:reject]
   before_filter :wage_check, :except => [:approve,:delete,:reject]
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
@@ -176,6 +176,11 @@ class TimesheetsController < ApplicationController
   end
 
   def delete
+
+    if @timesheet.status != :draft
+      require_admstaff
+    end
+
     if @timesheet.delete_now && @timesheet.save
       flash[:notice] = "Timesheet has been successfully deleted!"
       redirect_to :action => 'index'
