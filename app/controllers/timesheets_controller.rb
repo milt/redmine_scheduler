@@ -2,6 +2,7 @@ class TimesheetsController < ApplicationController
   unloadable
   before_filter :find_timesheets, :only => :index
   before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
+  before_filter :require_admstaff, :only => [:approve,:delete,:reject]
   before_filter :wage_check, :except => [:approve,:delete,:reject]
   include TimesheetHelper
   require "prawn"   #needed for pdf generation
@@ -196,12 +197,23 @@ class TimesheetsController < ApplicationController
 
   private
 
+  def require_admstaff
+    return unless require_login
+    if !User.current.is_admstaff?
+      render_403
+      return false
+    end
+    true
+  end
+
   def wage_check
-    session[:return_to] = request.referer
-    if User.current.wage.nil?
-      flash[:warning] = "You don't seem to be assigned a wage. Please speak to your manager."
-      redirect_to session[:return_to]
-      #redirect_to :action => 'index'  #works well with all actions except when triggered going into timesheet index
+    unless User.current.is_admstaff?
+      session[:return_to] = request.referer
+      if User.current.wage.nil?
+        flash[:warning] = "You don't seem to be assigned a wage. Please speak to your manager."
+        redirect_to session[:return_to]
+        #redirect_to :action => 'index'  #works well with all actions except when triggered going into timesheet index
+      end
     end
   end
 
