@@ -212,7 +212,51 @@ pam_auth_source = AuthSource.new(auth_params)
 pam_auth_source.type = "AuthSourcePam" #Only seems to work with type declared separately and as a string, probably an STI thang?
 pam_auth_source.save
 
-#Dummy Users
+#add groups: prostaff, stustaff
+prostaffgroup = Group.create!(:lastname => "Prostaff", :type => "Group")
+stustaffgroup = Group.create!(:lastname => "Stustaff", :type => "Group")
+managergroup = Group.create!(:lastname => "Manager", :type => "Group")
 
+#add users to groups
+User.find(:all, :conditions => ["lastname = ?", "Prostaff"]).map {|u| prostaffgroup.users << u}
+User.find(:all, :conditions => ["lastname = ?", "Stustaff"]).map {|u| stustaffgroup.users << u}
+User.find(:all, :conditions => ["lastname = ?", "Manager"]).map {|u| managergroup.users << u}
 
+#give wages to all stustaff
+stustaffgroup.users.each do |u|
+  u.create_wage(:amount => 12.0)
+end
 
+# assign 3 random skill levels to stustaff
+stustaff = stustaffgroup.users
+
+stustaff.each do |staffer|
+  3.times do
+    level = Level.create(:user => staffer, :skill => Skill.find(rand(Skill.count)+1), :rating => rand(4))
+  end
+end
+
+#add groups to project roles
+fd_managermember = Member.new(:principal => managergroup, :project => front_desk_project)
+fd_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+fd_managermember.save
+
+fd_staffmember = Member.new(:principal => stustaffgroup, :project => front_desk_project)
+fd_staffmember.member_roles << MemberRole.new(:role => staff_role)
+fd_staffmember.save
+
+lc_managermember = Member.new(:principal => managergroup, :project => lab_coach_project)
+lc_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+lc_managermember.save
+
+lc_staffmember = Member.new(:principal => stustaffgroup, :project => lab_coach_project)
+lc_staffmember.member_roles << MemberRole.new(:role => staff_role)
+lc_staffmember.save
+
+training_managermember = Member.new(:principal => prostaffgroup, :project => training_project)
+training_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+training_managermember.save
+
+training_staffmember = Member.new(:principal => stustaffgroup, :project => training_project)
+training_staffmember.member_roles << MemberRole.new(:role => staff_role)
+training_staffmember.save
