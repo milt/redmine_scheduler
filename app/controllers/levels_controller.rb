@@ -91,16 +91,6 @@ class LevelsController < ApplicationController
     end
     skill_arr
     
-    #tried with another method, although not working
-    #skills_sorted = []
-    #@skillcats.each do |cat|
-      #skills_sorted << cat   #kind of cheating here as the category itself is not a skill
-      #skills_sorted = skills_sorted + cat.skills.sort_by(&:name)   #somehow only '=' works '<<' does not work here
-    #end
-    #skills_sorted  #returns with sorted skills array
-
-    #in view, had
-    #<%= f.select :sel_skill, @skills_list.map {|s| [s.name, s.id]}, :disabled => [4,2], :include_blank => '' %>
   end
 
   def role_check
