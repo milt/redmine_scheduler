@@ -15,12 +15,7 @@ module IssuePatch
       named_scope :today, lambda { { :conditions => { :start_date => Date.today } } }
       named_scope :fdshift, lambda { { :conditions => { :tracker_id => Tracker.fdshift_track.first.id } } }
       named_scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
-
-      #wonder how to combine two separate namescopes to one??
-      #named_scope :fd_lc_shifts, lambda {{ :conditions => { :tracker_id => Tracker.fdshift_track.first.id
-      #                                    || :tracker_id => Tracker.lcshift_track.first.id } } }
-
-
+      #need to add a named_scope for development tracker?
       named_scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
       named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
       named_scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }

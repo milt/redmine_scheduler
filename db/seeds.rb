@@ -34,7 +34,21 @@ training_project_params = {
 
 training_project = Project.create(training_project_params)
 
+development_project_params = {
+  :name => "Development",
+  :description => "Project for Development",
+  :homepage => "",
+  :is_public => false,
+  :identifier => "development",  #what does this identifier field do?
+  :status => 1
+}
+
+development_project = Project.create(development_project_params)
+
 #Required Trackers
+
+#What is a tracker?
+
 fd_tracker_params = {
   :name => "Front Desk Shift",
   :is_in_chlog => false,
@@ -50,6 +64,14 @@ lc_tracker_params = {
 }
 
 lc_tracker = Tracker.create(lc_tracker_params)
+
+development_tracker_params = {
+  :name => "Development",
+  :is_in_chlog => false,
+  :is_in_roadmap => false
+}
+
+development_tracker = Tracker.create(development_tracker_params)
 
 task_tracker_params = {
   :name => "Task",
@@ -141,6 +163,7 @@ activities = activity_list.map {|a| TimeEntryActivity.create(:name => a)}
 front_desk_project.activities << activities
 lab_coach_project.activities << activities
 training_project.activities << activities
+development_project.activities << activities
 
 #make default modules
 shift_module_params = [
@@ -165,6 +188,9 @@ lab_coach_project.trackers << lc_tracker
 
 training_project.trackers.clear
 training_project.trackers << goal_tracker
+
+development_project.trackers.clear
+development_project.trackers << development_tracker
 
 #Default skillcat
 skillcat_params = {
@@ -246,3 +272,11 @@ training_managermember.save
 training_staffmember = Member.new(:principal => stustaffgroup, :project => training_project)
 training_staffmember.member_roles << MemberRole.new(:role => staff_role)
 training_staffmember.save
+
+development_managermember = Member.new(:principal => managergroup, :project => development_project)
+development_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+development_managermember.save
+
+development_staffmember = Member.new(:principal => stustaffgroup, :project => development_project)
+development_staffmember.member_roles << MemberRole.new(:role => staff_role)
+development_staffmember.save
