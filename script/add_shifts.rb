@@ -39,10 +39,20 @@ stustaff4.login = "stustaff4"
 stustaff4.password = "password"
 stustaff4.save
 
-#add skills for these users
+#give wages to all stustaff
+stustaffgroup.users.each do |u|
+  u.create_wage(:amount => 12.0)
+end
+
+# assign 3 random skill levels to stustaff
+stustaff = stustaffgroup.users
+
+stustaff.each do |staffer|
+  3.times do
+    level = Level.create(:user => staffer, :skill => Skill.find(rand(Skill.count)+1), :rating => rand(4))
+  end
+end
 #-------------------------------code above previously from seeds.rb------------------------------------
-
-
 
 #let's add some shifts. This assumes that seeds has run, and has set up projects, trackers, users, groups etc.
 #doesn't work, not sure why yet
