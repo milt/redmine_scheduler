@@ -14,7 +14,7 @@ module MailerPatch
             from	"DMC Lab Coach Notifier <notification@redmine.com>"
             subject	"You have a Lab Coach Signup!"
             sent_on	Time.now
-            body	("Booking scheduled with " + booking.name + " on " + booking.apt_time.strftime("%m/%d/%Y at %I:%M%p") + "\nYou can contact this patron at " + booking.phone + " or " + booking.email + "\n\nProject Description:\n" + booking.project_desc + "\n\n\n\n*Do Not Reply to this Email\nThis email is an auto-generated message.  Replies to automated messages are not monitored.")
+            body	("Booking scheduled with " + booking.name + " on " + booking.apt_time.strftime("%m/%d/%Y at %I:%M:%S %p") + "\nYou can contact this patron at " + booking.phone + " or " + booking.email + "\n\nProject Description:\n" + booking.project_desc + "\n\n\n\n*Do Not Reply to this Email\nThis email is an auto-generated message.  Replies to automated messages are not monitored.")
         end
     end
 

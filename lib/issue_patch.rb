@@ -48,7 +48,7 @@ module IssuePatch
       list = []
       t = Time.local(0,1,1,0,15)
       for h in 0..49
-        list << [ (t + h*30.minutes).strftime("%I:%M %p"), h ]
+        list << [ (t + h*30.minutes).strftime("%I:%M:%S %p"), h ]
       end
       return list
     end

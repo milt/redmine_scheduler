@@ -33,7 +33,7 @@
 	<% if @issue.is_shift? %>
 	<tr>
 	    <th class="start-time"><%=l(:field_start_time)%>:</th><td class="start-time"><%= @issue.start_time.strftime(fmt='%I:%M %p') %></td>
-	    <th class="end-time"><%=l(:field_end_time)%>:</th><td class="end-time"><%= @issue.end_time.strftime(fmt='%I:%M %p') %></td>
+	    <th class="end-time"><%=l(:field_end_time)%>:</th><td class="end-time"><%= @issue.end_time.strftime(fmt="%I:%M:%S %p") %></td>
 	</tr>
 	<% end %>
     <tr>

@@ -40,7 +40,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
           i.due_date = context[:issue].due_date + (rep + 1).week
           i.start_time = context[:issue].start_time + (rep + 1).week
           i.end_time = context[:issue].end_time + (rep + 1).week
-          i.subject = User.find(i.assigned_to_id).firstname + i.start_time.strftime(' %l:%M -') + i.end_time.strftime('%l:%M %p - ') + i.start_date.strftime('%a, %b %d')
+          i.subject = User.find(i.assigned_to_id).firstname + i.start_time.strftime(' %I:%M:%S %p -') + i.end_time.strftime('%I:%M:%S %p - ') + i.start_date.strftime('%a, %b %d')
           i.description = "Created by repeater"
           i.save
       end
@@ -59,7 +59,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
 
       @issue.write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date])
-      @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %l:%M -') + @issue.end_time.strftime('%l:%M %p - ') + @issue.start_date.strftime('%a, %b %d')
+      @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %I:%M:%S %p -') + @issue.end_time.strftime('%I:%M:%S %p - ') + @issue.start_date.strftime('%a, %b %d')
     end
   end
 
