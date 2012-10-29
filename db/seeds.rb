@@ -243,11 +243,6 @@ prostaffgroup = Group.create!(:lastname => "Prostaff", :type => "Group")
 stustaffgroup = Group.create!(:lastname => "Stustaff", :type => "Group")
 managergroup = Group.create!(:lastname => "Manager", :type => "Group")
 
-#add users to groups
-User.find(:all, :conditions => ["lastname = ?", "Prostaff"]).map {|u| prostaffgroup.users << u}
-User.find(:all, :conditions => ["lastname = ?", "Stustaff"]).map {|u| stustaffgroup.users << u}
-User.find(:all, :conditions => ["lastname = ?", "Manager"]).map {|u| managergroup.users << u}
-
 #add groups to project roles
 fd_managermember = Member.new(:principal => managergroup, :project => front_desk_project)
 fd_managermember.member_roles << MemberRole.new(:role => Role.find(3))

@@ -39,6 +39,11 @@ stustaff4.login = "stustaff4"
 stustaff4.password = "password"
 stustaff4.save
 
+#add users to groups
+User.find(:all, :conditions => ["lastname = ?", "Prostaff"]).map {|u| prostaffgroup.users << u}
+User.find(:all, :conditions => ["lastname = ?", "Stustaff"]).map {|u| stustaffgroup.users << u}
+User.find(:all, :conditions => ["lastname = ?", "Manager"]).map {|u| managergroup.users << u}
+
 #give wages to all stustaff
 stustaffgroup.users.each do |u|
   u.create_wage(:amount => 12.0)

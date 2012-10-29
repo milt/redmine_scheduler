@@ -4,6 +4,6 @@
           <th><%= link_to 'Skill Levels', { :controller => 'levels' } %></th>
           <th><%= link_to 'Assign Wages', {:controller => 'wages', :action => 'index'} %></th>
           <th><%= link_to 'Edit Skills', {:controller => 'skills', :action => 'index'} %></th>
-          <th><%= link_to 'File FrontDesk Issues', {:controller=> 'issues', :action=> 'new', :project_id=>Project.find(:first,:conditions=>['name = ?',"Front Desk Scheduling"]).id} %></th>
-          <th><%= link_to 'File LabCoach Issues', {:controller=> 'issues', :action=> 'new', :project_id=>2} %></th>
-<!--implemented links to issue creation page with two methods, both need the id of the project. similar way can be used for the development project. Haven't done so because, I don't have the development project set up-->
+          <th><%= link_to 'Create FrontDesk Feature', {:controller=> 'issues', :action=> 'new', :project_id=>Project.find(:first,:conditions=>['name = ?',"Front Desk Scheduling"]).id} %></th>
+          <th><%= link_to 'Create LabCoach Feature', {:controller=> 'issues', :action=> 'new', :project_id=>Project.find(:first,:conditions=>["name = 'Lab Coach Scheduling'"]).id} %></th>
+          <th><%= link_to 'Create Development Feature', {:controller=>'issues', :action=>'new', :project_id=>Project.find(:first,:conditions=>["name = 'Development Project'"]).id} %></th>
