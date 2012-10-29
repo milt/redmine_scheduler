@@ -167,7 +167,9 @@ class BookingsController < ApplicationController
     if params[:id].present?
       @booking = Booking.find(params[:id])
       @timeslots = @booking.timeslots
-      @shift = @timeslots.first.issue
+      if @timeslots.present?
+        @shift = @timeslots.first.issue
+      end
     else
       flash[:warning] = 'No ID specified.'
       redirect_to :action => 'index'

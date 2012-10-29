@@ -6,4 +6,4 @@
           <th><%= link_to 'Edit Skills', {:controller => 'skills', :action => 'index'} %></th>
           <th><%= link_to 'Create FrontDesk Feature', {:controller=> 'issues', :action=> 'new', :project_id=>Project.find(:first,:conditions=>['name = ?',"Front Desk Scheduling"]).id} %></th>
           <th><%= link_to 'Create LabCoach Feature', {:controller=> 'issues', :action=> 'new', :project_id=>Project.find(:first,:conditions=>["name = 'Lab Coach Scheduling'"]).id} %></th>
-          <th><%= link_to 'Create Development Feature', {:controller=>'issues', :action=>'new', :project_id=>Project.find(:first,:conditions=>["name = 'Development Project'"]).id} %></th>
+          <th><%= link_to 'Create Development Feature', {:controller=>'issues', :action=>'new', :project_id=>Project.find(:first,:conditions=>["name = 'Lab Coach Scheduling'"]).id} %></th><!--should be Development-->
