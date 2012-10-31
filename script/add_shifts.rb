@@ -1,3 +1,9 @@
+#Find groups created by seeds file
+
+prostaffgroup = Group.find(:all, :conditions => ["lastname = ?", "Prostaff"]).first
+stustaffgroup = Group.find(:all, :conditions => ["lastname = ?", "Stustaff"]).first
+managergroup = Group.find(:all, :conditions => ["lastname = ?", "Manager"]).first
+
 #-------------previously located in seeds.rb----------------
 #student staff manager
 manager = User.create(:firstname => "Deborah", :lastname => "Manager", :mail => "mgr@fake.edu")
