@@ -7,6 +7,8 @@
       <%= render 'hooks/redmine_scheduler/task' %>
     <% when "Training Goal" %>
       <%= render 'hooks/redmine_scheduler/goal' %>
+    <% when "Equipment Problem" %>
+      <%= render 'hooks/redmine_scheduler/repair' %>
     <% else %>
       <h3>No Special Options</h3>
     <% end %>

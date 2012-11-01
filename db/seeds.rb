@@ -45,9 +45,18 @@ development_project_params = {
 
 development_project = Project.create(development_project_params)
 
-#Required Trackers
+repair_project_params = {
+  :name => "Repair & Replace",
+  :description => "Project for Repair and Replacement of Equipment",
+  :homepage => "",
+  :is_public => false,
+  :identifier => "repair-replace",
+  :status => 1
+}
 
-#What is a tracker?
+repair_project = Project.create(repair_project_params)
+
+#Required Trackers
 
 fd_tracker_params = {
   :name => "Front Desk Shift",
@@ -97,6 +106,14 @@ event_tracker_params = {
 
 event_tracker = Tracker.create(event_tracker_params)
 
+equipment_problem_tracker_params = {
+  :name => "Equipment Problem",
+  :is_in_chlog => false,
+  :is_in_roadmap => false
+}
+
+equipment_problem_tracker = Tracker.create(equipment_problem_tracker_params)
+
 #add staff role
 staff_role_params = {
   :name => "Staff",
@@ -144,6 +161,9 @@ Workflow.copy_one(Tracker.find(3), Role.find(4), task_tracker, staff_role)
 Workflow.copy_one(Tracker.find(3), Role.find(3), goal_tracker, Role.find(3))
 Workflow.copy_one(Tracker.find(3), Role.find(4), goal_tracker, staff_role)
 
+Workflow.copy_one(Tracker.find(3), Role.find(3), equipment_problem_tracker, Role.find(3))
+Workflow.copy_one(Tracker.find(3), Role.find(4), equipment_problem_tracker, staff_role)
+
 activity_list = [
   "Helping Patrons",
   "Self Training",
@@ -164,6 +184,7 @@ front_desk_project.activities << activities
 lab_coach_project.activities << activities
 training_project.activities << activities
 development_project.activities << activities
+repair_project.activities << activities
 
 #make default modules
 shift_module_params = [
@@ -191,6 +212,9 @@ training_project.trackers << goal_tracker
 
 development_project.trackers.clear
 development_project.trackers << development_tracker
+
+repair_project.trackers.clear
+repair_project.trackers << equipment_problem_tracker
 
 #Default skillcat
 skillcat_params = {
@@ -275,3 +299,11 @@ development_managermember.save
 development_staffmember = Member.new(:principal => stustaffgroup, :project => development_project)
 development_staffmember.member_roles << MemberRole.new(:role => staff_role)
 development_staffmember.save
+
+repair_managermember = Member.new(:principal => managergroup, :project => repair_project)
+repair_managermember.member_roles << MemberRole.new(:role => Role.find(3))
+repair_managermember.save
+
+repair_staffmember = Member.new(:principal => prostaffgroup, :project => repair_project)
+repair_staffmember.member_roles << MemberRole.new(:role => staff_role)
+repair_staffmember.save
