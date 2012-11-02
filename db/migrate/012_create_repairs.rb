@@ -9,6 +9,7 @@ class CreateRepairs < ActiveRecord::Migration
       t.column :patron_phone, :string
       t.column :patron_email, :string
       t.column :patron_jhed, :string
+      t.column :checkout, :integer
       t.column :notes, :text
       
       t.timestamps

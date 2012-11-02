@@ -13,3 +13,13 @@ en:
         phone: "Phone"
         email: "Email"
         project_desc: "Project Description"
+      repair:
+        item_number: "Item Number"
+        item_desc: "Item Description"
+        problem_desc: "Problem Description"
+        patron_name: "Patron Name"
+        patron_phone: "Patron Phone"
+        patron_email: "Patron Email"
+        patron_jhed: "Patron JHED"
+        checkout: "Checkout Number"
+        notes: "Notes"
