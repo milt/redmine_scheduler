@@ -1,15 +1,37 @@
 <script>
 function authorizationratings(){
 	//var skillid = document.getElementById("skill_id");
-	//alert(<%=Skill.find(1).name.to_json %>);  //the 1 needs to be skillid, but doesn't work without AJAX
+	alert(<%=Skill.find(1).name.to_json %>);  //the 1 needs to be skillid, but doesn't work without AJAX
 	/*if (skillid.value = 1){
 		alert("authorization selected")
 		//alert(document.getElementById("rating").attributes)
 	}else{
 		alert("not authorization")
 	}*/
+
+	var xmlhttp;
+	if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+  		xmlhttp=new XMLHttpRequest();
+  	}
+
+  	xmlhttp.onreadystatechange=function(){
+  		if (xmlhttp.readyState==4 && xmlhttp.status==200){
+    		document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+    	}
+  	}
+
+	xmlhttp.open("GET",,true);
+	xmlhttp.send();		
 }
 </script>
+
+
+
+
+
+
+
+
 
 <% form_for :level, @level, :url => { :action => "create" }, :html => {:class => "nifty_form"} do |f| %>
   <%= f.select :user_id, @users.map {|u| [u.name, u.id] } %>
