@@ -31,6 +31,7 @@ module IssuePatch
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
       named_scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
+      after_destroy :cancel_bookings 
     end
 
   end
@@ -149,7 +150,14 @@ module IssuePatch
       self.timeslots.clear
       self.create_timeslots
     end
-        
+    
+    #cancels all bookings associated when issue is deleted
+    def cancel_bookings
+      self.bookings.each do |booking|
+        booking.cancel
+        booking.save
+      end
+    end    
   end
 end
 
