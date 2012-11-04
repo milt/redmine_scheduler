@@ -7,6 +7,6 @@
           <% dev_proj = Project.find(:first, :conditions=>["name = 'Development'"]) %>
           <% tracker_bug = dev_proj.trackers.find(:first,:conditions=>["name = 'Bug'"]).id %>
           <% tracker_feature = dev_proj.trackers.find(:first,:conditions=>["name = 'Feature'"]).id %>
-          <th><%= link_to 'Create Development (mold)', {:controller=>'issues', :action=>'new', :project_id=>Project.find(:first,:conditions=>["name = 'Development'"]).id} %></th>
+          <!--<th><%= link_to 'Create Development (mold)', {:controller=>'issues', :action=>'new', :project_id=>Project.find(:first,:conditions=>["name = 'Development'"]).id} %></th>-->
           <th><%= link_to 'Add Development Bug', {:controller=>'issues', :action=>'new', :project_id=>dev_proj.id, :tracker_id=>tracker_bug} %></th>
           <th><%= link_to 'Submit Development Feature', {:controller=>'issues', :action=>'new', :project_id=>dev_proj.id,:tracker_id=>tracker_feature} %></th>
