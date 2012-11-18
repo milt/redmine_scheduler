@@ -212,6 +212,8 @@ training_project.trackers << goal_tracker
 
 development_project.trackers.clear
 development_project.trackers << development_tracker
+development_project.trackers << Tracker.find(:first,:conditions=>["name ='Bug'"])  #add the bug tracker
+development_project.trackers << Tracker.find(:first,:conditions=>["name = 'Feature'"])  #add the feature tracker
 
 repair_project.trackers.clear
 repair_project.trackers << equipment_problem_tracker
