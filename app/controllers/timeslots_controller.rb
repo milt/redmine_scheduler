@@ -70,7 +70,7 @@ class TimeslotsController < ApplicationController
       flash[:warning] = "You have not selected any coaches!"
       @coaches_selected = []
     else
-      @coaches_selected = @coaches
+      @coaches_selected = []   #this clears the checkboxes when first going into timeslot/find view.
     end
 
     if params[:sel_skill].present?
