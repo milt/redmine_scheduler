@@ -219,12 +219,18 @@ repair_project.trackers.clear
 repair_project.trackers << equipment_problem_tracker
 
 #Default skillcat
-skillcat_params = {
+skillcat_general_params = {
   :name => "General",
   :descr => "Lab coach has general knowledge of a given discipline."
 }
 
-skillcat = Skillcat.create(skillcat_params)
+#authorization category added
+skillcat_authorization_params = {
+  :name => "Authorization",
+  :descr => "Authorization for the use of equipments??"
+}
+skillcat = Skillcat.create(skillcat_general_params)
+skillcat_auth = Skillcat.create(skillcat_authorization_params)
 
 new_skills = [
   "2D Design",
@@ -242,6 +248,17 @@ new_skills = [
 #add with category
 new_skills.each do |skillname|
   Skill.create({:name => skillname, :skillcat_id => skillcat})
+end
+
+new_skills = [
+  "testskill1",
+  "testskill2",
+  "testskill3",
+  "testskill4"
+]
+#add test values to authorization cat, somehow this adds the skills to general category instead..
+new_skills.each do |skillname|
+  Skill.create({:name => skillname, :skillcat_id => skillcat_auth})
 end
 
 #load authentication method for PAM.

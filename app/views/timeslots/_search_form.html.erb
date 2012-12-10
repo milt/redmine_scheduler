@@ -1,15 +1,12 @@
 <script>
-function CheckAll(){
-	var coaches = document.getElementById("coach selection");
-	
-	//coaches.("input[type='checkbox']").prop("checked", true);
-
-	coaches.style.color="red";
-	
-	//alert(coaches.length);
-	for (i=0;i<coaches.length;i++){
-		coach_ids[i].checked = true;
-	}
+function checkall(){
+	var cb_array = new Array();
+  cb_array = document.getElementsByClassName('name_checkboxes');
+  
+  
+  for (var i=0;i<cb_array.length;i++){
+      cb_array[i].checked = !cb_array[i].checked;
+  }
 }
 
 </script>
@@ -20,22 +17,18 @@ function CheckAll(){
 
   <h3>Include Staff:</h3>
 
-  <div id="coach selection">
+  <div class="coach_selection">
   <% @coaches.each do |coach| %>
-    <p id="coach names"><%= check_box_tag 'coach_ids[]', coach.id, @coaches_selected.include?(coach) %>
+    <p><%= check_box_tag 'coach_ids[]', coach.id, @coaches_selected.include?(coach), :class=>'name_checkboxes' %>
     	<%= label_tag coach.name %>
+
     </p>
   <% end %>
   </div>
   
-  <br><%= check_box_tag 'all_coaches toggle',1, false, :onclick => "Element.toggle('coach selection')"%>
-  <!--toggling is so much fun!!-->
-    	<%= label_tag 'toggle names' %>
-    </br>
-
-  <br><%= check_box_tag 'all_coaches select',1, false, :onclick => "CheckAll()" %>
+  <br><%= check_box_tag 'all_coaches select',1, false, :onclick  => 'checkall()' %>
     	<%= label_tag 'select all' %>
-    </br>
+  </br>
 
   <h3>Restrict to Staff with Skills:</h3>
 
