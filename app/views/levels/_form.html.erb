@@ -1,12 +1,12 @@
 <script>
 function authorizationratings(){
-
+  var selected_id = document.getElementById('skill_id').selectedOptions;
 }
 </script>
 
 <% form_for :level, @level, :url => { :action => "create" }, :html => {:class => "nifty_form"} do |f| %>
   <%= f.select :user_id, @users.map {|u| [u.name, u.id] } %>
-  <%= select_tag (:skill_id, options_for_select(@skills_list), :onchange=>"authorizationratings()") %>
+  <%= select_tag (:skill_id, options_for_select(@skills_list), :onchange=>"authorizationratings()")%>
   <%= f.select :rating, 1..3 %>
   <%= submit_tag "Create" %>
 <% end %>
