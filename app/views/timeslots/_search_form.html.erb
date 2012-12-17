@@ -5,7 +5,8 @@ function checkall(){
   
   
   for (var i=0;i<cb_array.length;i++){
-      cb_array[i].checked = !cb_array[i].checked;
+      //cb_array[i].checked = !cb_array[i].checked;  //does toggling instead of selecting all
+      cb_array[i].checked = true;
   }
 }
 
@@ -21,14 +22,12 @@ function checkall(){
   <% @coaches.each do |coach| %>
     <p><%= check_box_tag 'coach_ids[]', coach.id, @coaches_selected.include?(coach), :class=>'name_checkboxes' %>
     	<%= label_tag coach.name %>
-
     </p>
   <% end %>
   </div>
-  
-  <br><%= check_box_tag 'all_coaches select',1, false, :onclick  => 'checkall()' %>
-    	<%= label_tag 'select all' %>
-  </br>
+
+  <!--somehow button_tag is not recognized as a method, so using HTML code for now...!-->
+  <button name="sel_all" type="button" onclick="checkall()">Select All</button>
 
   <h3>Restrict to Staff with Skills:</h3>
 

@@ -250,15 +250,16 @@ new_skills.each do |skillname|
   Skill.create({:name => skillname, :skillcat_id => skillcat})
 end
 
-new_skills = [
+#changing the name does not fix the error of assigning to the wrong category...
+new_skills2 = [
   "testskill1",
   "testskill2",
   "testskill3",
   "testskill4"
 ]
 #add test values to authorization cat, somehow this adds the skills to general category instead..
-new_skills.each do |skillname|
-  Skill.create({:name => skillname, :skillcat_id => skillcat_auth})
+new_skills2.each do |skillname2|
+  Skill.create({:name => skillname2, :skillcat_id => skillcat_auth})
 end
 
 #load authentication method for PAM.
