@@ -1,5 +1,13 @@
 <%= render 'nav/nav' %>
-<h2>Your Bookings</h2>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'bookings', :plugin => 'redmine_scheduler' %>
+<% end %>
+
+<div>
+  <h2>Your Bookings</h2>
+</div>
+
 <%= render 'search_form' %>
 
 <!--On orphaned bookings-->
