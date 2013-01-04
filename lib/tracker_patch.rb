@@ -1,4 +1,4 @@
-# Patches Redmine's Users dynamically.  Adds a relationship User +has_and_belongs_to_many+ Skill. 
+# Patches Redmine's Trackers
 module TrackerPatch
   def self.included(base) # :nodoc:
     base.extend(ClassMethods)
@@ -13,7 +13,8 @@ module TrackerPatch
       named_scope :task_track, :conditions => { :name => "Task" }
       named_scope :goal_track, :conditions => { :name => "Training Goal" }
       named_scope :event_track, :conditions => { :name => "Event" }
-      
+      named_scope :repair_track, :conditions => { :name => "Equipment Problem" }
+
     end
 
   end
