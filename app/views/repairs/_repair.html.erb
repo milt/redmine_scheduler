@@ -1,0 +1,17 @@
+<table>
+  <tr><td>Submitted By:</td><td><%= @repair.user %></td></tr>
+  <tr><td>Item Number</td><td><%= @repair.item_number %></td></tr>
+  <tr><td>Item Description</td><td><%= @repair.item_desc %></td></tr>
+  <tr><td>Problem Description</td><td><%= @repair.problem_desc %></td></tr>
+</table>
+<% if @repair.patron_name.present? %>
+  <table>
+      <tr><td>Patron Name</td><td><%= @repair.patron_name %></td></tr>
+      <tr><td>Patron Phone</td><td><%= @repair.patron_phone %></td></tr>
+      <tr><td>Patron Email</td><td><%= @repair.patron_email %></td></tr>
+      <tr><td>Patron JHED:</td><td><%= @repair.patron_jhed %></td></tr>
+      <tr><td>Checkout #:</td><td><%= @repair.checkout %></td></tr>
+  </table>
+<% end %>
+
+<p>Notes:</p><p><%= @repair.notes %></p>

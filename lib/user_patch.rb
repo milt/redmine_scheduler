@@ -12,6 +12,7 @@ module UserPatch
       has_many :levels, :dependent => :destroy
       has_many :skills, :through => :levels
       has_one :wage
+      has_many :repairs, :dependent => :nullify
       has_many :workgroups, :class_name => "Group",
         :foreign_key => "manager_id"
       has_many :time_entries
