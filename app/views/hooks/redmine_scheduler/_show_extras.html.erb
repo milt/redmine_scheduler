@@ -1,0 +1,8 @@
+<div>
+	<% case @issue.tracker.name
+	when "Equipment Problem" %>
+      <%= render 'repairs/repair', :repair => @issue.repair %>
+    <% else %>
+      <h3>No Special Info</h3>
+    <% end %>
+</div>

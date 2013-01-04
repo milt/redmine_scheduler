@@ -7,6 +7,7 @@ class Repair < ActiveRecord::Base
   validates_length_of :problem_desc, :maximum => 1024
   validates_length_of :notes, :maximum => 2048
   after_validation_on_create :create_issue_after_validation
+  named_scope :for_issue, lambda {|i| { :conditions => ["issue_id = ?", i.id] } }
 
   def create_issue_after_validation
   	  i = Issue.new
