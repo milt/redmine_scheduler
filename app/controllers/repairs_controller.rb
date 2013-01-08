@@ -23,6 +23,12 @@ class RepairsController < ApplicationController
 
   def show
     @repair = Repair.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      #format.xml  { render :xml => @book }
+      format.pdf { render :layout => false }
+    end
   end
   
 end
