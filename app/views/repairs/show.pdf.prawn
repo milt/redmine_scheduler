@@ -17,7 +17,8 @@ if @repair.patron_name.present?
     [ "Patron Phone", @repair.patron_phone],
     [ "Patron Email", @repair.patron_email],
     [ "Patron JHED", @repair.patron_jhed],
-    [ "Staff On Duty", @repair.user.name]
+    [ "Staff On Duty", @repair.user.name],
+    [ "Ticket Number", @repair.issue.id]
   ]
   repair_table_data += patron_table_data
 end
