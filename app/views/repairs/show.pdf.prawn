@@ -27,6 +27,7 @@ pdf.table(repair_table_data, :header => true) do
   column(1).width = 415
 end
 
+
 agreement = "I agree to pay the repair or replacement cost of the lost/damaged \
 item. The cost will be determined by the Director of the Digital Media Center, \
 and I will be notified of this amount in writing, by U.S. Mail. As stated in the \
@@ -34,12 +35,14 @@ Borrower's Contract, I agree to pay the amount due to repair or replace this \
 item by the last day of this academic semester, or by the date I \
 withdraw/graduate from the University, whichever is earlier."
 
-sig = "X__________________"
+sig = "Borrower's Signature"
 
 agreement_table_data = [[agreement,sig]]
 
-pdf.table(agreement_table_data) do
-  column(0).width = 400
-  column(1).width = 140
-  column(1).style :align => :right
+pdf.bounding_box([0,100], :width => 540, :height => 100) do
+  pdf.table(agreement_table_data) do
+    column(0).width = 400
+    column(1).width = 140
+    column(1).style :align => :right
+  end
 end
