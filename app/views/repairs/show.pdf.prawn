@@ -1,7 +1,7 @@
 pdf.font "Helvetica"
 
 pdf.text "Missing/Damaged Equipment Acknowledgement", :size => 24, :align => :center, :style => :bold
-pdf.text "Digital Media Center", :size => 16, :align => :center
+pdf.text "Digital Media Center | 3400 N Charles St 21218", :size => 16, :align => :center
 pdf.text "digitalmedia@jhu.edu", :size => 16, :align => :center
 pdf.text "410-516-3817", :size => 16, :align => :center, :style => :bold
 
@@ -16,7 +16,8 @@ if @repair.patron_name.present?
     [ "Patron Name", @repair.patron_name],
     [ "Patron Phone", @repair.patron_phone],
     [ "Patron Email", @repair.patron_email],
-    [ "Patron JHED", @repair.patron_jhed]
+    [ "Patron JHED", @repair.patron_jhed],
+    [ "Staff On Duty", @repair.user.name]
   ]
   repair_table_data += patron_table_data
 end
@@ -43,6 +44,11 @@ pdf.bounding_box([0,100], :width => 540, :height => 100) do
   pdf.table(agreement_table_data) do
     column(0).width = 400
     column(1).width = 140
-    column(1).style :align => :right
+    column(1).style :align => :center
   end
 end
+
+pdf.bounding_box([340,0], :width => 200, :height => 10) do
+  pdf.text DateTime.now.inspect, :size => 10, :align => :right
+end
+
