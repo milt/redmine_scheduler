@@ -15,14 +15,15 @@ class RepairsController < ApplicationController
     @repair.user = User.current
 
     if @repair.save
-      flash[:notice] = 'Repair was successfully created.'
       if @repair.patron_name.present?
-        redirect_to :action => 'show', :id => @repair, :format => :pdf
+        flash[:notice] = "Repair created. Please remember to print an agreement for the patron!"
       else
-        redirect_to :controller => 'issues', :action => 'show', :id => @repair.issue_id
+        flash[:notice] = 'Repair was successfully created.'
       end
+      redirect_to :action => 'show', :id => @repair
     else                                               
       flash[:warning] = 'Invalid Options... Try again!'
+      redirect_to :action => 'new'
     end
   end
 

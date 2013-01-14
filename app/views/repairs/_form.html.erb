@@ -1,3 +1,4 @@
+<%= javascript_include_tag 'redmine_scheduler.js', :plugin => 'redmine_scheduler' %>
 
 <% form_for :repair, @repair, :url => { :action => "create" } do |f| %>
   <table>
@@ -16,5 +17,7 @@
     </table>
   </div>
   <p><%= f.label :notes %><%= f.text_area :notes %></p>
-  <%= submit_tag "Create" %>
+  <p><%= check_box_tag 'admonish', 1, false, :onchange => "jQuery('#submit-button').toggleDisabled();" %>I updated the condition notes in webco for the damaged item, and took it offline if necessary!</p>
+
+  <%= submit_tag "Create", :id => 'submit-button', :disabled => true %>
 <% end %>
