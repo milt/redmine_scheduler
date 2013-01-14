@@ -14,11 +14,14 @@ class RepairsController < ApplicationController
 
     if @repair.save
       flash[:notice] = 'Repair was successfully created.'
+      if @repair.patron_name.present?
+        redirect_to :action => 'show', :id => @repair, :format => :pdf
+      else
+        redirect_to :action => 'show', :id => @repair
+      end
     else                                               
       flash[:warning] = 'Invalid Options... Try again!'
     end
-  
-    redirect_to :action => 'index'
   end
 
   def show
