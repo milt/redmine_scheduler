@@ -1,6 +1,8 @@
 class RepairsController < ApplicationController
   unloadable
 
+  before_filter :role_check
+
   def index
     @repairs = Repair.all
   end
@@ -32,6 +34,16 @@ class RepairsController < ApplicationController
       #format.xml  { render :xml => @book }
       format.pdf { render :layout => false }
     end
+  end
+
+  private
+
+  def role_check
+    if User.current.anonymous?
+      render_403
+      return false
+    end
+    true
   end
   
 end
