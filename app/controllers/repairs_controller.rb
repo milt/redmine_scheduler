@@ -17,7 +17,7 @@ class RepairsController < ApplicationController
       if @repair.patron_name.present?
         redirect_to :action => 'show', :id => @repair, :format => :pdf
       else
-        redirect_to :action => 'show', :id => @repair
+        redirect_to :controller => 'issues', :action => 'show', :id => @repair.issue_id
       end
     else                                               
       flash[:warning] = 'Invalid Options... Try again!'
