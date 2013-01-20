@@ -9,5 +9,6 @@ class StustaffController < ApplicationController
     @todaylcshifts = Issue.today.open.lcshift.foruser(User.current)
     @mytasks = Issue.open.tasks.foruser(User.current)
     @mygoals = Issue.open.goals.foruser(User.current)
+    @mywatches = Issue.visible.watched_by(User.current)  #this line should returns an array of watched issues for current user
   end
 end

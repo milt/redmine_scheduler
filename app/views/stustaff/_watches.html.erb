@@ -1,0 +1,21 @@
+<div>
+	<h3>Currently Watching</h3>
+	
+	<table class="list issues">
+		<thead>
+		  <tr>
+		  <th>Description</th>
+		  <th>Due</th>
+		  </tr>
+		</thead>
+
+		<% @mywatches.each do |watch| %>
+		<tbody>
+		  <tr>
+			<td><%= link_to watch.subject, {:controller => 'issues', :action => 'show', :id => watch[:id] } %></td>
+			<td><%= link_to watch.due_date, {:controller => 'issues', :action => 'show', :id => watch[:id] } unless watch.due_date.nil? %></td>
+		  </tr>
+		</tbody>
+		<% end %>
+    </table>
+</div>
