@@ -1,4 +1,5 @@
 <%= render 'nav/nav' %>
+
 <h1>Skill Levels</h1>
 <% if !@goals.empty? %>
   <h4>Completed Training Goals Awaiting Signoff:</h4>
@@ -21,6 +22,10 @@
 <% end %>
 
 <h2>Assign Level:</h2>
+
+<%= render 'skill_sel' %> <!--this is still in its testing stage-->
+<br></br>
+
 <%= render 'form' %>
 <br>
 <% @users.each do |user| %>

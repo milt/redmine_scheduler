@@ -1,0 +1,18 @@
+<script>
+function authorizationratings(){
+  var selected_id = document.getElementById('skill_id').selectedOptions;
+}
+</script>
+
+<% form_for :level, @level, :url => { :action => "create" }, :html => {:class => "nifty_form"} do |f| %>
+  <%= f.select :user_id, @users.map {|u| [u.name, u.id] } %>
+
+  <% @skills.each do |skill| %>
+    <% if !skill.name.nil? %>
+      <%= f.radio_button :skill_id, skill.id %>
+      <%= f.label :skill_id, skill.name %>
+    <%end%>
+  <% end %>
+
+  <%= submit_tag "Create" %>
+<% end %>
