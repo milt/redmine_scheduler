@@ -4,6 +4,7 @@
 	<table class="list issues">
 		<thead>
 		  <tr>
+		  <th>Subject</th>
 		  <th>Description</th>
 		  <th>Due</th>
 		  </tr>
@@ -13,6 +14,7 @@
 		<tbody>
 		  <tr>
 			<td><%= link_to watch.subject, {:controller => 'issues', :action => 'show', :id => watch[:id] } %></td>
+			<td><%= link_to watch.description, {:controller => 'issues', :action => 'show', :id => watch[:id]} unless watch.description.nil? %></td>
 			<td><%= link_to watch.due_date, {:controller => 'issues', :action => 'show', :id => watch[:id] } unless watch.due_date.nil? %></td>
 		  </tr>
 		</tbody>
