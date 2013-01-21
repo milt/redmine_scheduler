@@ -5,24 +5,22 @@ class TimesheetsController < ApplicationController
   before_filter :require_admstaff, :only => [:approve,:reject]
   before_filter :wage_check, :except => [:approve,:delete,:reject]
   include TimesheetHelper
+  include TimesheetsHelper  #I know this must be the strangest thing, its like seeing doubles
   require "prawn"   #needed for pdf generation
 
-  #include SortHelper
-  #include TimelogHelper
-  #include CustomFieldsHelper
-
   def index
-    #session[:return_to] = request.referer
     @submitted = @timesheets.is_submitted.is_not_approved
     @approved = @timesheets.is_submitted.is_approved
   end
 
   def new
-    #session[:return_to] = request.referer
+    
+    @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week)
+
     if params[:date].present?
       @year_selected = params[:date][:year].to_i
     else
-       @year_selected = Time.current.year
+      @year_selected = Time.current.year
     end
 
     if params[:timesheet].present?
@@ -54,7 +52,6 @@ class TimesheetsController < ApplicationController
     if !@existing.empty?
       flash.now[:warning] = "There is already a timesheet for the selected week. Please select another."
     end
-    #flash.discard(:warning)
 
     @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
     #@entries_days_of_week = @entries.map(&:spent_on).uniq.sort   #uniq.sort doesn't seem to be needed, converts array of timeentries to array of dates
