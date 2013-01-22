@@ -1,5 +1,6 @@
 # English strings go here for Rails i18n
 en:
+  field_suppress_email: "Supress Initital Email for All Issues"
   label_my_levels: "My Skill Levels"
   label_latest_news: "Latest News"
   field_start_time: "Start Time"
