@@ -7,7 +7,8 @@ front_desk_project_params = {
   :homepage => "",
   :is_public => false,
   :identifier => "front-desk",
-  :status => 1
+  :status => 1,
+  :suppress_email => true
 }
 
 front_desk_project = Project.create(front_desk_project_params)
@@ -18,7 +19,8 @@ lab_coach_project_params = {
   :homepage => "",
   :is_public => false,
   :identifier => "labcoachtime",
-  :status => 1
+  :status => 1,
+  :suppress_email => true
 }
 
 lab_coach_project = Project.create(lab_coach_project_params)

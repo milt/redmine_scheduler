@@ -9,7 +9,7 @@ module ProjectPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       named_scope :repair_project, :conditions => { :name => "Repair & Replace" }
-
+      safe_attributes << 'suppress_email'
     end
 
   end
