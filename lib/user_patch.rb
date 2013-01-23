@@ -30,6 +30,15 @@ module UserPatch
 
   module InstanceMethods
 
+    def journal_digest
+      owned = Issue.foruser(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue)}
+      watched = Issue.watched_by(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue)}
+
+      return { :owned => owned.group_by(&:journaled),
+               :watched => watched.group_by(&:journaled)
+       }
+    end
+
     def skillcats
       (self.skills.collect {|s|s.skillcat}).uniq
     end

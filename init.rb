@@ -1,6 +1,7 @@
 require 'redmine'
 
 # Patches to the redmine core
+require 'journal_patch'
 require 'issue_observer_patch'
 require 'project_patch'
 require 'tracker_patch'
@@ -13,6 +14,9 @@ require_dependency 'redmine_scheduler/hooks'
 require 'dispatcher'
 
  Dispatcher.to_prepare :redmine_scheduler do
+
+  require_dependency 'journal'
+  Journal.send(:include, JournalPatch) unless Journal.included_modules.include? JournalPatch
 
   require_dependency 'issue_observer'
   IssueObserver.send(:include, IssueObserverPatch) unless IssueObserver.included_modules.include? IssueObserverPatch

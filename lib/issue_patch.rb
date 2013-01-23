@@ -28,6 +28,9 @@ module IssuePatch
       named_scope :until_start_time, lambda {|dt| {conditions => ["start_time <= ?", dt] } }
       named_scope :omit_user, lambda {|u| { :conditions => ["assigned_to_id != ?", u.id] } } # not used
       named_scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
+
+      named_scope :updated_in_last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
+
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
       named_scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
