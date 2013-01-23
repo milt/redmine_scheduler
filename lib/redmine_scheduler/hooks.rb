@@ -15,6 +15,11 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
       
+      #this should fix the time error when updating the shift??
+      if s_time >= e_time
+        e_time = e_time + 48
+      end
+
       @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
       @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
 
@@ -54,7 +59,12 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       s_date = Date.parse(context[:params][:issue][:start_date]) + 15.minutes
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
-      
+
+      #this should fix the time error when updating the shift??
+      if s_time >= e_time
+        e_time = e_time + 48
+      end      
+
       @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
       @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
 

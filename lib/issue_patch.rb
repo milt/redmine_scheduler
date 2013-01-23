@@ -49,8 +49,9 @@ module IssuePatch
     def time_list #list of possible clock times a shift can start.
       list = []
       t = Time.local(0,1,1,0,15)
-      for h in 0..49
-        list << [ (t + h*30.minutes).strftime("%I:%M:%S %p"), h ]
+      for h in 0..49  
+      #  list << [ (t + h*30.minutes).strftime("%I:%M:%S %p"), h ]
+        list << (t + h*30.minutes).strftime("%I:%M:%S %p")
       end
       return list
     end
@@ -89,8 +90,9 @@ module IssuePatch
     end
     
     def validate_with_shift_times # see alias_method_chain above
-      if self.end_time and self.start_time and self.end_time < self.start_time
-        errors.add :due_date, :greater_than_start_date
+      if end_time.to_i<=start_time.to_i
+        #errors.add :due_date, :greater_than_start_date
+        end_time = end_time + 48  #assuming user knows what he's doing, automatically adjusts the time to next day
       end
     end
     
