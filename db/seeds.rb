@@ -32,7 +32,6 @@ training_project_params = {
   :is_public => false,
   :identifier => "training",
   :status => 1
-  :suppress_email => true
 }
 
 training_project = Project.create(training_project_params)
@@ -44,7 +43,6 @@ development_project_params = {
   :is_public => false,
   :identifier => "development",  #what does this identifier field do?
   :status => 1
-  :suppress_email => true
 }
 
 development_project = Project.create(development_project_params)
@@ -56,7 +54,6 @@ repair_project_params = {
   :is_public => false,
   :identifier => "repair-replace",
   :status => 1
-  :suppress_email => true
 }
 
 repair_project = Project.create(repair_project_params)
