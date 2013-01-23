@@ -17,12 +17,6 @@ class TimesheetsController < ApplicationController
     
     @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week)
 
-    if params[:date].present?
-      @year_selected = params[:date][:year].to_i
-    else
-      @year_selected = Time.current.year
-    end
-
     if params[:timesheet].present?
       @user = User.find(params[:timesheet][:user_id])
     elsif params[:user].present?
@@ -31,22 +25,14 @@ class TimesheetsController < ApplicationController
       @user = User.current
     end
 
-    #get the first week of the current year
-    yearstart = find_first_monday(@year_selected)
-
-    #get the zero-indexed list of weeks in the current year for select
-    @weeks = []
-    (0..51).each do |i|
-      @weeks << [(yearstart + i.weeks).strftime("Week of %B %d"), (i)]
-    end
-
-    if params[:cweek].present?
-      @cweek = params[:cweek].to_i + 1  #we add one, because select_tag returns zero-indexed
+    if params[:week_sel].present?
+      @cweek = params[:week_sel].to_i
+      @year_selected = params[:week_sel].to_i.year
     else
       @cweek = Date.today.cweek
+      @year_selected = Date.today.year
     end
 
-    @weekof = yearstart + (@cweek - 1).weeks
     @existing = Timesheet.for_user(User.current).weekof_on(@weekof)
 
     if !@existing.empty?
@@ -54,7 +40,6 @@ class TimesheetsController < ApplicationController
     end
 
     @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
-    #@entries_days_of_week = @entries.map(&:spent_on).uniq.sort   #uniq.sort doesn't seem to be needed, converts array of timeentries to array of dates
     @entries_by_day = @entries.group_by(&:spent_on)  
 
     issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)
