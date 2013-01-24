@@ -31,8 +31,8 @@ module UserPatch
   module InstanceMethods
 
     def journal_digest
-      owned = Issue.foruser(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue)}
-      watched = Issue.watched_by(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue)}
+      owned = Issue.foruser(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue).reject {|j| j.user == self}}
+      watched = Issue.watched_by(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue).reject {|j| j.user == self}}
 
       return { :owned => owned.group_by(&:journaled),
                :watched => watched.group_by(&:journaled)
