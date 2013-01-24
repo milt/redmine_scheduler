@@ -16,6 +16,16 @@ module MailerPatch
             sent_on	Time.now
             body	("Booking scheduled with " + booking.name + " on " + booking.apt_time.strftime("%m/%d/%Y at %I:%M:%S %p") + "\nYou can contact this patron at " + booking.phone + " or " + booking.email + "\n\nProject Description:\n" + booking.project_desc + "\n\n\n\n*Do Not Reply to this Email\nThis email is an auto-generated message.  Replies to automated messages are not monitored.")
         end
+
+        def daily_digest(user)
+          recipients user.mail
+          from "Squid Digest <digitalmedia@jhu.edu>"
+          subject 'Squid Daily Digest'
+          sent_on Time.now
+          body :user => user,
+               :digest => user.journal_digest
+          render_multipart('digest', body)
+        end
     end
 
   end
