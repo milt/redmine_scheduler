@@ -31,12 +31,18 @@ module UserPatch
   module InstanceMethods
 
     def journal_digest
-      owned = Issue.foruser(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue).reject {|j| j.user == self}}
-      watched = Issue.watched_by(self).updated_in_last_day.reduce([]) {|list,issue| list + Journal.last_day.from_issue(issue).reject {|j| j.user == self}}
+      owned_issues = Issue.foruser(self).updated_in_last_day
+      watched_issues = Issue.watched_by(self).updated_in_last_day
 
-      return { :owned => owned.group_by(&:journaled),
-               :watched => watched.group_by(&:journaled)
-       }
+      owned_hash = {}
+      watched_hash = {}
+
+      owned_issues.map {|i| owned_hash[i] = Journal.last_day.from_issue(i) + i.time_entries.reduce([]) {|journals,time_entry| journals + Journal.last_day.from_time_entry(time_entry)}}
+      watched_issues.map {|i| watched_hash[i] = Journal.last_day.from_issue(i) + i.time_entries.reduce([]) {|journals,time_entry| journals + Journal.last_day.from_time_entry(time_entry)}}
+
+      return { :owned => owned_hash,
+               :watched => watched_hash
+      }
     end
 
     def skillcats

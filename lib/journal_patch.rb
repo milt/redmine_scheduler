@@ -9,7 +9,8 @@ module JournalPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       named_scope :last_day, lambda { { :conditions => ["created_at >= ?", DateTime.now - 24.hours] } }
-      named_scope :from_issue, lambda { |i| { :conditions => { :journaled_id => i.id } } }
+      named_scope :from_issue, lambda { |i| { :conditions => { :type => 'IssueJournal', :journaled_id => i[:id] } } }
+      named_scope :from_time_entry, lambda { |t| { :conditions => { :type => 'TimeEntryJournal', :journaled_id => t[:id] } } }
     end
 
   end
