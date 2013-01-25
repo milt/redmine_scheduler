@@ -20,6 +20,9 @@ module JournalPatch
   end
 
   module InstanceMethods
+    def renderable_details #this gives warnings, I don't care!
+      self.details.reject {|d| render_detail(d,false) == nil }
+    end
 
   end
 end

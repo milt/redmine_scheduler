@@ -1,31 +1,32 @@
 <h2>Activity for <%= @user.name %></h2>
 <h3>Issues assigned to you:</h3>
 <% if @digest[:owned].present? %>
-<% @digest[:owned].keys.each do |issue| %>
-<p>Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:</p>
-<% @digest[:owned][issue].each do |journal| %>
-<ul>
-<% journal.details.each do |detail| %>
-<li><%= journal.render_detail(detail, true) %></li>
-<% end %>
-</ul>
-<% end %>
-<% end %>
+  <% @digest[:owned].keys.each do |issue| %>
+    <p>Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:</p>
+    <% @digest[:owned][issue].each do |journal| %>
+      <ul>
+      <% for detail in journal.renderable_details %>
+          <li><%= journal.render_detail(detail, false) %></li>
+      <% end %>
+      </ul>
+    <% end %>
+  <% end %>
 <% else %>
 <p>No owned issues with updates in the last day.</p>
 <% end %>
-<h3>Issues you watch:</h3>
+
+<h3>Issues you are watching:</h3>
 <% if @digest[:watched].present? %>
-<% @digest[:watched].keys.each do |issue| %>
-<p>Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:</p>
-<% @digest[:watched][issue].each do |journal| %>
-<ul>
-<% journal.details.each do |detail| %>
-<li><%= journal.render_detail(detail, true) %></li>
-<% end %>
-</ul>
-<% end %>
-<% end %>
+  <% @digest[:watched].keys.each do |issue| %>
+    <p>Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:</p>
+    <% @digest[:watched][issue].each do |journal| %>
+      <ul>
+      <% for detail in journal.renderable_details %>
+          <li><%= journal.render_detail(detail, false) %></li>
+      <% end %>
+      </ul>
+    <% end %>
+  <% end %>
 <% else %>
 <p>No watched issues with updates in the last day.</p>
 <% end %>

@@ -36,9 +36,8 @@ module UserPatch
 
       owned_hash = {}
       watched_hash = {}
-
-      owned_issues.map {|i| owned_hash[i] = Journal.last_day.from_issue(i) + i.time_entries.reduce([]) {|journals,time_entry| journals + Journal.last_day.from_time_entry(time_entry)}}
-      watched_issues.map {|i| watched_hash[i] = Journal.last_day.from_issue(i) + i.time_entries.reduce([]) {|journals,time_entry| journals + Journal.last_day.from_time_entry(time_entry)}}
+      owned_issues.each {|i| owned_hash[i] = Journal.last_day.from_issue(i)}# + i.time_entries.reduce([]) {|journals,time_entry| journals + Journal.last_day.from_time_entry(time_entry)}}
+      watched_issues.each {|i| watched_hash[i] = Journal.last_day.from_issue(i)}# + i.time_entries.reduce([]) {|journals,time_entry| journals + Journal.last_day.from_time_entry(time_entry)}}
 
       return { :owned => owned_hash,
                :watched => watched_hash

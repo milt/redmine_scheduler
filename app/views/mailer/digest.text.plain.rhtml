@@ -1,35 +1,29 @@
 Activity for <%= @user.name %>
 
 Issues assigned to you:
-
 <% if @digest[:owned].present? %>
 <% @digest[:owned].keys.each do |issue| %>
 Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:
-
 <% @digest[:owned][issue].each do |journal| %>
-<% journal.details.each do |detail| %>
-- <%= journal.render_detail(detail, true) %>
+<% for detail in journal.details %>
+<%= journal.render_detail(detail, true) %>
 <% end %>
 <% end %>
 <% end %>
-
 <% else %>
 No owned issues with updates in the last day.
-
 <% end %>
-Issues you watch:
 
+Issues you are watching:
 <% if @digest[:watched].present? %>
 <% @digest[:watched].keys.each do |issue| %>
 Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:
-
 <% @digest[:watched][issue].each do |journal| %>
-<% journal.details.each do |detail| %>
-- <%= journal.render_detail(detail, true) %>
+<% for detail in journal.details %>
+<%= journal.render_detail(detail, true) %>
 <% end %>
 <% end %>
 <% end %>
-
 <% else %>
 No watched issues with updates in the last day.
 <% end %>
