@@ -53,8 +53,8 @@ module IssuePatch
       list = []
       t = Time.local(0,1,1,0,15)
       for h in 0..49  
-      #  list << [ (t + h*30.minutes).strftime("%I:%M:%S %p"), h ]
-        list << (t + h*30.minutes).strftime("%I:%M:%S %p")
+        list << [ (t + h*30.minutes).strftime("%I:%M:%S %p"), h ]
+        #list << (t + h*30.minutes).strftime("%I:%M:%S %p")
       end
       return list
     end
@@ -89,18 +89,25 @@ module IssuePatch
     end
     
     def shift_end_index #same for end
-      (end_time.hour * 2) + (end_time.min/30)
+      index = (end_time.hour * 2) + (end_time.min/30)
+      index += 48 if index <= shift_start_index
+      return index
     end
     
     #this should fix the timing issue with confusing 12.15/12.45am today with 12.15/12.45am tomorrow
     def validate_with_shift_times # see alias_method_chain above
-      s_time = (params[:issue][:start_time].hour * 2) + (params[:issue][:start_time].min/30)
-      e_time = (params[:issue][:end_time].hour * 2) + (params[:issue][:end_time].min/30)
+      #s_time = (start_time.hour * 2) + (start_time.min/30)
+      #e_time = (params[:issue][:end_time].hour * 2) + (params[:issue][:end_time].min/30)
 
-      if (e_time<=s_time) && (e_time == 0 || e_time == 1)
-        #errors.add :due_date, :greater_than_start_date
-        end_time = Issue.time_list[e_time+48]  #assuming user knows what he's doing, automatically adjusts the time to next day
+      #if (e_time<=s_time) && (e_time == 0 || e_time == 1)
+      #  #errors.add :due_date, :greater_than_start_date
+      #  end_time = Issue.time_list[e_time+48]  #assuming user knows what he's doing, automatically adjusts the time to next day
+      #end
+
+      if self.end_time and self.start_time and self.end_time <= self.start_time
+        errors.add :due_date, :greater_than_start_date
       end
+
     end
     
     def open_slots? #does this shift have open timeslots?
