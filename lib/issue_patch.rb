@@ -97,7 +97,7 @@ module IssuePatch
       s_time = (params[:issue][:start_time].hour * 2) + (params[:issue][:start_time].min/30)
       e_time = (params[:issue][:end_time].hour * 2) + (params[:issue][:end_time].min/30)
 
-      if end_time<=start_time
+      if (e_time<=s_time) && (e_time == 0 || e_time == 1)
         #errors.add :due_date, :greater_than_start_date
         end_time = Issue.time_list[e_time+48]  #assuming user knows what he's doing, automatically adjusts the time to next day
       end
