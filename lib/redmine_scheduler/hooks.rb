@@ -98,4 +98,8 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
 
     render_on :view_projects_form,
               :partial => 'hooks/redmine_scheduler/project_form_extras'
+    render_on :view_users_form,
+              :partial => 'hooks/redmine_scheduler/user_form_extras'
+    render_on :view_my_account,
+              :partial => 'hooks/redmine_scheduler/user_form_extras'
 end
