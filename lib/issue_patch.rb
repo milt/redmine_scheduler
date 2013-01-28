@@ -92,10 +92,14 @@ module IssuePatch
       (end_time.hour * 2) + (end_time.min/30)
     end
     
+    #this should fix the timing issue with confusing 12.15/12.45am today with 12.15/12.45am tomorrow
     def validate_with_shift_times # see alias_method_chain above
-      if end_time.to_i<=start_time.to_i
+      s_time = (params[:issue][:start_time].hour * 2) + (params[:issue][:start_time].min/30)
+      e_time = (params[:issue][:end_time].hour * 2) + (params[:issue][:end_time].min/30)
+
+      if end_time<=start_time
         #errors.add :due_date, :greater_than_start_date
-        end_time = end_time + 48  #assuming user knows what he's doing, automatically adjusts the time to next day
+        end_time = Issue.time_list[e_time+48]  #assuming user knows what he's doing, automatically adjusts the time to next day
       end
     end
     

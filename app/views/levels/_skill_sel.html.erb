@@ -9,10 +9,11 @@ function authorizationratings(){
 
   <% @skills.each do |skill| %>
     <% if !skill.name.nil? %>
-      <%= f.radio_button :skill_id, skill.id %>
-      <%= f.label :skill_id, skill.name %>
+      <%= check_box_tag :skill_id, skill.id %>
+      <%= skill.name %>
     <%end%>
   <% end %>
+
 
   <%= submit_tag "Create" %>
 <% end %>
