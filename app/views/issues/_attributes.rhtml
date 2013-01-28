@@ -39,7 +39,7 @@
 <p><%= f.text_field :estimated_hours, :size => 3, :disabled => !@issue.leaf? %> <%= l(:field_hours) %></p>
 <% if @issue.is_shift? %>
 <p><%= f.select :start_time, options_for_select(Issue.time_list, (Issue.time_list[@issue.shift_start_index] unless @issue.start_time.nil?)) %></p>
-<p><%= f.select :end_time, options_for_select(Issue.time_list, (Issue.time_list[@issue.shift_end_index] rescue Issue.time_list[25] unless @issue.end_time.nil?)) %></p>
+<p><%= f.select :end_time, options_for_select(Issue.time_list, (Issue.time_list[@issue.shift_end_index] unless @issue.end_time.nil?)) %></p>
 <% end %>
 <% if @issue.leaf? && Issue.use_field_for_done_ratio? %>
 <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
