@@ -16,6 +16,7 @@ module TimeEntryPatch
       named_scope :on_tweek, lambda {|d| { :conditions => ["tweek = ?", d] } }
       named_scope :on_tyear, lambda {|d| { :conditions => ["tyear = ?", d] } }
       named_scope :sort_by_date, :order => "spent_on ASC"
+      named_scope :last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
       validate_on_create :cannot_create_if_timesheet_exists
       validate_on_update :locked_when_attached_to_timesheet
 

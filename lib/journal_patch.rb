@@ -11,6 +11,8 @@ module JournalPatch
       named_scope :last_day, lambda { { :conditions => ["created_at >= ?", DateTime.now - 24.hours] } }
       named_scope :from_issue, lambda { |i| { :conditions => { :type => 'IssueJournal', :journaled_id => i[:id] } } }
       named_scope :from_time_entry, lambda { |t| { :conditions => { :type => 'TimeEntryJournal', :journaled_id => t[:id] } } }
+      named_scope :not_initial, lambda { { :conditions => ["version > ?", 1]} }
+      named_scope :order_for_display, lambda { {:order => 'created_at ASC'}}
     end
 
   end
