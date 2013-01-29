@@ -1,0 +1,9 @@
+<p><%= journal.created_at.strftime("%b %e, %l:%M %p") %></p>
+<ul>
+<% for detail in journal.renderable_details %>
+    <li><%= journal.render_detail(detail, false) %></li>
+<% end %>
+</ul>
+<% if journal.notes.present? %>
+  <p>Notes: <%= journal.notes %></p>
+<% end %>

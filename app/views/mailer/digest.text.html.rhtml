@@ -2,27 +2,7 @@
 <h3>Issues assigned to you:</h3>
 <% if @digest[:owned].present? %>
   <% @digest[:owned].keys.each do |issue| %>
-    <hr>
-    <p>Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:</p>
-    <% if issue.time_entries.last_day.present? %>
-      <p>Time Entries Entered/Updated in last day:</p>
-      <ul>
-      <% issue.time_entries.last_day.each do |time_entry| %>
-        <li><%= time_entry.user.name %> : <%= time_entry.activity %> <strong>Hours: </strong><%= time_entry.hours %> <%= "Comments: " + time_entry.comments if time_entry.comments.present? %></li>
-      <% end %>
-      </ul>
-    <% end %>
-    <% @digest[:owned][issue].each do |journal| %>
-      <p><%= journal.created_at.strftime("%b %e, %l:%M %p") %></p>
-      <ul>
-      <% for detail in journal.renderable_details %>
-          <li><%= journal.render_detail(detail, false) %></li>
-      <% end %>
-      </ul>
-      <% if journal.notes.present? %>
-        <p>Notes: <%= journal.notes %></p>
-      <% end %>
-    <% end %>
+    <%= render :partial => "digest_issue_text_html", :locals => { :issue => issue, :digest => @digest, :kind => :owned } %>
   <% end %>
 <% else %>
 <p>No owned issues with updates in the last day.</p>
@@ -31,27 +11,7 @@
 <h3>Issues you are watching:</h3>
 <% if @digest[:watched].present? %>
   <% @digest[:watched].keys.each do |issue| %>
-    <hr>
-    <p>Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:</p>
-    <% if issue.time_entries.last_day.present? %>
-      <p>Time Entries Entered/Updated in last day:</p>
-      <ul>
-      <% issue.time_entries.last_day.each do |time_entry| %>
-        <li><%= time_entry.user.name %> : <%= time_entry.activity %> <strong>Hours: </strong><%= time_entry.hours %> <%= "Comments: " + time_entry.comments if time_entry.comments.present? %></li>
-      <% end %>
-      </ul>
-    <% end %>
-    <% @digest[:watched][issue].each do |journal| %>
-      <p><%= journal.created_at.strftime("%b %e, %l:%M %p") %></p>
-      <ul>
-      <% for detail in journal.renderable_details %>
-          <li><%= journal.render_detail(detail, false) %></li>
-      <% end %>
-      </ul>
-      <% if journal.notes.present? %>
-        <p>Notes: <%= journal.notes %></p>
-      <% end %>
-    <% end %>
+    <%= render :partial => "digest_issue_text_html", :locals => { :issue => issue, :digest => @digest, :kind => :watched } %>
   <% end %>
 <% else %>
 <p>No watched issues with updates in the last day.</p>
