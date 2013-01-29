@@ -66,7 +66,7 @@ class TimesheetsController < ApplicationController
     yearstart = find_first_monday(Time.current.year)
 
     if params[:weekof].present?
-      weekof = yearstart + (params[:weekof].to_i - 1).weeks
+      weekof = yearstart + (params[:weekof].to_i - 2).weeks
     else
       flash[:notice] = "You must specify a pay period."
       redirect_to :action => 'new'

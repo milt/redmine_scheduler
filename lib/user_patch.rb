@@ -32,6 +32,10 @@ module UserPatch
 
   module InstanceMethods
 
+    def tasks
+      Issue.foruser(self).tasks
+    end
+
     def journal_digest
       owned_issues = Issue.foruser(self).updated_in_last_day.recently_updated
       watched_issues = Issue.watched_by(self).updated_in_last_day.recently_updated
