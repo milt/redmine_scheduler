@@ -40,17 +40,25 @@ class LevelsController < ApplicationController
 
   def create
       user = User.find(params[:level][:user_id].to_i)
-      skill = Skill.find(params[:skill_id])
-      rating = params[:level][:rating].to_i
+      #skill = Skill.find(params[:skill_id])
+      skills = []
 
-      @level = Level.new(:user => user, :skill => skill, :rating => rating)
-      if @level.save
-        flash[:notice] = 'Level was successfully created.'
-        redirect_to :action => "index"
-      else                                               
-        flash[:warning] = 'Invalid Options... Try again!'
-        redirect_to :action => "index"
+      #rating = params[:level][:rating].to_i
+      rating = 1  #starting with all first levels, can change later with edit
+
+      params[:skill_id].each do |skill|
+        #@level = Level.new(:user => user, :skill => skill, :rating => rating)
+        level = Level.new(:user => user, :skill => Skill.find(skill), :rating => rating)
+        #if @level.save
+        if level.save
+          flash[:notice] = 'Level was successfully created.'
+          #redirect_to :action => "index"
+        else                                               
+          flash[:warning] = 'Invalid Options... Try again!'
+          #redirect_to :action => "index"
+        end
       end
+      redirect_to :action => "index"
   end
 
     def delete

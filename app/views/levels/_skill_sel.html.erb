@@ -1,16 +1,12 @@
-<script>
-function authorizationratings(){
-  var selected_id = document.getElementById('skill_id').selectedOptions;
-}
-</script>
 
 <% form_for :level, @level, :url => { :action => "create" }, :html => {:class => "nifty_form"} do |f| %>
   <%= f.select :user_id, @users.map {|u| [u.name, u.id] } %>
+  <br><br/>
 
   <% @skills.each do |skill| %>
     <% if !skill.name.nil? %>
-      <%= check_box_tag :skill_id, skill.id %>
-      <%= skill.name %>
+      <p><%= check_box_tag 'skill_id[]',skill.id %>
+      <%= skill.name %><p/>
     <%end%>
   <% end %>
 
