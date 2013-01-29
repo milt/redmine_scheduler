@@ -1,17 +1,9 @@
 <%= render 'nav/nav'%>
 
-<h2>New Timesheet for <%= @user.name %></h2>
-<% form_tag do %>
-    <%= select_year(@year_selected, :start_year => Time.current.year - 1, :end_year => Time.current.year + 1) %>
-    <%= select_tag :cweek, options_for_select(@weeks, @cweek - 1) %> <!--Defaults to the week before-->
-    <%= hidden_field_tag 'user', @user.id.to_s %>
-    <%= submit_tag "Update"%>
-<%end%>
-
 <br></br>
-<h2>New Timesheet (changed to only 1 dropdown) for <%= @user.name %></h2>
+<h2>New Timesheet for <%= @user.name %></h2>
   <% form_tag do %>
-    <%= select_tag :week_sel, options_for_select(@past_weeks) %> 
+    <%= select_tag :week_sel, options_for_select(@past_weeks,params[:week_sel]) %> 
     <%= hidden_field_tag 'user', @user.id.to_s %>
     <%= submit_tag "Update"%>
 <%end%>

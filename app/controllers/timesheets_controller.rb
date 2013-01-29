@@ -15,6 +15,7 @@ class TimesheetsController < ApplicationController
 
   def new
     
+    #selects the current to current-1 year interval of weeks
     @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week)
 
     if params[:timesheet].present?
@@ -25,15 +26,19 @@ class TimesheetsController < ApplicationController
       @user = User.current
     end
 
+    #retrieving information from selection
     if params[:week_sel].present?
-      @cweek = params[:week_sel].to_i
-      @year_selected = params[:week_sel].to_i.year
+      @cweek = Date.parse(params[:week_sel]).cweek
+      @year_selected = Time.parse(params[:week_sel]).year
     else
       @cweek = Date.today.cweek
       @year_selected = Date.today.year
     end
 
+
     @existing = Timesheet.for_user(User.current).weekof_on(@weekof)
+    yearstart = find_first_monday(@year_selected)
+    @weekof = yearstart + (@cweek - 1).weeks
 
     if !@existing.empty?
       flash.now[:warning] = "There is already a timesheet for the selected week. Please select another."
