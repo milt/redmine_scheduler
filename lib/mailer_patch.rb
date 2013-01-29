@@ -10,7 +10,7 @@ module MailerPatch
       unloadable # Send unloadable so it will not be unloaded in development
 
         def booking_add(booking)
-            recipients	booking.timeslot.issue.assigned_to.mail
+            recipients	booking.coach.mail
             from	"DMC Lab Coach Notifier <notification@redmine.com>"
             subject	"You have a Lab Coach Signup!"
             sent_on	Time.now
