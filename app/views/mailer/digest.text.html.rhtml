@@ -1,18 +1,37 @@
-<h2>Activity for <%= @user.name %></h2>
-<h3>Issues assigned to you:</h3>
+<h1>Squid digest for <%= @user.name %></h1>
+<br>
+<h2>New issues assigned to you:</h2>
+<hr>
+<% if @digest[:new].present? %>
+  <ul>
+  <% @digest[:new].keys.each do |issue| %>
+    <%= render :partial => "digest_issue_text_html", :locals => { :issue => issue, :digest => @digest, :kind => :new } %>
+  <% end %>
+  </ul>
+<% else %>
+<p>No new issues in the last day.</p>
+<% end %>
+
+<h2>Updated issues assigned to you:</h2>
+<hr>
 <% if @digest[:owned].present? %>
+  <ul>
   <% @digest[:owned].keys.each do |issue| %>
     <%= render :partial => "digest_issue_text_html", :locals => { :issue => issue, :digest => @digest, :kind => :owned } %>
   <% end %>
+  </ul>
 <% else %>
 <p>No owned issues with updates in the last day.</p>
 <% end %>
 
-<h3>Issues you are watching:</h3>
+<h2>Updated issues you are watching:</h2>
+<hr>
 <% if @digest[:watched].present? %>
+  <ul>
   <% @digest[:watched].keys.each do |issue| %>
     <%= render :partial => "digest_issue_text_html", :locals => { :issue => issue, :digest => @digest, :kind => :watched } %>
   <% end %>
+  </ul>
 <% else %>
 <p>No watched issues with updates in the last day.</p>
 <% end %>

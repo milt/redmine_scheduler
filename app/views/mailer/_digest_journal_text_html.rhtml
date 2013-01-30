@@ -1,9 +1,11 @@
-<p><%= journal.created_at.strftime("%b %e, %l:%M %p") %></p>
-<ul>
-<% for detail in journal.renderable_details %>
-    <li><%= journal.render_detail(detail, false) %></li>
-<% end %>
-</ul>
-<% if journal.notes.present? %>
-  <p>Notes: <%= journal.notes %></p>
-<% end %>
+<li>
+  <p><i><%= journal.created_at.strftime("%b %e, %l:%M %p") %> by <%= journal.user.name %>:</i></p>
+  <ul>
+  <% for detail in journal.renderable_details %>
+      <li><%= journal.render_detail(detail, false) %></li>
+  <% end %>
+  <% if journal.notes.present? %>
+    <li><strong>Comment:</strong> <i><%= journal.notes %></i></li>
+  <% end %>
+  </ul>
+</li>

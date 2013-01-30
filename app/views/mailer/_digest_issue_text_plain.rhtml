@@ -1,0 +1,7 @@
+<%= issue.id.to_s + " : " + issue.subject %> in project <%= issue.project.name %> assigned by <%= issue.author.name %>
+
+<% if issue.description.present? %>Description: <%= issue.description %><% end %>
+<% if issue.time_entries.last_day.present? %>Time Entries Entered/Updated in last day:
+<% issue.time_entries.last_day.each do |time_entry| %><%= render :partial => "digest_time_entry_text_plain", :locals => { :time_entry => time_entry } %><% end %><% end %>
+<% digest[kind.to_sym][issue].each do |journal| %><%= render :partial => "digest_journal_text_plain", :locals => { :journal => journal } %>
+<% end %>

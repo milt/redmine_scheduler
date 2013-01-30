@@ -1,57 +1,18 @@
-Activity for <%= @user.name %>
-Issues assigned to you:
-<% if @digest[:owned].present? %>
-<% @digest[:owned].keys.each do |issue| %>
-Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:
-<% if issue.time_entries.last_day.present? %>
-Time Entries Entered/Updated in last day:
+Squid digest for <%= @user.name %>
+--------------------------------------
 
-<% issue.time_entries.last_day.each do |time_entry| %>
-<%= time_entry.user.name %> : <%= time_entry.activity %> Hours: <%= time_entry.hours %> <%= "Comments: " + time_entry.comments if time_entry.comments.present? %>
-<% end %>
+New issues assigned to you:<% if @digest[:new].present? %><% @digest[:new].keys.each do |issue| %>
 
-<% end %>
-<% @digest[:owned][issue].each do |journal| %>
-<%= journal.created_at.strftime("%b %e, %l:%M %p") %>
+<%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :new } %>
+<% end %><% else %>
+No new issues in the last day.<% end %>
 
-<% for detail in journal.renderable_details %>
-<%= journal.render_detail(detail, true) %>
-<% end %>
+Updated issues assigned to you:<% if @digest[:owned].present? %><% @digest[:owned].keys.each do |issue| %>
 
-<% if journal.notes.present? %>
-Notes: <%= journal.notes %>
-<% end %>
-<% end %>
-<% end %>
-<% else %>
-No owned issues with updates in the last day.
-<% end %>
+<%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :owned } %>
+<% end %><% else %>No owned issues with updates in the last day.<% end %>
 
-Issues you are watching:
-<% if @digest[:watched].present? %>
-<% @digest[:watched].keys.each do |issue| %>
+Updated issues you are watching:
 
-Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:
-<% if issue.time_entries.last_day.present? %>
-Time Entries Entered/Updated in last day:
-
-<% issue.time_entries.last_day.each do |time_entry| %>
-<%= time_entry.user.name %> : <%= time_entry.activity %> Hours: <%= time_entry.hours %> <%= "Comments: " + time_entry.comments if time_entry.comments.present? %>
-<% end %>
-
-<% end %>
-<% @digest[:watched][issue].each do |journal| %>
-<%= journal.created_at.strftime("%b %e, %l:%M %p") %>
-
-<% for detail in journal.renderable_details %>
-<%= journal.render_detail(detail, true) %>
-<% end %>
-
-<% if journal.notes.present? %>
-Notes: <%= journal.notes %>
-<% end %>
-<% end %>
-<% end %>
-<% else %>
-No watched issues with updates in the last day.
-<% end %>
+<% if @digest[:watched].present? %><% @digest[:watched].keys.each do |issue| %><%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :watched } %><% end %><% else %>
+No watched issues with updates in the last day.<% end %>

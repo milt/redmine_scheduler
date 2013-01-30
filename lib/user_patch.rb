@@ -37,16 +37,21 @@ module UserPatch
     end
 
     def journal_digest
-      owned_issues = Issue.foruser(self).updated_in_last_day.recently_updated
+      new_issues = Issue.foruser(self).created_in_last_day.recently_updated.reject {|i| i.is_shift?}
+      owned_issues = Issue.foruser(self).updated_in_last_day.recently_updated - new_issues
       watched_issues = Issue.watched_by(self).updated_in_last_day.recently_updated
 
       owned_hash = {}
       watched_hash = {}
+      new_hash = {}
+
       owned_issues.each {|i| owned_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
       watched_issues.each {|i| watched_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
+      new_issues.each {|i| new_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
 
       return { :owned => owned_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?},
-               :watched => watched_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?}
+               :watched => watched_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?},
+               :new => new_hash
       }
     end
 

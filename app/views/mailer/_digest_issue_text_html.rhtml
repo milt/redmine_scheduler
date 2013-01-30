@@ -1,5 +1,8 @@
-<hr>
-<p>Issue #<%= issue.id.to_s + " : " + issue.subject + " in " + issue.project.name %>:</p>
+<li>
+<p><strong><%= issue.id.to_s + " : " + issue.subject %></strong> in project <strong><%= issue.project.name %></strong> assigned by <strong><%= issue.author.name %></strong></p>
+<% if issue.description.present? %>
+  <p><i><%= issue.description %></i></p>
+<% end %>
 <% if issue.time_entries.last_day.present? %>
   <p>Time Entries Entered/Updated in last day:</p>
   <ul>
@@ -9,5 +12,8 @@
   </ul>
 <% end %>
 <% digest[kind.to_sym][issue].each do |journal| %>
-  <%= render :partial => "digest_journal_text_html", :locals => { :journal => journal } %>
+  <ul>
+    <%= render :partial => "digest_journal_text_html", :locals => { :journal => journal } %>
+  </ul>
 <% end %>
+</li>
