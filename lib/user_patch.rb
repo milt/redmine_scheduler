@@ -41,21 +41,25 @@ module UserPatch
       owned_issues = Issue.foruser(self).updated_in_last_day.recently_updated.reject {|i| i.is_shift?} - new_issues
       authored_issues = Issue.for_author(self).updated_in_last_day.recently_updated.reject {|i| i.is_shift?}
       watched_issues = Issue.watched_by(self).updated_in_last_day.recently_updated.reject {|i| i.is_shift?} - authored_issues
+      repair_issues = Issue.unassigned.repairs
 
       owned_hash = {}
       watched_hash = {}
       new_hash = {}
       authored_hash = {}
+      repair_hash = {}
 
       owned_issues.each {|i| owned_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
       watched_issues.each {|i| watched_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
       new_issues.each {|i| new_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
       authored_issues.each {|i| authored_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
+      repair_issues.each {|i| repair_hash[i] = []}
 
       return { :owned => owned_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?},
                :watched => watched_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?},
                :new => new_hash,
-               :authored => authored_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?}
+               :authored => authored_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?},
+               :repair => repair_hash
       }
     end
 

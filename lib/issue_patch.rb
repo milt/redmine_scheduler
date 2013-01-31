@@ -16,6 +16,8 @@ module IssuePatch
       named_scope :today, lambda { { :conditions => { :start_date => Date.today } } }
       named_scope :fdshift, lambda { { :conditions => { :tracker_id => Tracker.fdshift_track.first.id } } }
       named_scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
+      named_scope :repairs, lambda { { :conditions => { :tracker_id => Tracker.repair_track.first.id } } }
+      named_scope :unassigned, lambda { { :conditions => { :assigned_to_id => nil } } }
       #need to add a named_scope for development tracker?
       named_scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
       named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }

@@ -45,3 +45,13 @@
   <% end %>
   </ul>
 <% end %>
+
+<% if @digest[:repair].present? %>
+  <h2>Unassigned Repairs:</h2>
+  <hr>
+  <ul>
+  <% @digest[:repair].keys.each do |issue| %>
+    <%= render :partial => "digest_issue_text_html", :locals => { :issue => issue, :digest => @digest, :kind => :repair } %>
+  <% end %>
+  </ul>
+<% end %>
