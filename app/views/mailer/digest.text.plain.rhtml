@@ -19,8 +19,13 @@ Updated issues you are watching:<% if @digest[:watched].present? %><% @digest[:w
 <% end %><% else %>
 No watched issues with updates in the last day.<% end %>
 
-<% if @digest[:authored].present? %><% @digest[:authored].keys.each do |issue| %>
+<% if @digest[:authored].present? %>Authored Issues with updates in the last day:<% @digest[:authored].keys.each do |issue| %>
 
 <%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :authored } %>
 <% end %><% else %>
 No authored issues with updates in the last day.<% end %>
+
+<% if @digest[:repair].present? %>Unassigned Repairs:<% @digest[:repair].keys.each do |issue| %>
+
+<%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :repair } %>
+<% end %><% end %>
