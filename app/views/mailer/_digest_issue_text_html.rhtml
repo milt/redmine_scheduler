@@ -3,17 +3,20 @@
 <% if issue.description.present? %>
   <p><i><%= issue.description %></i></p>
 <% end %>
+<% if digest[kind.to_sym][issue].present? %>
+  <p>Updates:</p>
+  <% digest[kind.to_sym][issue].each do |journal| %>
+    <ul>
+      <%= render :partial => "digest_journal_text_html", :locals => { :journal => journal } %>
+    </ul>
+  <% end %>
+<% end %>
 <% if issue.time_entries.last_day.present? %>
   <p>Time Entries Entered/Updated in last day:</p>
   <ul>
   <% issue.time_entries.last_day.each do |time_entry| %>
     <%= render :partial => "digest_time_entry_text_html", :locals => { :time_entry => time_entry } %>
   <% end %>
-  </ul>
-<% end %>
-<% digest[kind.to_sym][issue].each do |journal| %>
-  <ul>
-    <%= render :partial => "digest_journal_text_html", :locals => { :journal => journal } %>
   </ul>
 <% end %>
 </li>

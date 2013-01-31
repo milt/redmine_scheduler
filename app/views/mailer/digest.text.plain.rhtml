@@ -10,9 +10,17 @@ No new issues in the last day.<% end %>
 Updated issues assigned to you:<% if @digest[:owned].present? %><% @digest[:owned].keys.each do |issue| %>
 
 <%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :owned } %>
-<% end %><% else %>No owned issues with updates in the last day.<% end %>
+<% end %><% else %>
+No owned issues with updates in the last day.<% end %>
 
-Updated issues you are watching:
+Updated issues you are watching:<% if @digest[:watched].present? %><% @digest[:watched].keys.each do |issue| %>
 
-<% if @digest[:watched].present? %><% @digest[:watched].keys.each do |issue| %><%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :watched } %><% end %><% else %>
+<%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :watched } %>
+<% end %><% else %>
 No watched issues with updates in the last day.<% end %>
+
+<% if @digest[:authored].present? %><% @digest[:authored].keys.each do |issue| %>
+
+<%= render :partial => "digest_issue_text_plain", :locals => { :issue => issue, :digest => @digest, :kind => :authored } %>
+<% end %><% else %>
+No authored issues with updates in the last day.<% end %>

@@ -35,3 +35,13 @@
 <% else %>
 <p>No watched issues with updates in the last day.</p>
 <% end %>
+
+<% if @digest[:authored].present? %>
+  <h2>Authored Issues with activity in the last day:</h2>
+  <hr>
+  <ul>
+  <% @digest[:authored].keys.each do |issue| %>
+    <%= render :partial => "digest_issue_text_html", :locals => { :issue => issue, :digest => @digest, :kind => :authored } %>
+  <% end %>
+  </ul>
+<% end %>
