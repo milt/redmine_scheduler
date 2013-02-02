@@ -5,7 +5,7 @@
   <table class="list issues">
     <h3>Shifts and Time Entries Sorted by Day</h3>
 
-    <% if !@edit && !@show %>
+    <% if !@edit %>
       <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
       
         <th><%= Date.commercial(@year_selected, @cweek, day).strftime("%A")  %></th>
@@ -32,7 +32,7 @@
         </td>
         </tr>
       <%end%>
-    <% elsif @edit  && !@show %>
+    <% elsif @edit %>
       <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
         <% entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on) %>
         <th><%= Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day).strftime("%A")  %></th>
@@ -61,33 +61,6 @@
               <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
               <%= shift.tracker.name %>
               <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]}} %><br />
-            <%end%>
-          <%end%>
-        </td>
-        </tr>
-      <%end%>
-    <%elsif @show && !@edit %>
-      <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
-        <% entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on) %>
-        <th><%= Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day).strftime("%A")  %></th>
-        <tr>
-          <td>
-            <p>Time Entries This Day</p>
-          <% if !entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
-            <% entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |entry| %>
-              <%= entry.activity %>
-              <%= link_to_project(entry.project) %>
-              <%= link_to_issue(entry.issue, :truncate => 30) %>
-              <strong>Hours: </strong><%= entry.hours %>
-            <%end%>
-          <%end%>
-          <hr>
-          <p>Shifts This Day</p>
-          <% if !@shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
-            <% @shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |shift| %>
-              <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
-              <%= shift.tracker.name %>
-              <br />
             <%end%>
           <%end%>
         </td>

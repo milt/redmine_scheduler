@@ -5,7 +5,7 @@ class TimesheetsController < ApplicationController
   before_filter :require_admstaff, :only => [:approve,:reject]
   before_filter :wage_check, :except => [:approve,:delete,:reject]
   include TimesheetHelper
-  include TimesheetsHelper  #I know this must be the strangest thing, its like seeing doubles
+  include TimesheetsHelper
   require "prawn"   #needed for pdf generation
 
   def index
@@ -18,13 +18,7 @@ class TimesheetsController < ApplicationController
     #selects the current to current-1 year interval of weeks
     @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week)
 
-    if params[:timesheet].present?
-      @user = User.find(params[:timesheet][:user_id])
-    elsif params[:user].present?
-      @user = User.find(params[:user].to_i)
-    else
-      @user = User.current
-    end
+    find_user
 
     #retrieving information from selection
     if params[:week_sel].present?
@@ -35,18 +29,14 @@ class TimesheetsController < ApplicationController
       @year_selected = Date.today.year
     end
 
-
-    @existing = Timesheet.for_user(User.current).weekof_on(@weekof)
     yearstart = find_first_monday(@year_selected)
     @weekof = yearstart + (@cweek - 1).weeks
 
-    if !@existing.empty?
-      flash.now[:warning] = "There is already a timesheet for the selected week. Please select another."
-    end
+    @existing = Timesheet.for_user(@user).weekof_on(@weekof)
+    validate_existence(@existing)
 
-    @entries = TimeEntry.foruser(@user).on_tweek(@cweek).on_tyear(@year_selected).sort_by_date
-    @entries_by_day = @entries.group_by(&:spent_on)  
-
+    find_entries_by_day(@year_selected, @cweek)
+  
     issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)
     @fdshifts = issues.fdshift
     @lcshifts = issues.lcshift
@@ -209,6 +199,16 @@ class TimesheetsController < ApplicationController
     end
   end
 
+  def find_user
+    if params[:timesheet].present?
+      @user = User.find(params[:timesheet][:user_id])
+    elsif params[:user].present?
+      @user = User.find(params[:user].to_i)
+    else
+      @user = User.current
+    end
+  end
+
   def find_timesheet
     if params[:id].present?
       @timesheet = Timesheet.find(params[:id])
@@ -255,4 +255,14 @@ class TimesheetsController < ApplicationController
     end
   end
 
+  def validate_existence(existing)
+    if !existing.empty?
+      flash.now[:warning] = "There is already a timesheet for the selected week. Please select another."
+    end
+  end
+
+  def find_entries_by_day(year, week)
+    @entries = TimeEntry.foruser(@user).on_tweek(week).on_tyear(year).sort_by_date
+    @entries_by_day = @entries.group_by(&:spent_on)  
+  end
 end
