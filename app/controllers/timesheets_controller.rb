@@ -14,45 +14,25 @@ class TimesheetsController < ApplicationController
   end
 
   def new
-    
     #selects the current to current-1 year interval of weeks
     @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week)
-
     find_user
-
-    #retrieving information from selection
-    if params[:week_sel].present?
-      @cweek = Date.parse(params[:week_sel]).cweek
-      @year_selected = Time.parse(params[:week_sel]).year
-    else
-      @cweek = Date.today.cweek
-      @year_selected = Date.today.year
-    end
-
+    find_selection_week_year
     yearstart = find_first_monday(@year_selected)
     @weekof = yearstart + (@cweek - 1).weeks
-
-    @existing = Timesheet.for_user(@user).weekof_on(@weekof)
-    validate_existence(@existing)
-
+    validate_existence(@user,@weekof)
     find_entries_by_day(@year_selected, @cweek)
-  
-    issues = Issue.from_date(@weekof).until_date(@weekof + 6.days)
-    @fdshifts = issues.fdshift
-    @lcshifts = issues.lcshift
-    
-    @shifts_by_day = (@fdshifts+@lcshifts).group_by(&:start_date)   #concatenating the arrays of lc and fd shifts should solve bug 1240
+    find_shifts_by_day(@weekof)
+    get_goals(@user)
+    get_tasks(@user)
 
-    @goals = Issue.foruser(@user).goals
-    @tasks = Issue.foruser(@user).tasks
-
+    #will refactor this later
     @edit = false
     @show = false
 
   end
 
   def create
-    #session[:return_to] = request.referer
     yearstart = find_first_monday(Time.current.year)
 
     if params[:weekof].present?
@@ -255,7 +235,8 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  def validate_existence(existing)
+  def validate_existence(user,weekof)
+    existing = Timesheet.for_user(user).weekof_on(weekof)
     if !existing.empty?
       flash.now[:warning] = "There is already a timesheet for the selected week. Please select another."
     end
@@ -264,5 +245,42 @@ class TimesheetsController < ApplicationController
   def find_entries_by_day(year, week)
     @entries = TimeEntry.foruser(@user).on_tweek(week).on_tyear(year).sort_by_date
     @entries_by_day = @entries.group_by(&:spent_on)  
+  end
+
+  def dates(to,from)
+    dates = []
+    date = to
+    while date >= from do
+      dates << date.strftime("Week of %B %d, Year %Y")
+      date -= 7.day
+    end
+    return dates
+  end
+
+  #retrieving information from selection
+  def find_selection_week_year
+    if params[:week_sel].present?
+      @cweek = Date.parse(params[:week_sel]).cweek
+      @year_selected = Time.parse(params[:week_sel]).year
+    else
+      @cweek = Date.today.cweek
+      @year_selected = Date.today.year
+    end
+  end
+
+  def find_shifts_by_day(weekof)
+    issues = Issue.from_date(weekof).until_date(weekof + 6.days)
+    fdshifts = issues.fdshift
+    lcshifts = issues.lcshift
+    
+    @shifts_by_day = (fdshifts+lcshifts).group_by(&:start_date)
+  end
+
+  def get_goals(user)
+    @goals = Issue.foruser(user).goals
+  end
+
+  def get_tasks(user)
+    @tasks = Issue.foruser(user).tasks
   end
 end

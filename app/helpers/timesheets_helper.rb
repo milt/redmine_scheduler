@@ -18,14 +18,4 @@ module TimesheetsHelper
     end
   end
 
-  # adapted from timeslot helper
-  def dates(to,from)
-    dates = []
-    date = to
-    while date >= from do
-      dates << date.strftime("Week of %B %d, Year %Y")
-      date -= 7.day
-    end
-    return dates
-  end
 end
