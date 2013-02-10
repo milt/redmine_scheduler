@@ -29,50 +29,19 @@ class TimesheetsController < ApplicationController
     #will refactor this later
     @edit = false
     @show = false
-
   end
 
   def create
     yearstart = find_first_monday(Time.current.year)
-
-    if params[:weekof].present?
-      weekof = yearstart + (params[:weekof].to_i - 2).weeks
-    else
-      flash[:notice] = "You must specify a pay period."
-      redirect_to :action => 'new'
-    end
-
-    if params[:user].present?
-      user = User.find(params[:user].to_i)
-    else
-      user = User.current
-    end
-
+    find_selection_week(yearstart)
+    find_user
     timesheet = Timesheet.new
-    timesheet.user = user
-    timesheet.weekof = weekof
-
-
-    #need to check whether the timesheet has already been submitted..
-    #need to check whether there is hour to the timesheet before saving, else cannot submit
-    #might not be the best way to code, the block should be replaced a call to submit method
-    
-    if timesheet.save
-      if params[:creatensubmit] == 'yes'
-        @timesheet = timesheet
-        submit  
-      else
-        redirect_to :action => 'index'
-      end
-    else                                            
-      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
-      redirect_to :action => 'new'
-    end
-
+    timesheet.user = @user
+    timesheet.weekof = @weekof
+    saving(timesheet)
   end
 
   def print
-    #session[:return_to] = request.referer
     weekof = @timesheet.weekof.to_date
     name = @timesheet.user.name
 
@@ -87,7 +56,6 @@ class TimesheetsController < ApplicationController
   end
 
   def show
-    #session[:return_to] = request.referer
     @edit = false
     @show = true
 
@@ -98,7 +66,6 @@ class TimesheetsController < ApplicationController
   end
 
   def edit
-    #session[:return_to] = request.referer
     @edit = true
     @show = false
 
@@ -111,8 +78,21 @@ class TimesheetsController < ApplicationController
   def update
   end
 
+  def saving(timesheet)
+    if timesheet.save
+      if params[:creatensubmit] == 'yes'
+        @timesheet = timesheet
+        submit  
+      else
+        redirect_to :action => 'index'
+      end
+    else                                            
+      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
+      redirect_to :action => 'new'
+    end
+  end
+
   def submit
-    #session[:return_to] = request.referer
     if @timesheet.submit_now && @timesheet.save
       flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully submitted."
       redirect_to :action => 'index'
@@ -133,7 +113,6 @@ class TimesheetsController < ApplicationController
   end
 
   def delete
-
     if @timesheet.status != :draft
       require_admstaff
     end
@@ -265,6 +244,16 @@ class TimesheetsController < ApplicationController
     else
       @cweek = Date.today.cweek
       @year_selected = Date.today.year
+    end
+  end
+
+  #I know this is more or less redundant from method above
+  def find_selection_week(yearstart)
+    if params[:weekof].present?
+      @weekof = yearstart + (params[:weekof].to_i - 2).weeks
+    else
+      flash[:notice] = "You must specify a pay period."
+      redirect_to :action => 'new'
     end
   end
 
