@@ -38,7 +38,18 @@ class TimesheetsController < ApplicationController
     timesheet = Timesheet.new
     timesheet.user = @user
     timesheet.weekof = @weekof
-    saving(timesheet)
+
+    if timesheet.save
+      if params[:creatensubmit] == 'yes'
+        @timesheet = timesheet
+        submit  
+      else
+        redirect_to :action => 'index'
+      end
+    else                                            
+      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
+      redirect_to :action => 'new'
+    end
   end
 
   def print
@@ -76,20 +87,6 @@ class TimesheetsController < ApplicationController
   end
 
   def update
-  end
-
-  def saving(timesheet)
-    if timesheet.save
-      if params[:creatensubmit] == 'yes'
-        @timesheet = timesheet
-        submit  
-      else
-        redirect_to :action => 'index'
-      end
-    else                                            
-      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
-      redirect_to :action => 'new'
-    end
   end
 
   def submit
