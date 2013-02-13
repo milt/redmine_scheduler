@@ -4,12 +4,12 @@ class LevelsController < ApplicationController
 
   def index
     @users = Group.stustaff.first.users.active
-    @skills = Skill.all
-  
+    @skills = Skill.all.group_by(&:skillcat)
+
     @skillcats = Skillcat.all.sort_by(&:name)  #sorts skill categories by name
     @skills_list = []
 
-    @skills_list = skill_sorted_create
+    #@skills_list = skill_sorted_create
     @goals = Issue.goals.feedback
   end
 
@@ -39,6 +39,7 @@ class LevelsController < ApplicationController
   end
 
   def create
+      #not currently used. may re-implement
       user = User.find(params[:level][:user_id].to_i)
       #skill = Skill.find(params[:skill_id])
       skills = []
@@ -59,6 +60,25 @@ class LevelsController < ApplicationController
         end
       end
       redirect_to :action => "index"
+  end
+
+  def bulk_create
+    user = User.find(params[:level][:user_id].to_i)
+    skills = params[:skill_id].map {|s| Skill.find(s)}
+    levels = params[:levels].map {|l| l.to_i}
+    skill_order = params[:skill_order].map {|o| o.to_i}
+    level_hash = {}
+    skill_order.zip(levels) {|k,v| level_hash[k] = v}
+
+    for skill in skills
+      level = Level.new(:user => user, :skill => skill, :rating => level_hash[skill.id])
+      if level.save
+        flash[:notice] = 'Level was successfully created.'
+      else                                               
+        flash[:warning] = 'Invalid Options... Try again!'
+      end
+    end
+    redirect_to :action => "index"
   end
 
     def delete

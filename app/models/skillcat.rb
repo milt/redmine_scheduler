@@ -5,5 +5,14 @@ class Skillcat < ActiveRecord::Base #Skill categories
   validates_uniqueness_of :name #skill category names are unique
   default_scope :order => 'name ASC' #default sort is category name ascending
   attr_accessible :name, :descr
-  
+  named_scope :auth_cat, lambda { { :conditions => ["name = ?", "Authorization"] } }
+  named_scope :skill_cat, lambda { { :conditions => ["name != ?", "Authorization"] } }
+
+  def auth?
+  	if name == "Authorization"
+  		return true
+  	else
+  		return false
+  	end
+  end
 end

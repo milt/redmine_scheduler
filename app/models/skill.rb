@@ -8,6 +8,12 @@ class Skill < ActiveRecord::Base
   validates_presence_of :name, :skillcat_id #every skill needs a name and a category
   validates_length_of :name, :maximum => 127 #skill names shouldn't be more than 127
   default_scope :order => 'name ASC' #default sort by name alphabetically ascending
+  named_scope :auths, lambda { { :conditions => { :skillcat_id => Skillcat.auth_cat.first.id } } }
+  named_scope :skills, lambda { { :conditions => ["skillcat_id != ?", Skillcat.auth_cat.first.id] } }
+
+  def auth?
+    skillcat.auth?
+  end
   
   #todo: the following methods are bad and redundant, sort this craziness out
   def shifts(cutoff) #find shifts belonging to users with the given skill. called on a skill, looks for dates until cutoff
