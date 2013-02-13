@@ -1,0 +1,6 @@
+<% form_for(:level, @level, :url => { :action => "create" }) do |f| %>
+  <%= f.hidden_field :user, :value => user.id %>
+  <%= f.select :skill, options_for_select(@skills_list) %>
+  <%= f.select :rating, 1..3 %>
+  <%= submit_tag "Create" %>
+<% end %>

@@ -24,10 +24,9 @@
 <h2>Assign Level:</h2>
 
 <%= render 'skill_sel' %> <!--this is still in its testing stage-->
-<br></br>
 
-<!--<%= render 'form' %>-->
 <br>
+
 <% @users.each do |user| %>
   <h2><%= user.firstname %></h2>
   <table>
@@ -36,6 +35,7 @@
       <tr><td><%= level.skill.name %></td><td><%= render 'form_update', :level => level %></td><td><%= button_to 'Delete', {:action => 'delete', :id => level}, :confirm => "Really?" %></td></tr>
     <%end%>
   </table>
+    <p>Quick Add Skill:<%= render :partial => 'form_create', :locals => {:user => user} %></p>
 <%end%>
 
 <br/>

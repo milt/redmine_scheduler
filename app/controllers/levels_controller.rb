@@ -4,12 +4,12 @@ class LevelsController < ApplicationController
 
   def index
     @users = Group.stustaff.first.users.active
-    @skills = Skill.all.group_by(&:skillcat)
+    @skills = Skill.all
 
     @skillcats = Skillcat.all.sort_by(&:name)  #sorts skill categories by name
     @skills_list = []
 
-    #@skills_list = skill_sorted_create
+    @skills_list = skill_sorted_create
     @goals = Issue.goals.feedback
   end
 
@@ -39,27 +39,20 @@ class LevelsController < ApplicationController
   end
 
   def create
-      #not currently used. may re-implement
-      user = User.find(params[:level][:user_id].to_i)
-      #skill = Skill.find(params[:skill_id])
-      skills = []
+    user = User.find(params[:level][:user].to_i)
+    skill = Skill.find(params[:level][:skill].to_i)
 
-      #rating = params[:level][:rating].to_i
-      rating = 1  #starting with all first levels, can change later with edit
+    rating = params[:level][:rating].to_i
 
-      params[:skill_id].each do |skill|
-        #@level = Level.new(:user => user, :skill => skill, :rating => rating)
-        level = Level.new(:user => user, :skill => Skill.find(skill), :rating => rating)
-        #if @level.save
-        if level.save
-          flash[:notice] = 'Level was successfully created.'
-          #redirect_to :action => "index"
-        else                                               
-          flash[:warning] = 'Invalid Options... Try again!'
-          #redirect_to :action => "index"
-        end
-      end
+
+    @level = Level.new(:user => user, :skill => skill, :rating => rating)
+    if @level.save
+      flash[:notice] = 'Level was successfully created.'
       redirect_to :action => "index"
+    else                                               
+      flash[:warning] = 'Invalid Options... Try again!'
+      redirect_to :action => "index"
+    end
   end
 
   def bulk_create

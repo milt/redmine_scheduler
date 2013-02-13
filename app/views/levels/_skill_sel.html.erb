@@ -1,4 +1,3 @@
-
 <% form_for :level, @level, :url => { :action => "bulk_create" }, :html => {:class => "nifty_form"} do |f| %>
   <%= f.select :user_id, @users.active.map {|u| [u.name, u.id] } %>
   <br><br/>
