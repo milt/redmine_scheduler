@@ -14,15 +14,14 @@ class TimesheetsController < ApplicationController
   end
 
   def new
-    #selects the current to current-1 year interval of weeks
-    @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week)
-    find_user
-    find_selection_week_year
-    yearstart = find_first_monday(@year_selected)
-    @weekof = yearstart + (@cweek - 1).weeks
-    validate_existence(@user,@weekof)
-    find_entries_by_day(@year_selected, @cweek)
-    find_shifts_by_day(@weekof)
+    @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week) #get list of valid weeks to make timesheets for
+    find_user #find the user to make the sheet for
+    find_selection_week_year #process the result of the week selection, creates @cweek and @year_selected
+    yearstart = find_first_monday(@year_selected) #no longer used?
+    @weekof = Date.commercial(@year_selected,@cweek,1)
+    validate_existence(@user,@weekof) #see if there is an existing timesheet
+    find_entries_by_day(@weekof) # pull entries for viewing/editing
+    find_shifts_by_day(@weekof) # pull shifts for adding time entries
     get_goals(@user)
     get_tasks(@user)
 
@@ -32,8 +31,8 @@ class TimesheetsController < ApplicationController
   end
 
   def create
-    yearstart = find_first_monday(Time.current.year)
-    find_selection_week(yearstart)
+    #yearstart = find_first_monday(Time.current.year)
+    find_selection_week
     find_user
     timesheet = Timesheet.new
     timesheet.user = @user
@@ -79,10 +78,8 @@ class TimesheetsController < ApplicationController
   def edit
     @edit = true
     @show = false
-
-    issues = Issue.from_date(@timesheet.weekof).until_date(@timesheet.weekof + 6.days)
-
-    @shifts_by_day = issues.group_by(&:start_date)
+    @weekof = @timesheet.weekof.to_date
+    find_shifts_by_day(@weekof)
 
   end
 
@@ -218,8 +215,8 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  def find_entries_by_day(year, week)
-    @entries = TimeEntry.foruser(@user).on_tweek(week).on_tyear(year).sort_by_date
+  def find_entries_by_day(weekof)
+    @entries = TimeEntry.foruser(@user).from_date(weekof).until_date(weekof + 1.week).sort_by_date
     @entries_by_day = @entries.group_by(&:spent_on)  
   end
 
@@ -227,7 +224,7 @@ class TimesheetsController < ApplicationController
     dates = []
     date = to
     while date >= from do
-      dates << date.strftime("Week of %B %d, Year %Y")
+      dates << [date.strftime("Week of %B %d, Year %Y"), date.to_s]
       date -= 7.day
     end
     return dates
@@ -236,8 +233,9 @@ class TimesheetsController < ApplicationController
   #retrieving information from selection
   def find_selection_week_year
     if params[:week_sel].present?
-      @cweek = Date.parse(params[:week_sel]).cweek
-      @year_selected = Time.parse(params[:week_sel]).year
+      w = Date.parse(params[:week_sel])
+      @cweek = w.cweek
+      @year_selected = w.year
     else
       @cweek = Date.today.cweek
       @year_selected = Date.today.year
@@ -245,9 +243,9 @@ class TimesheetsController < ApplicationController
   end
 
   #I know this is more or less redundant from method above
-  def find_selection_week(yearstart)
+  def find_selection_week
     if params[:weekof].present?
-      @weekof = yearstart + (params[:weekof].to_i - 2).weeks
+      @weekof = Date.parse(params[:weekof])
     else
       flash[:notice] = "You must specify a pay period."
       redirect_to :action => 'new'
@@ -255,7 +253,7 @@ class TimesheetsController < ApplicationController
   end
 
   def find_shifts_by_day(weekof)
-    issues = Issue.from_date(weekof).until_date(weekof + 6.days)
+    issues = Issue.from_date(weekof).until_date(weekof + 1.week)
     fdshifts = issues.fdshift
     lcshifts = issues.lcshift
     

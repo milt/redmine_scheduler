@@ -91,7 +91,8 @@ class Timesheet < ActiveRecord::Base
   #methods used before time entries are attached.
   #retrieves all time entries for the week in question
   def entries_for_week
-    TimeEntry.foruser(self.user).on_tweek(self.weekof.to_date.cweek)
+    d = self.weekof.to_date
+    TimeEntry.foruser(self.user).from_date(d).until_date(d + 7.days)
   end
 
 

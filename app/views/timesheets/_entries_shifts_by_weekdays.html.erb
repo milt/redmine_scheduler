@@ -3,12 +3,12 @@
 
 <div>
   <table class="list issues">
-    <h3>Shifts and Time Entries Sorted by Day</h3>
+    <h3>Week of <%= @weekof.to_s %></h3>
 
     <% if !@edit %>
       <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
       
-        <th><%= Date.commercial(@year_selected, @cweek, day).strftime("%A")  %></th>
+        <th><%= Date.commercial(@year_selected, @cweek, day).strftime("%A, %b %d")  %></th>
         <tr>
           <td>
             <p>Time Entries This Day</p>
@@ -33,14 +33,15 @@
         </tr>
       <%end%>
     <% elsif @edit %>
-      <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
-        <% entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on) %>
-        <th><%= Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day).strftime("%A")  %></th>
+      <% entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on) %>
+      <% for date in @timesheet.dates %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
+
+        <th><%= date.strftime("%A, %b %d")  %></th>
         <tr> 
           <td>
             <p>Time Entries This Day</p>
-          <% if !entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
-            <% entries_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |entry| %>
+          <% if !entries_by_day[date].nil? %>
+            <% entries_by_day[date].each do |entry| %>
               <%= entry.activity %>
               <%= link_to_project(entry.project) %>
               <%= link_to_issue(entry.issue, :truncate => 30) %>
@@ -56,8 +57,8 @@
           <%end%>
           <hr>
           <p>Shifts This Day</p>
-          <% if !@shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].nil? %>
-            <% @shifts_by_day[Date.commercial(@timesheet.weekof.year, @timesheet.weekof.to_date.cweek, day)].each do |shift| %>
+          <% if !@shifts_by_day[date].nil? %>
+            <% @shifts_by_day[date].each do |shift| %>
               <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
               <%= shift.tracker.name %>
               <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]}} %><br />
