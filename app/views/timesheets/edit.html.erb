@@ -1,8 +1,5 @@
 <%= render 'nav/nav' %>
 
-<% form_for :timesheet, @timesheet, :url => { :action => 'edit' } do |f| %>
-  <%= render 'entries_shifts_by_weekdays'%>
-  <%= submit_tag "Submit Changes"%>
-<% end %>
+<%= render 'entries_shifts_by_weekdays'%>
 
 <%= button_to "Return to Index", :action=>'index' %>
