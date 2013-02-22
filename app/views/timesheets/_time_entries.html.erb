@@ -1,0 +1,9 @@
+<p>Time Entries This Day</p>
+	<% if !entries_by_day[Date.commercial(year_selected, cweek, day)].nil? %>
+		<% entries_by_day[Date.commercial(year_selected, cweek, day)].each do |entry| %>
+			<%= entry.activity %>
+			<%= link_to_project(entry.project) %>
+			<%= link_to_issue(entry.issue, :truncate => 30) %>
+			<strong>Hours: </strong><%= entry.hours %><br />
+		<%end%>
+	<%end%>
