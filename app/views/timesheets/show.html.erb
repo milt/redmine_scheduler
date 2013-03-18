@@ -1,7 +1,7 @@
 <%= render 'nav/nav' %>
 <div>
   <table class="list issues">
-    <% total = 0 %>
+    <% @total = 0 %>
     <h3>Shifts and Time Entries Sorted by Day</h3>
     <tr>
       <th>Day</th>
@@ -16,7 +16,7 @@
     
     <tr><td></td><td></td><td></td><td></td></tr>
 
-    <tr><td></td><td></td><td>Total # of Hours Worked:</td><td><%= total %></td><tr>
+    <tr><td></td><td></td><td>Total # of Hours Worked:</td><td><%= @total %></td><tr>
     <tr><td></td><td></td><td>
       <% if @timesheet.approved.present? %> 
         Amount Paid
@@ -24,10 +24,6 @@
         Wage
       <% end %>
     </td><td>$
-      <% if @timesheet.approved.present? %>
-        <%= @timesheet.approve_time_wage.to_s %>
-      <% else %>
-        <%= @timesheet.user.wage.amount.to_s %>
-      <% end %>
+        <%= @wage %>
   </table>
 </div>

@@ -66,6 +66,11 @@ class TimesheetsController < ApplicationController
     @year_selected = @timesheet.weekof.year
     @cweek = @timesheet.weekof.to_date.cweek
     find_entries_by_day(@weekof)
+    if @timesheet.approved.present?
+      @wage = @timesheet.approve_time_wage.to_s
+    else
+      @wage = @timesheet.user.wage.amount.to_s
+    end
   end
 
   def edit

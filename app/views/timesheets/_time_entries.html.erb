@@ -9,13 +9,14 @@
 			<%= link_to_issue(entry.issue, :truncate => 30) unless !@show.nil?%>
 			<strong><%= "Hours: " unless !@show.nil?%></strong>
 			<%= "<td>" unless !@edit.nil?%><%= entry.hours %><%= "</td>" unless !@edit.nil?%>
-			<br />
+			<%="<br />" unless !@show.nil?%>
+			<% @total = @total + entry.hours unless !@edit.nil?%> 
 			<% if entry.editable_by?(User.current) -%>
                 <%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => entry, :project_id => nil}, :title => l(:button_edit) unless !@show.nil?%>
                 <%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => entry, :project_id => nil},
                                     :confirm => l(:text_are_you_sure),
                                     :method => :delete,
-                                    :title => l(:button_delete) unless !@show.nil?%><br />
+                                    :title => l(:button_delete) unless !@show.nil?%><%="<br />" unless !@show.nil?%>
             
             <%end%>
         	<%= "</tr>" unless !@edit.nil? %>
