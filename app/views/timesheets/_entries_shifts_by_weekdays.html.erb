@@ -2,53 +2,15 @@
   <table class="list issues">
     <h3>Week of <%= @weekof.to_s %></h3>
 
-    <% if !@edit %>
       <% (1..7).each do |day| %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
-      
-        <th><%= Date.commercial(@year_selected, @cweek, day).strftime("%A, %b %d")  %></th>
-        <tr>
+        <% date = Date.commercial(@year_selected, @cweek, day) %>
+          <th><%= date.strftime("%A, %b %d")  %></th>
           <td>
-            <%= render 'time_entries', {:entries_by_day=>@entries_by_day, :year_selected=>@year_selected, :cweek=>@cweek, :day => day} %>    
+            <%= render 'time_entries', {:entries_by_day=>@entries_by_day, :date=>date} %>
           <hr>
-            <%= render 'shifts_nonsorted', {:shifts_by_day=> @shifts_by_day, :year_selected=>@year_selected, :cweek=>@cweek,:day=>day} %>
-        </td>
-        </tr>
-      <%end%>
-    <% elsif @edit %>
-      <% entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on) %>
-      <% for date in @timesheet.dates %><!--can't be 0 to 6, Date.commercial doesn't take 0-->
-
-        <th><%= date.strftime("%A, %b %d")  %></th>
-        <tr> 
-          <td>
-            <p>Time Entries This Day</p>
-          <% if !entries_by_day[date].nil? %>
-            <% entries_by_day[date].each do |entry| %>
-              <%= entry.activity %>
-              <%= link_to_project(entry.project) %>
-              <%= link_to_issue(entry.issue, :truncate => 30) %>
-              <strong>Hours: </strong><%= entry.hours %>
-              <% if entry.editable_by?(User.current) -%>
-                <%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => entry, :project_id => nil}, :title => l(:button_edit) %>
-                <%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => entry, :project_id => nil},
-                                    :confirm => l(:text_are_you_sure),
-                                    :method => :delete,
-                                    :title => l(:button_delete) %><br />
-              <%end%>
-            <%end%>
-          <%end%>
-          <hr>
-          <p>Shifts This Day</p>
-          <% if !@shifts_by_day[date].nil? %>
-            <% @shifts_by_day[date].each do |shift| %>
-              <%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
-              <%= shift.tracker.name %>
-              <%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]}} %><br />
-            <%end%>
-          <%end%>
-        </td>
-        </tr>
+            <%= render 'shifts_nonsorted', {:shifts_by_day=> @shifts_by_day,:date=>date} %>
+          </td>
+          </tr>
       <%end%>  
-    <%end%>  
   </table>
 </div>

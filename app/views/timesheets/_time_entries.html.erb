@@ -1,9 +1,16 @@
 <p>Time Entries This Day</p>
-	<% if !entries_by_day[Date.commercial(year_selected, cweek, day)].nil? %>
-		<% entries_by_day[Date.commercial(year_selected, cweek, day)].each do |entry| %>
+	<% if !@entries_by_day[date].nil? %>
+		<% @entries_by_day[date].each do |entry| %>
 			<%= entry.activity %>
 			<%= link_to_project(entry.project) %>
 			<%= link_to_issue(entry.issue, :truncate => 30) %>
 			<strong>Hours: </strong><%= entry.hours %><br />
+			<% if entry.editable_by?(User.current) -%>
+                <%= link_to image_tag('edit.png'), {:controller => 'timelog', :action => 'edit', :id => entry, :project_id => nil}, :title => l(:button_edit) %>
+                <%= link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => entry, :project_id => nil},
+                                    :confirm => l(:text_are_you_sure),
+                                    :method => :delete,
+                                    :title => l(:button_delete) %><br />
+            <%end%>
 		<%end%>
 	<%end%>

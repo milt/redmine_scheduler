@@ -79,6 +79,9 @@ class TimesheetsController < ApplicationController
     @edit = true
     @show = false
     @weekof = @timesheet.weekof.to_date
+    @year_selected = @timesheet.weekof.year
+    @cweek = @timesheet.weekof.to_date.cweek
+    find_entries_by_day(@weekof)
     find_shifts_by_day(@weekof)
 
   end
@@ -216,8 +219,12 @@ class TimesheetsController < ApplicationController
   end
 
   def find_entries_by_day(weekof)
-    @entries = TimeEntry.foruser(@user).from_date(weekof).until_date(weekof + 1.week).sort_by_date
-    @entries_by_day = @entries.group_by(&:spent_on)  
+    if !@timesheet.nil?
+      @entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on)
+    else
+      @entries = TimeEntry.foruser(@user).from_date(weekof).until_date(weekof + 1.week).sort_by_date
+      @entries_by_day = @entries.group_by(&:spent_on)  
+    end
   end
 
   def dates(to,from)
