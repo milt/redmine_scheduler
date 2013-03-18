@@ -14,6 +14,7 @@ class TimesheetsController < ApplicationController
   end
 
   def new
+    @edit = true
     @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week) #get list of valid weeks to make timesheets for
     find_user #find the user to make the sheet for
     find_selection_week_year #process the result of the week selection, creates @cweek and @year_selected
@@ -24,14 +25,9 @@ class TimesheetsController < ApplicationController
     find_shifts_by_day(@weekof) # pull shifts for adding time entries
     get_goals(@user)
     get_tasks(@user)
-
-    #will refactor this later
-    @edit = false
-    @show = false
   end
 
   def create
-    #yearstart = find_first_monday(Time.current.year)
     find_selection_week
     find_user
     timesheet = Timesheet.new
@@ -66,24 +62,19 @@ class TimesheetsController < ApplicationController
   end
 
   def show
-    @edit = false
     @show = true
-
-    issues = Issue.from_date(@timesheet.weekof).until_date(@timesheet.weekof + 6.days)
-
-    @shifts_by_day = issues.group_by(&:start_date)
-
+    @year_selected = @timesheet.weekof.year
+    @cweek = @timesheet.weekof.to_date.cweek
+    find_entries_by_day(@weekof)
   end
 
   def edit
     @edit = true
-    @show = false
     @weekof = @timesheet.weekof.to_date
     @year_selected = @timesheet.weekof.year
     @cweek = @timesheet.weekof.to_date.cweek
     find_entries_by_day(@weekof)
     find_shifts_by_day(@weekof)
-
   end
 
   def update
