@@ -10,6 +10,6 @@ class StustaffController < ApplicationController
     @mytasks = Issue.open.tasks.foruser(User.current)
     @mygoals = Issue.open.goals.foruser(User.current)
     @mywatches = Issue.visible.watched_by(User.current)  #this line should returns an array of watched issues for current user
-    @taskpool = Issue.find(:all,:conditions=>{:assigned_to_id=>nil})
+    @taskpool = Issue.find(:all,:conditions=>{:assigned_to_id=>nil,:tracker_id=>Tracker.task_track.first.id})
   end
 end

@@ -3,6 +3,7 @@ en:
   field_digest: "Subscribe to Squid Digest Email"
   field_suppress_email: "Supress Initital Email for All Issues"
   label_my_levels: "My Skill Levels"
+  label_my_repairs: "List of unassigned repair tasks"
   label_latest_news: "Latest News"
   field_start_time: "Start Time"
   field_end_time: "End Time"
