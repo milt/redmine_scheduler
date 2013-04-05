@@ -1,0 +1,9 @@
+<ul>
+  <% unassigned_equip_probs.each do |prob| %>
+    <li>
+    	Issue Subject: <em><%= prob.subject %></em> 
+    	with Description: <em><%= prob.description %></em>, 
+    	Due Date: <strong><%= prob.due_date.strftime("Week of %B %d, Year %Y") %></strong>
+    </li>
+  <% end %>
+</ul>

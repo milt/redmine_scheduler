@@ -1,1 +1,3 @@
 <h3><%=l(:label_my_repairs)%></h3>
+
+<%= render 'repairs/list', :unassigned_equip_probs => Issue.find(:all,:conditions=>{:assigned_to_id=>nil,:tracker_id=>Tracker.repair_track.first.id}) %>
