@@ -49,8 +49,11 @@
 
     <%= f.hidden_field :lock_version %>
     <%= submit_tag l(:button_submit) %>
-    <%= button_to 'Cancel Edit', :controller=>"issues",:action=>"show" %><!--does not work here-->
+
+    <!--<%= button_to('Cancel Edit', :controller=>"issues", :action=>"show", :confirm => 'Are you sure?', :method => "get", :remote => true) %>--><!--does not work here-->
+    
     <%= link_to 'Cancel Edit', :controller=>"issues",:action=>"show" %><!--has built in confirmation pop-up-->
+    
     <%= link_to_remote l(:label_preview),
                        { :url => preview_issue_path(:project_id => @project, :id => @issue),
                          :method => 'post',
