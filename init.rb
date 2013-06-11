@@ -11,9 +11,8 @@ require 'mailer_patch'
 require 'time_entry_patch'
 require 'group_patch'
 require_dependency 'redmine_scheduler/hooks'
-require 'dispatcher'
 
- Dispatcher.to_prepare :redmine_scheduler do
+Rails.configuration.to_prepare do
 
   require_dependency 'journal'
   Journal.send(:include, JournalPatch) unless Journal.included_modules.include? JournalPatch
@@ -44,8 +43,8 @@ require 'dispatcher'
 
   require_dependency 'group'
   Group.send(:include, GroupPatch) unless Group.included_modules.include? GroupPatch
-  
- end
+
+end
 
 Redmine::Plugin.register :redmine_scheduler do
   name 'Redmine Scheduler plugin'

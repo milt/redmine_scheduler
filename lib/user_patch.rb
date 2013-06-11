@@ -19,7 +19,7 @@ module UserPatch
       has_many :timesheets
       has_many :bookings, :foreign_key => "coach_id"
       has_many :authored_bookings, :class_name => "Booking", :foreign_key => "author_id"
-      named_scope :gets_digest, lambda { { :conditions => {:digest => true} } }
+      scope :gets_digest, lambda { { :conditions => {:digest => true} } }
       safe_attributes 'digest'
 
     end

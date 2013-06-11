@@ -12,32 +12,33 @@ module IssuePatch
       has_many :bookings, :through => :timeslots, :dependent => :destroy
       has_one :repair, :dependent => :nullify
       safe_attributes 'start_time', 'end_time' #since our migration adds start_time and end_time to issues for use as shifts, we need to mark these as safe for editing.
-      alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
-      named_scope :today, lambda { { :conditions => { :start_date => Date.today } } }
-      named_scope :fdshift, lambda { { :conditions => { :tracker_id => Tracker.fdshift_track.first.id } } }
-      named_scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
-      named_scope :repairs, lambda { { :conditions => { :tracker_id => Tracker.repair_track.first.id } } }
-      named_scope :unassigned, lambda { { :conditions => { :assigned_to_id => nil } } }
-      #need to add a named_scope for development tracker?
-      named_scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
-      named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
-      named_scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
-      named_scope :for_author, lambda {|u| { :conditions => { :author_id => u.id } } }
-      named_scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
-      named_scope :by_start_date, lambda {|d| { :conditions => ["start_date = ?", d] } }
-      named_scope :from_date, lambda {|d| { :conditions => ["start_date >= ?", d] } }
-      named_scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
-      named_scope :from_start_time, lambda {|dt| {conditions => ["start_time >= ?", dt] } }
-      named_scope :until_start_time, lambda {|dt| {conditions => ["start_time <= ?", dt] } }
-      named_scope :omit_user, lambda {|u| { :conditions => ["assigned_to_id != ?", u.id] } } # not used
-      named_scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
+      #alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
+      validate :validate_with_shift_times
+      scope :today, lambda { { :conditions => { :start_date => Date.today } } }
+      scope :fdshift, lambda { { :conditions => { :tracker_id => Tracker.fdshift_track.first.id } } }
+      scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
+      scope :repairs, lambda { { :conditions => { :tracker_id => Tracker.repair_track.first.id } } }
+      scope :unassigned, lambda { { :conditions => { :assigned_to_id => nil } } }
+      #need to add a scope for development tracker?
+      scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
+      scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
+      scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
+      scope :for_author, lambda {|u| { :conditions => { :author_id => u.id } } }
+      scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
+      scope :by_start_date, lambda {|d| { :conditions => ["start_date = ?", d] } }
+      scope :from_date, lambda {|d| { :conditions => ["start_date >= ?", d] } }
+      scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
+      scope :from_start_time, lambda {|dt| {conditions => ["start_time >= ?", dt] } }
+      scope :until_start_time, lambda {|dt| {conditions => ["start_time <= ?", dt] } }
+      scope :omit_user, lambda {|u| { :conditions => ["assigned_to_id != ?", u.id] } } # not used
+      scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
 
-      named_scope :updated_in_last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
-      named_scope :created_in_last_day, lambda { { :conditions => ["created_on >= ?", DateTime.now - 24.hours] } }
+      scope :updated_in_last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
+      scope :created_in_last_day, lambda { { :conditions => ["created_on >= ?", DateTime.now - 24.hours] } }
 
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
-      named_scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
+      scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
       after_destroy :cancel_bookings 
     end
 

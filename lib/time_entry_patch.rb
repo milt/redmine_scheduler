@@ -9,16 +9,16 @@ module TimeEntryPatch
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
       belongs_to :timesheet
-      named_scope :foruser, lambda {|u| { :conditions => { :user_id => u.id } } }
-      named_scope :from_date, lambda {|d| { :conditions => ["spent_on >= ?", d] } }
-      named_scope :until_date, lambda {|d| { :conditions => ["spent_on <= ?", d] } }
-      named_scope :ondate, lambda {|d| { :conditions => ["spent_on = ?", d] } }
-      named_scope :on_tweek, lambda {|d| { :conditions => ["tweek = ?", d] } }
-      named_scope :on_tyear, lambda {|d| { :conditions => ["tyear = ?", d] } }
-      named_scope :sort_by_date, :order => "spent_on ASC"
-      named_scope :last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
-      validate_on_create :cannot_create_if_timesheet_exists
-      validate_on_update :locked_when_attached_to_timesheet
+      scope :foruser, lambda {|u| { :conditions => { :user_id => u.id } } }
+      scope :from_date, lambda {|d| { :conditions => ["spent_on >= ?", d] } }
+      scope :until_date, lambda {|d| { :conditions => ["spent_on <= ?", d] } }
+      scope :ondate, lambda {|d| { :conditions => ["spent_on = ?", d] } }
+      scope :on_tweek, lambda {|d| { :conditions => ["tweek = ?", d] } }
+      scope :on_tyear, lambda {|d| { :conditions => ["tyear = ?", d] } }
+      scope :sort_by_date, :order => "spent_on ASC"
+      scope :last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
+      validate :cannot_create_if_timesheet_exists, on: :create
+      validate :locked_when_attached_to_timesheet, on: :update
 
       
       def locked_when_attached_to_timesheet

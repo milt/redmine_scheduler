@@ -5,43 +5,40 @@ class Timesheet < ActiveRecord::Base
   has_one :wage, :through => :user
   attr_accessible :submitted, :approved    #not sure if necessary
 
-  validates_uniqueness_of :user_id, :scope => :weekof,:message => "User can only have one timesheet per pay period"
+  validates :user_id, uniqueness: {scope: :weekof, message: "User can only have one timesheet per pay period"}
   #validates_presence_of :user_id, :pay_period #, :print_date
-  validates_presence_of :user_id, :weekof
+  validates :user_id, :weekof, presence: true
   # validates_presence_of :print_date,
   #   :on => :update,
   #   :if => "submitted.present?",
   #   :message => "Cannot submit before print."
 
-  validates_presence_of :submitted,
-    :on => :update,
-    :if => "approved.present?",
-    :message => "Cannot approve before submission."
+  validates :submitted, presence: true, :on => :update, if: "approved.present?"
 
   default_scope :order => 'weekof ASC'
-  named_scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
+  scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
   #named scopes for submitted
-  named_scope :is_submitted, lambda { { :conditions => "submitted IS NOT NULL" } }
-  named_scope :is_not_submitted, lambda { { :conditions => "submitted IS NULL" } }
-  named_scope :submitted_from, lambda {|d| { :conditions => ["submitted >= ?", d] } }
-  named_scope :submitted_to, lambda {|d| { :conditions => ["submitted <= ?", d] } }
-  named_scope :submitted_on, lambda {|d| { :conditions => ["submitted = ?", d] } }
+  scope :is_submitted, lambda { { :conditions => "submitted IS NOT NULL" } }
+  scope :is_not_submitted, lambda { { :conditions => "submitted IS NULL" } }
+  scope :submitted_from, lambda {|d| { :conditions => ["submitted >= ?", d] } }
+  scope :submitted_to, lambda {|d| { :conditions => ["submitted <= ?", d] } }
+  scope :submitted_on, lambda {|d| { :conditions => ["submitted = ?", d] } }
   #named scopes for printed
-  named_scope :is_printed, lambda { { :conditions => "print_date IS NOT NULL" } }
-  named_scope :is_not_printed, lambda { { :conditions => "print_date IS NULL" } }
-  named_scope :printed_from, lambda {|d| { :conditions => ["print_date >= ?", d] } }
-  named_scope :printed_to, lambda {|d| { :conditions => ["print_date <= ?", d] } }
-  named_scope :printed_on, lambda {|d| { :conditions => ["print_date = ?", d] } }
+  scope :is_printed, lambda { { :conditions => "print_date IS NOT NULL" } }
+  scope :is_not_printed, lambda { { :conditions => "print_date IS NULL" } }
+  scope :printed_from, lambda {|d| { :conditions => ["print_date >= ?", d] } }
+  scope :printed_to, lambda {|d| { :conditions => ["print_date <= ?", d] } }
+  scope :printed_on, lambda {|d| { :conditions => ["print_date = ?", d] } }
   #named scopes for approved
-  named_scope :is_approved, lambda { { :conditions => "approved IS NOT NULL" } }
-  named_scope :is_not_approved, lambda { { :conditions => "approved IS NULL" } }
-  named_scope :approved_from, lambda {|d| { :conditions => ["approved >= ?", d] } }
-  named_scope :approved_to, lambda {|d| { :conditions => ["approved <= ?", d] } }
-  named_scope :approved_on, lambda {|d| { :conditions => ["approved = ?", d] } }
+  scope :is_approved, lambda { { :conditions => "approved IS NOT NULL" } }
+  scope :is_not_approved, lambda { { :conditions => "approved IS NULL" } }
+  scope :approved_from, lambda {|d| { :conditions => ["approved >= ?", d] } }
+  scope :approved_to, lambda {|d| { :conditions => ["approved <= ?", d] } }
+  scope :approved_on, lambda {|d| { :conditions => ["approved = ?", d] } }
   #named scopes for weekof
-  named_scope :weekof_from, lambda {|d| {:conditions => ["weekof >= ?", d] } }
-  named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
-  named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
+  scope :weekof_from, lambda {|d| {:conditions => ["weekof >= ?", d] } }
+  scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
+  scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
   @@state_actions = {
     :draft      => {

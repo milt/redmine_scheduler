@@ -4,12 +4,13 @@ class Skill < ActiveRecord::Base
   has_many :users, :through => :levels
   belongs_to :skillcat #each skill belongs to one category
   attr_accessible :name, :skillcat_id
-  validates_uniqueness_of :name #skill names are unique
-  validates_presence_of :name, :skillcat_id #every skill needs a name and a category
-  validates_length_of :name, :maximum => 127 #skill names shouldn't be more than 127
+
+  validates :name, uniqueness: true, presence: true, length: {maximum: 127}
+  validates :skillcat_id, presence: true #every skill needs a name and a category
+
   default_scope :order => 'name ASC' #default sort by name alphabetically ascending
-  named_scope :auths, lambda { { :conditions => { :skillcat_id => Skillcat.auth_cat.first.id } } }
-  named_scope :skills, lambda { { :conditions => ["skillcat_id != ?", Skillcat.auth_cat.first.id] } }
+  scope :auths, lambda { { :conditions => { :skillcat_id => Skillcat.auth_cat.first.id } } }
+  scope :skills, lambda { { :conditions => ["skillcat_id != ?", Skillcat.auth_cat.first.id] } }
 
   def auth?
     skillcat.auth?

@@ -1,4 +1,4 @@
-ActionController::Routing::Routes.draw do |map|
-  map.resources :repairs
+RedmineApp::Application.routes.draw do
+  resources :repairs
 end
 

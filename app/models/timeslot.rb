@@ -2,8 +2,8 @@ class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during whic
   belongs_to :issue #timeslots belong to shifts, which we are using redmine "issues" for
   belongs_to :booking
 
-  named_scope :booked, lambda { { :conditions => "booking_id IS NOT NULL" } }
-  named_scope :open, lambda { { :conditions => "booking_id IS NULL" } }
+  scope :booked, lambda { { :conditions => "booking_id IS NOT NULL" } }
+  scope :open, lambda { { :conditions => "booking_id IS NULL" } }
 
 
   def start_time #timeslots only have an integer, slot_time, to express their lenth in 30 minute increments from the start of the shift (issue)
