@@ -257,7 +257,7 @@ namespace :redmine_scheduler do
 
     #add with category
     new_skills.each do |skillname|
-      Skill.create({:name => skillname, :skillcat_id => skillcat})
+      skillcat.skills.create(name: skillname)
     end
 
     #changing the name does not fix the error of assigning to the wrong category...
@@ -268,8 +268,8 @@ namespace :redmine_scheduler do
       "testskill4"
     ]
     #add test values to authorization cat, somehow this adds the skills to general category instead..
-    new_skills2.each do |skillname2|
-      Skill.create({:name => skillname2, :skillcat_id => skillcat_auth})
+    new_skills2.each do |skillname|
+      skillcat_auth.skills.create(name: skillname)
     end
 
     #load authentication method for PAM.
