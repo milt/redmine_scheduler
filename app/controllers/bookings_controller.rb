@@ -132,15 +132,15 @@ class BookingsController < ApplicationController
   end
 
   def filter_orphaned(bookings)
-    @orph_bookings = bookings.select {|b| b.cancelled == false}.paginate(:page => params[:page], :per_page => 4)
+    @orph_bookings = bookings.orphaned.paginate(:page => params[:page], :per_page => 4)
   end
 
   def filter_cancelled(bookings)
-    @canc_bookings = bookings.select {|b| b.cancelled == true}.paginate(:page => params[:page], :per_page => 4)
+    @canc_bookings = bookings.cancelled.paginate(:page => params[:page], :per_page => 4)
   end
 
   def filter_active(bookings)
-    @act_bookings = bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:page], :per_page => 4)
+    @act_bookings = bookings.active.paginate(:page => params[:page], :per_page => 4)
   end
 
   def find_timeslots

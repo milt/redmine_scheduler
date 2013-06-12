@@ -14,6 +14,7 @@ class TimesheetsController < ApplicationController
   end
 
   def new
+    @timesheet = Timesheet.new
     @edit = true
     @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week) #get list of valid weeks to make timesheets for
     find_user #find the user to make the sheet for
@@ -47,19 +48,19 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  def print
-    weekof = @timesheet.weekof.to_date
-    name = @timesheet.user.name
+  # def print
+  #   weekof = @timesheet.weekof.to_date
+  #   name = @timesheet.user.name
 
-    if @timesheet.print_now && @timesheet.save
-      send_data (generate_timesheet_pdf(@timesheet),
-        :filename => name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf",
-        :type => "application/pdf") and return
-    else
-      flash[:warning] = 'Could not print timesheet. I need some better error handling'
-      redirect_to :action => 'index'
-    end
-  end
+  #   if @timesheet.print_now && @timesheet.save
+  #     send_data (generate_timesheet_pdf(@timesheet),
+  #       :filename => (name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf"),
+  #       :type => "application/pdf") and return
+  #   else
+  #     flash[:warning] = 'Could not print timesheet. I need some better error handling'
+  #     redirect_to :action => 'index'
+  #   end
+  # end
 
   def show
     @show = true
@@ -201,9 +202,9 @@ class TimesheetsController < ApplicationController
     if t == 0
       return Date.new(year, 1,2)
     elsif t == 1
-      return Date.new (year, 1,1)
+      return Date.new(year, 1,1)
     else
-      return Date.new (year, 1,(1+8-t))     #cases designed to return the first Monday of the year's date
+      return Date.new(year, 1,(1+8-t))     #cases designed to return the first Monday of the year's date
     end
   end
 
@@ -215,7 +216,7 @@ class TimesheetsController < ApplicationController
   end
 
   def find_entries_by_day(weekof)
-    if !@timesheet.nil?
+    if @timesheet.id != nil
       @entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on)
     else
       @entries = TimeEntry.foruser(@user).from_date(weekof).until_date(weekof + 1.week).sort_by_date

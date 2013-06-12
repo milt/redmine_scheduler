@@ -12,6 +12,7 @@ class Booking < ActiveRecord::Base
   scope :future, lambda { { :conditions => ["apt_time >= ?", Date.today] } }
   scope :cancelled, lambda {{:conditions => {:cancelled => true }}}
   scope :orphaned, lambda {{:conditions => {:cancelled => false }}}
+  scope :active, where( cancelled: nil )
   scope :from_date, lambda {|d| {:conditions => ["apt_time >= ?", d]}}    #similar to from/until date in issue_patch.rb
   scope :until_date, lambda {|d| {:conditions => ["apt_time <= ?", d+1]}}  #weird occurrance when using d, misses bookings on the until date
   validate :cannot_create_across_issues, :cannot_create_without_timeslots, on: :create

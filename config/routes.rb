@@ -9,7 +9,7 @@ RedmineApp::Application.routes.draw do
   end
 
   resources :levels do
-    member do
+    collection do
       get 'my_levels'
       post 'bulk_create'
     end
@@ -19,6 +19,8 @@ RedmineApp::Application.routes.draw do
     member do
       post 'print'
       put 'submit', 'approve', 'reject'
+      post 'new'
+      delete 'delete'
     end
   end
 
@@ -28,7 +30,6 @@ RedmineApp::Application.routes.draw do
   #     get 'book'
   #   end
   # end
-
 
   match 'timeslots/find', to: 'timeslots#find'
 

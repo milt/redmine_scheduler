@@ -35,7 +35,7 @@
   </tr>
 </table>
 
-<%= button_to 'Edit', {:action => :edit, :id => @booking} %><%= button_to 'Cancel', {:action => :cancel, :id => @booking}, :confirm => "Do you really want to cancel this booking?" %>
+<%= button_to 'Edit', {:action => :edit, :id => @booking}, :method => :get %><%= button_to 'Cancel', {:action => :cancel, :id => @booking}, :confirm => "Do you really want to cancel this booking?" %>
 <hr>
 <%= link_to 'Return to index...', {:action => 'index'} %>
 

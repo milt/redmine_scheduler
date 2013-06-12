@@ -35,6 +35,10 @@ class LevelsController < ApplicationController
       end
   end
 
+  def show
+    @level = Level.find(params[:id])
+  end
+
   def new
   end
 
