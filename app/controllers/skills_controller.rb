@@ -6,6 +6,7 @@ class SkillsController < ApplicationController #define skills, assign them to us
   before_filter :find_skill, :only => [:edit, :update, :destroy]
   
   def index
+    @skill = Skill.new
   end
 
   def edit

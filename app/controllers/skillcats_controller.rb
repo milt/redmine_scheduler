@@ -5,10 +5,11 @@ class SkillcatsController < ApplicationController #management of skill categorie
 
   def index #index of skill cats
     @skillcats = Skillcat.all #find all skill categories
+    @skillcat = Skillcat.new
   end
 
   def new
-    @skill = Skillcat.new
+    @skillcat = Skillcat.new
   end
 
   def create
