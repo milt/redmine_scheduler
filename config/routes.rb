@@ -4,6 +4,7 @@ RedmineApp::Application.routes.draw do
   resources :bookings do
     member do
       put 'cancel'
+      post 'new'
     end
   end
 
@@ -21,13 +22,17 @@ RedmineApp::Application.routes.draw do
     end
   end
 
-  resources :timeslots do
-    member do
-      get 'find'
-      get 'book'
-    end
-  end
+  # resources :timeslots do
+  #   member do
+  #     get 'find'
+  #     get 'book'
+  #   end
+  # end
 
+
+  match 'timeslots/find', to: 'timeslots#find'
+
+  get 'command', to: 'command#index'
   get 'stustaff', to: 'stustaff#index'
 
   get 'prostaff', to: 'prostaff#index'
