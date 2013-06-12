@@ -10,35 +10,35 @@ A skill-aware lab coach/tutor scheduling plugin for ChiliProject. Developed for 
 
 * Set it up:
 
-  <tt>$ cd redmine
+  <tt>$ cd redmine</tt>
 
-  $ bundle install
+  <tt>$ bundle install</tt>
 
-  $ cp config/configuration.yml.example config/configuration.yml
+  <tt>$ cp config/configuration.yml.example config/configuration.yml</tt>
 
-  $ cp config/database.yml.example config/database.yml  (configure this for your environment)
+  <tt>$ cp config/database.yml.example config/database.yml  (configure this for your environment)</tt>
 
-  $ rake generate_secret_token
+  <tt>$ rake generate_secret_token</tt>
 
-  $ rake db:migrate
+  <tt>$ rake db:migrate</tt>
 
-  $ rake redmine:load_default_data></tt>
+  <tt>$ rake redmine:load_default_data></tt>
 
 * Get this plugin:
 
-  <tt>$ cd plugins
+  <tt>$ cd plugins</tt>
 
-  $ git clone -b redmine git@github.com:milt/redmine_scheduler</tt>
+  <tt>$ git clone -b redmine git@github.com:milt/redmine_scheduler</tt>
 
 * Set it up:
 
-  <tt>$ cd ..
+  <tt>$ cd ..</tt>
 
-  $ bundle install
+  <tt>$ bundle install</tt>
 
-  $ rake redmine:plugins:migrate
+  <tt>$ rake redmine:plugins:migrate</tt>
 
-  $ rake redmine_scheduler:load_default_data</tt>
+  <tt>$ rake redmine_scheduler:load_default_data</tt>
 
 * If you like, load up some dummy data:
 
