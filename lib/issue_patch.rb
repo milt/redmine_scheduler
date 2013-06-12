@@ -72,13 +72,13 @@ module IssuePatch
       self.assigned_to.skills
     end
           
-    def start_time=(time) #this method and the one below are used to write to the fields with the older write_attribute method. this is bad, and maybe is not necessary, need to look at it
-        write_attribute :start_time, (time)
-    end
+    # def start_time=(time) #this method and the one below are used to write to the fields with the older write_attribute method. this is bad, and maybe is not necessary, need to look at it
+    #     write_attribute :start_time, (time)
+    # end
     
-    def end_time=(time)
-        write_attribute :end_time, (time)
-    end
+    # def end_time=(time)
+    #     write_attribute :end_time, (time)
+    # end
     
     def shift_duration #get the duration of a shift
       ((self.start_time && self.end_time) ? self.end_time - self.start_time : 0)/60/60
@@ -97,6 +97,12 @@ module IssuePatch
       index = (end_time.hour * 2) + (end_time.min/30)
       index += 48 if index <= shift_start_index
       return index
+    end
+
+    def set_times_from_index(start, offset, start_index, end_index)
+      start =+ offset
+      start_time = start + (start_index * 30).minutes
+      end_time = start + (end_index * 30).minutes
     end
     
     #this should fix the timing issue with confusing 12.15/12.45am today with 12.15/12.45am tomorrow

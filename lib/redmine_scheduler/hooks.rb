@@ -56,12 +56,13 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
     if context[:issue].is_shift?
       #get times and date from form params
       @issue = context[:issue] 
-      s_date = Date.parse(context[:params][:issue][:start_date]) + 15.minutes
+      s_date = Date.parse(context[:params][:issue][:start_date])
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
  
-        @issue.start_time = s_date + (s_time * 30).minutes
-        @issue.end_time = s_date + (e_time * 30).minutes
+        @issue.set_times_from_index(s_date, 15.minutes, s_time, e_time)
+        # @issue.start_time = s_date + (s_time * 30).minutes
+        # @issue.end_time = s_date + (e_time * 30).minutes
 
       if @issue.start_time_changed? || @issue.end_time_changed? || @issue.start_date_changed? || @issue.due_date_changed?
         @issue.due_date = @issue.start_date

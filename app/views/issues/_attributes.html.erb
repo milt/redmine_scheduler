@@ -67,8 +67,8 @@
 <% end %>
 
 <% if @issue.is_shift? %>
-<p><%= f.select :start_time, options_for_select(Issue.time_list, (Issue.time_list[@issue.shift_start_index] unless @issue.start_time.nil?)) %></p>
-<p><%= f.select :end_time, options_for_select(Issue.time_list, (Issue.time_list[@issue.shift_end_index] unless @issue.end_time.nil?)) %></p>
+  <p><%= f.select :start_time, options_for_select(Issue.time_list, (Issue.time_list[@issue.shift_start_index] unless @issue.start_time.nil?)) %></p>
+  <p><%= f.select :end_time, options_for_select(Issue.time_list, (Issue.time_list[@issue.shift_end_index] unless @issue.end_time.nil?)) %></p>
 <% end %>
 
 <% if @issue.safe_attribute?('done_ratio') && @issue.leaf? && Issue.use_field_for_done_ratio? %>
