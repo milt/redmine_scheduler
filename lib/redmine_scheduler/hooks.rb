@@ -60,12 +60,12 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
  
-        @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
-        @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
+        @issue.start_time = s_date + (s_time * 30).minutes
+        @issue.end_time = s_date + (e_time * 30).minutes
 
       if @issue.start_time_changed? || @issue.end_time_changed? || @issue.start_date_changed? || @issue.due_date_changed?
-        @issue.write_attribute :due_date, @issue.start_date
-        @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %I:%M:%S %p -') + @issue.end_time.strftime('%I:%M:%S %p - ') + @issue.start_date.strftime('%a, %b %d')
+        @issue.due_date = @issue.start_date
+        @issue.subject = User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %I:%M:%S %p -') + @issue.end_time.strftime('%I:%M:%S %p - ') + @issue.start_date.strftime('%a, %b %d')
       end
     end
   end
@@ -78,23 +78,23 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
   #  if context[:time_entry].safe_to_edit?
   #  end
   #end
-
+    #TODO reenable useful view hooks
     #render_on :view_layouts_base_html_head,
     #          :partial => 'hooks/redmine_scheduler/google'
 
-    render_on :view_issues_form_details_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
-              :partial => 'hooks/redmine_scheduler/extras'
+    # render_on :view_issues_form_details_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
+    #           :partial => 'hooks/redmine_scheduler/extras'
 
-    render_on :view_issues_show_description_bottom,
-              :partial => 'hooks/redmine_scheduler/show_extras'
+    # render_on :view_issues_show_description_bottom,
+    #           :partial => 'hooks/redmine_scheduler/show_extras'
               
-    render_on :view_timelog_edit_form_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
-              :partial => 'hooks/redmine_scheduler/timex'
+    # render_on :view_timelog_edit_form_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
+    #           :partial => 'hooks/redmine_scheduler/timex'
 
-    render_on :view_projects_form,
-              :partial => 'hooks/redmine_scheduler/project_form_extras'
-    render_on :view_users_form,
-              :partial => 'hooks/redmine_scheduler/user_form_extras'
-    render_on :view_my_account,
-              :partial => 'hooks/redmine_scheduler/user_form_extras'
+    # render_on :view_projects_form,
+    #           :partial => 'hooks/redmine_scheduler/project_form_extras'
+    # render_on :view_users_form,
+    #           :partial => 'hooks/redmine_scheduler/user_form_extras'
+    # render_on :view_my_account,
+    #           :partial => 'hooks/redmine_scheduler/user_form_extras'
 end

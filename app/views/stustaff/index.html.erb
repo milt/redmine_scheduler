@@ -7,9 +7,9 @@
 <p>You have the following shift or shifts scheduled today. To log time spent, please click on the clock button for the appropriate shift.</p>
 <table class="list issues">
 <tr>
-	<th>Details<!--<%= link_to 'Details', {:action => 'index', :sort_col => 1} %>--></th>
-	<th>Shift<!--<%= link_to 'Shift', {:action => 'index', :sort_col => 0} %>--></th>
-	<th>Log Time<!--<%= link_to 'Log Time', {:action => 'index', :sort_col => 2} %>--></th>
+	<th>Details</th>
+	<th>Shift</th>
+	<th>Log Time</th>
 </tr>
 	<% @todayshifts.each do |shift| %>
 		<tr>
@@ -24,10 +24,7 @@
 			<td><%= shift.tracker.name %></td>
 			<td><%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]} %></td>
 		</tr>
-		<!--<% shift.booked_slots.each do |slot| %>
-		  	<tr><%= format_time(slot.booking.apt_time) %> : <%= slot.booking.name %> <%= link_to 'Details...', {:action => 'show', :booking_id => slot.booking[:id]} %></tr>
-		<% end %>-->
-		<% end %>
+	<% end %>
 </table>
 <% end %>
 </br>
