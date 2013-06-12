@@ -5,23 +5,42 @@ A skill-aware lab coach/tutor scheduling plugin for ChiliProject. Developed for 
 == Installation:
 
 * Get the latest Redmine:
-  +$ git clone git://github.com/redmine/redmine.git+
+
+  <tt>$ git clone git://github.com/redmine/redmine.git</tt>
+
 * Set it up:
-  +$ cd redmine+
-  +$ bundle install+
-  +$ cp config/configuration.yml.example config/configuration.yml+
-  +$ cp config/database.yml.example config/database.yml+  (configure this for your environment)
-  +$ rake generate_secret_token+
-  +$ rake db:migrate+
-  +$ rake redmine:load_default_data+
+
+  <tt>$ cd redmine
+
+  $ bundle install
+
+  $ cp config/configuration.yml.example config/configuration.yml
+
+  $ cp config/database.yml.example config/database.yml  (configure this for your environment)
+
+  $ rake generate_secret_token
+
+  $ rake db:migrate
+
+  $ rake redmine:load_default_data></tt>
+
 * Get this plugin:
-  +$ cd plugins+
-  +$ git clone -b redmine git@github.com:milt/redmine_scheduler+
+
+  <tt>$ cd plugins
+
+  $ git clone -b redmine git@github.com:milt/redmine_scheduler</tt>
+
 * Set it up:
-  +$ cd ..+
-  +$ bundle install+
-  +$ rake redmine:plugins:migrate+
-  +$ rake redmine_scheduler:load_default_data+
+
+  <tt>$ cd ..
+
+  $ bundle install
+
+  $ rake redmine:plugins:migrate
+
+  $ rake redmine_scheduler:load_default_data</tt>
+
 * If you like, load up some dummy data:
-  +$ rails r plugins/redmine_scheduler/script/add_shifts.rb+
+
+  <tt>$ rails r plugins/redmine_scheduler/script/add_shifts.rb</tt>
 
