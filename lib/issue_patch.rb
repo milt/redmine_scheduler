@@ -55,12 +55,22 @@ module IssuePatch
     end
 
     def time_list #list of possible clock times a shift can start.
+      if User.current.time_zone != nil
+        offset = User.current.time_zone.utc_offset/60/60
+      else
+        offset = DateTime.now.utc_offset/60/60
+      end
+
       list = []
       t = Time.local(0,1,1,0,15)
+
+      # indices = *(0..49)
+      # indices.rotate!(offset*2)
+
       for h in 0..49  
-        list << [ (t + h*30.minutes).strftime("%I:%M:%S %p"), h ]
-        #list << (t + h*30.minutes).strftime("%I:%M:%S %p")
+        list << [ ((t + offset.hours) + h*30.minutes).strftime("%I:%M:%S %p"), h ]
       end
+      list.rotate!(0 - (offset*2))
       return list
     end
 
@@ -100,9 +110,9 @@ module IssuePatch
     end
 
     def set_times_from_index(start, offset, start_index, end_index)
-      start =+ offset
-      start_time = start + (start_index * 30).minutes
-      end_time = start + (end_index * 30).minutes
+      start += offset
+      self.start_time = start + (start_index * 30).minutes
+      self.end_time = start + (end_index * 30).minutes
     end
     
     #this should fix the timing issue with confusing 12.15/12.45am today with 12.15/12.45am tomorrow

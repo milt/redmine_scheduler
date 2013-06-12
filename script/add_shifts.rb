@@ -68,6 +68,9 @@ end
 #let's add some shifts. This assumes that seeds has run, and has set up projects, trackers, users, groups etc.
 #doesn't work, not sure why yet
 
+#set time zone to bmore
+Time.zone = 'Eastern Time (US & Canada)'
+
 stustaff = Group.find(:all, :conditions => ["lastname = ?","Stustaff"]).first.users
 fd_project = Project.find(:all,:conditions => ["name = ?","Front Desk Scheduling"]).first
 lc_project = Project.find(:all,:conditions => ["name = ?","Lab Coach Scheduling"]).first
