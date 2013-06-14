@@ -12,7 +12,7 @@
 <%= render 'table', :timesheets => @approved %>
 
 <% if User.current.is_admstaff? %>
-  <% form_for :timesheet, @timesheet, :url => { :action => 'new' } do |f| %>
+  <%= form_for :timesheet, :url => { :action => 'new' } do |f| %>
   <p><%= f.collection_select :user_id, Group.stustaff.first.users, :id, :name %></p>
   <p><%= submit_tag "New..."%></p>
   <% end %>

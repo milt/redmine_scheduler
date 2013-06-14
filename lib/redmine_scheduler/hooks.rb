@@ -2,23 +2,11 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
   
   def controller_issues_new_before_save(context={}) #runs before a new issue saves
     if context[:issue].is_shift? # if the issue is a shift,
-      #get times and date from form params
-      # s_time = DateTime.parse(context[:params][:issue][:start_time])
-      # e_time = DateTime.parse(context[:params][:issue][:end_time])
-      # s_date = Date.parse(context[:params][:issue][:start_date])
-      # context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift? # limits shifts to only have a due_date on the same day as the start, or none
-      # context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min) #format and set start_time
-      # context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min) #format and set end_time
-      # context[:issue].write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).firstname + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
       @issue = context[:issue] 
       s_date = Date.parse(context[:params][:issue][:start_date])
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
       
-      #this should fix the time error when updating the shift??
-      #if s_time >= e_time
-      #  e_time = e_time + 48
-      #end
       @issue.set_times_from_index(s_date, 15.minutes, s_time, e_time)
       @issue.due_date = @issue.start_date
       @issue.refresh_shift_subject
