@@ -18,6 +18,8 @@ A skill-aware lab coach/tutor scheduling plugin for ChiliProject. Developed for 
 
   <tt>$ cp config/database.yml.example config/database.yml  (configure this for your environment)</tt>
 
+  (add the default time zone in config/application.rb: <tt>config.time_zone = 'Eastern Time (US & Canada)'</tt>)
+
   <tt>$ rake generate_secret_token</tt>
 
   <tt>$ rake db:migrate</tt>

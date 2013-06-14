@@ -11,7 +11,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       # context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min) #format and set end_time
       # context[:issue].write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).firstname + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
       @issue = context[:issue] 
-      s_date = Date.parse(context[:params][:issue][:start_date]) + 15.minutes
+      s_date = Date.parse(context[:params][:issue][:start_date])
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
       
@@ -19,13 +19,9 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       #if s_time >= e_time
       #  e_time = e_time + 48
       #end
-
-      @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
-      @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
-
-      @issue.write_attribute :due_date, @issue.start_date
-      @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %l:%M -') + @issue.end_time.strftime('%l:%M %p - ') + @issue.start_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
-
+      @issue.set_times_from_index(s_date, 15.minutes, s_time, e_time)
+      @issue.due_date = @issue.start_date
+      @issue.refresh_shift_subject
     end
   end
   
@@ -45,7 +41,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
           i.due_date = context[:issue].due_date + (rep + 1).week
           i.start_time = context[:issue].start_time + (rep + 1).week
           i.end_time = context[:issue].end_time + (rep + 1).week
-          i.subject = User.find(i.assigned_to_id).firstname + i.start_time.strftime(' %I:%M:%S %p -') + i.end_time.strftime('%I:%M:%S %p - ') + i.start_date.strftime('%a, %b %d')
+          i.refresh_shift_subject
           i.description = "Created by repeater"
           i.save
       end
@@ -60,19 +56,18 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
  
-        @issue.set_times_from_index(s_date, 15.minutes, s_time, e_time)
-        # @issue.start_time = s_date + (s_time * 30).minutes
-        # @issue.end_time = s_date + (e_time * 30).minutes
+      @issue.set_times_from_index(s_date, 15.minutes, s_time, e_time)
 
       if @issue.start_time_changed? || @issue.end_time_changed? || @issue.start_date_changed? || @issue.due_date_changed?
         @issue.due_date = @issue.start_date
-        @issue.subject = User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %I:%M:%S %p -') + @issue.end_time.strftime('%I:%M:%S %p - ') + @issue.start_date.strftime('%a, %b %d')
+        @issue.refresh_shift_subject
       end
     end
   end
 
   def controller_issues_edit_after_save(context={}) #runs after save on issue edit
   end
+
 
   #prevent edits ot time entries locked to sheets, and prevent creation of new entries when a user already has a non-draft sheet
   #def controller_timelog_edit_before_save(context={})
