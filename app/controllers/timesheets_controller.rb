@@ -42,9 +42,9 @@ class TimesheetsController < ApplicationController
       else
         redirect_to :action => 'index'
       end
-    else                                            
-      flash[:warning] = timesheet.errors.full_messages #'Invalid Options... Try again!'
-      redirect_to :action => 'new'
+    else
+      flash[:warning] = "Could not save. Errors: " + timesheet.errors.full_messages.join(", ") #'Invalid Options... Try again!'
+      redirect_to action: 'new', timesheet: {user_id: @user, weekof: @weekof}
     end
   end
 
@@ -91,7 +91,7 @@ class TimesheetsController < ApplicationController
       flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully submitted."
       redirect_to :action => 'index'
     else
-      flash[:warning] = @timesheet.errors.full_messages
+      flash[:warning] = "Could not save. Errors: " + timesheet.errors.full_messages.join(", ")
       redirect_to :action => 'index'
     end
   end
@@ -101,7 +101,7 @@ class TimesheetsController < ApplicationController
       flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully approved."
       redirect_to :action => 'index'
     else
-      flash[:warning] = @timesheet.errors.full_messages
+      flash[:warning] = "Could not save. Errors: " + timesheet.errors.full_messages.join(", ")
       redirect_to :action => 'index'
     end
   end

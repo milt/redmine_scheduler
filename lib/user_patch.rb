@@ -79,6 +79,16 @@ module UserPatch
       self.groups.include?(Group.admstaff.first)
     end
 
+    def timesheet_role
+      case
+      when self.is_stustaff?
+        role = :staff
+      when self.is_admstaff?
+        role = :admin
+      end
+      return role
+    end
+
     def analyze_time(hours)
       c = 0.0
       b = self.time_entries.sort_by_date.reverse.take_while do |m|

@@ -19,7 +19,9 @@
         <td><%= sheet.print_date.strftime("%D") if sheet.printed? %></td>
         <td><%= sheet.submitted.strftime("%D") if sheet.submitted? %></td>
         <td><%= sheet.approved.strftime("%D") if sheet.approved? %></td>
-        <td><%= render_actions(sheet) %></td>
+        <td>
+          <%= render 'actions', sheet: sheet %>
+        </td>
       </tr>
     <%end%>
   </table>
