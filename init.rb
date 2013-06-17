@@ -49,7 +49,7 @@ end
 Redmine::Plugin.register :redmine_scheduler do
   name 'Redmine Scheduler plugin'
   author 'Milton Reder'
-  description 'This is a plugin for Redmine that allows unauthenticated users to book shift time.'
+  description 'This is a plugin for Redmine that we use at the DMC.'
   version '0.0.1'
   url 'http://'
   author_url 'http://digitalmedia.jhu.edu'
@@ -57,18 +57,20 @@ Redmine::Plugin.register :redmine_scheduler do
   # permission :view_skills, :skills => :index
   # permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] }
   # permission :manage_wages, :wages => :all
-  menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :if => Proc.new { User.current.is_stustaff? || User.current.admin? }
-  menu :application_menu, :prostaff, { :controller => 'prostaff', :action => 'index' }, :caption => 'ProStaff', :if => Proc.new { User.current.is_prostaff? || User.current.admin? }
-  #menu :application_menu, :admstaff, { :controller => 'admstaff', :action => 'index' }, :caption => 'Administrator', :if => Proc.new { User.current.is_admstaff? || User.current.admin? }
-  if Proc.new { User.current.is_admstaff? || User.current.admin? }
-    menu :application_menu, :admstaff, { :controller => 'admstaff', :action => 'index' }, :caption => 'Administrator'
-    menu :application_menu, :timeslots, { :controller => 'timeslots', :action => 'find' }, :caption => 'Book Student Time'
-    menu :application_menu, :bookings, { :controller => 'bookings', :action => 'index' }, :caption => 'Manage Bookings'
-    menu :application_menu, :timesheets, { :controller => 'timesheets' }, :caption => 'Timesheets'
-    menu :application_menu, :levels, { :controller => 'levels' }, :caption => 'Skill Levels'
-    menu :application_menu, :wages, {:controller => 'wages', :action => 'index'}, :caption => 'Wages'
-    menu :application_menu, :skills, {:controller => 'skills', :action => 'index'}, :caption => 'Skills'
-  end
+  menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :if => Proc.new { User.current.is_stustaff? }
+  menu :application_menu, :prostaff, { :controller => 'prostaff', :action => 'index' }, :caption => 'ProStaff', :if => Proc.new { User.current.is_prostaff? }
+  menu :application_menu, :admstaff, { :controller => 'admstaff', :action => 'index' }, :caption => 'Administrator', :if => Proc.new { User.current.is_admstaff? }
+
+  menu :application_menu, :timeslots, { :controller => 'timeslots', :action => 'find' }, :caption => 'Book Student Time'
+  menu :application_menu, :bookings, { :controller => 'bookings', :action => 'index' }, :caption => 'Manage Bookings'
+
+  menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'Analze Time', :if => Proc.new { User.current.is_admstaff? || User.current.is_prostaff? }
+  menu :application_menu, :student_levels, {:controller=> 'prostaff', :action => 'student_levels'}, :caption => 'Student Levels', :if => Proc.new { User.current.is_prostaff? }
+  menu :application_menu, :timesheets, { :controller => 'timesheets' }, :caption => 'Timesheets', :if => Proc.new { User.current.is_admstaff? || User.current.is_stustaff? }
+  menu :application_menu, :levels, { :controller => 'levels' }, :caption => 'Skill Levels', :if => Proc.new { User.current.is_admstaff? }
+  menu :application_menu, :wages, {:controller => 'wages', :action => 'index'}, :caption => 'Wages', :if => Proc.new { User.current.is_admstaff? }
+  menu :application_menu, :skills, {:controller => 'skills', :action => 'index'}, :caption => 'Skills', :if => Proc.new { User.current.is_admstaff? }
+
   #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
   #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
   menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'
