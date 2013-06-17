@@ -6,8 +6,9 @@ class Repair < ActiveRecord::Base
   validates :item_desc, length: {maximum: 128}
   validates :problem_desc, length: {maximum: 1024}
   validates :notes, length: {maximum: 2048}
+  validates :issue_id, uniqueness: true
   validates_associated :issue
-  before_validation :build_issue_for_repair
+  before_validation :build_issue_for_repair, :unless => :issue_id?
   scope :for_issue, lambda {|i| { :conditions => ["issue_id = ?", i.id] } }
 
   def build_issue_for_repair

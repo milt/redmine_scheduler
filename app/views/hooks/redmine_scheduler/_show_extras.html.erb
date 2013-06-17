@@ -4,5 +4,7 @@
     <div>
       <%= render 'repairs/repair', :repair => @issue.repair %>
     </div>
+    <% else %>
+      <p><em>Equiupment Problem does not have additional repair/patron data.</em><%= link_to "(Add)", {controller: 'repairs', action: 'new', issue_id: @issue} %></p>
     <% end %>
 <% end %>

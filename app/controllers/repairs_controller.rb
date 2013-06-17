@@ -8,12 +8,18 @@ class RepairsController < ApplicationController
   end
 
   def new
+    if params[:issue_id]
+      @issue = Issue.find(params[:issue_id].to_i)
+    end
     @repair = Repair.new
   end
 
   def create
     @repair = Repair.new(params[:repair])
     @repair.user = User.current
+    if params[:issue_id]
+      @repair.issue = Issue.find(params[:issue_id].to_s)
+    end
 
     if @repair.save
       if @repair.patron_name.present?

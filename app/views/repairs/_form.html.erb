@@ -1,6 +1,9 @@
 <%= javascript_include_tag 'redmine_scheduler.js', :plugin => 'redmine_scheduler' %>
 
 <%= form_for @repair, :url => { :action => "create" } do |f| %>
+  <% unless @issue.nil? %>
+  <%= hidden_field_tag :issue_id, @issue.id %>
+  <% end %>
   <table>
     <tr><td><%= f.label :item_number %></td><td><%= f.text_field :item_number %></td></tr>
     <tr><td><%= f.label :item_desc %></td><td><%= f.text_field :item_desc %></td></tr>
