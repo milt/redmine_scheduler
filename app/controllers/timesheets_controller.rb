@@ -45,19 +45,14 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  # def print
-  #   weekof = @timesheet.weekof.to_date
-  #   name = @timesheet.user.name
-
-  #   if @timesheet.print_now && @timesheet.save
-  #     send_data (generate_timesheet_pdf(@timesheet),
-  #       :filename => (name + "_timecard_from_" + weekof.to_s + "_to_" + (weekof + 6.days).to_s + ".pdf"),
-  #       :type => "application/pdf") and return
-  #   else
-  #     flash[:warning] = 'Could not print timesheet. I need some better error handling'
-  #     redirect_to :action => 'index'
-  #   end
-  # end
+  def print
+    if @timesheet.print_now && @timesheet.save
+      redirect_to action: :show, format: :pdf, id: @timesheet
+    else
+      flash[:warning] = 'Could not print timesheet. I need some better error handling'
+      redirect_to :action => 'index'
+    end
+  end
 
   def show
     @show = true

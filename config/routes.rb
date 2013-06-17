@@ -21,7 +21,7 @@ RedmineApp::Application.routes.draw do
 
   resources :timesheets do
     member do
-      post 'print'
+      get 'print'
       put 'submit', 'approve', 'reject'
       post 'new'
       delete 'delete'
