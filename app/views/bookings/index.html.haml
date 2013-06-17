@@ -8,12 +8,13 @@
 - unless @orph_bookings.empty?
   %div
     %h3 Orphaned Bookings
-    %table.list.issue
-      %tr
-        %th= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th Booked By:
+    %table.list.issues
+      %thead
+        %tr
+          %th= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th Booked By:
       - @orph_bookings.each do |booking|
         %tr
           %td= link_to booking.name, {:action => 'show', :id => booking}
@@ -26,12 +27,13 @@
 - unless @act_bookings.empty?
   %div
     %h3 Active Bookings
-    %table.list.issue
-      %tr
-        %th= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th Booked By:
+    %table.list.issues
+      %thead
+        %tr
+          %th= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th Booked By:
       - @act_bookings.each do |booking|
         %tr
           %td= link_to booking.name, {:action => 'show', :id => booking}
@@ -43,12 +45,13 @@
 - unless @canc_bookings.empty?
   %div
     %h3 Cancelled Bookings
-    %table.list.issue
-      %tr
-        %th= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
-        %th Booked By:
+    %table.list.issues
+      %thead
+        %tr
+          %th= link_to 'Patron Name', {:action => 'index', :sort_by => 'name', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th= link_to 'Coach', {:action => 'index', :sort_by => 'coach', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th= link_to 'Apt Time', {:action => 'index', :sort_by => 'apt_time', :from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+          %th Booked By:
       - @canc_bookings.each do |booking|
         %tr
           %td= link_to booking.name, {:action => 'show', :id => booking}

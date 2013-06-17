@@ -1,6 +1,6 @@
-%th= link_to "Today's Shifts", {:controller => 'stustaff'}
-%th= link_to 'Book Student Time', { :controller => 'timeslots', :action => 'find' }
-%th= link_to 'Manage Bookings', { :controller => 'bookings', :action => 'index' }
-%th= link_to 'Timesheets', { :controller => 'timesheets' }
-%th= link_to 'New Timesheet', { :controller => 'timesheets', :action => 'new' }
-%th= link_to 'My Skills', { :controller => 'levels', :action => 'my_levels' }
+%li= link_to "Today's Shifts", {:controller => 'stustaff'}
+%li= link_to 'Book Student Time', { :controller => 'timeslots', :action => 'find' }
+%li= link_to 'Manage Bookings', { :controller => 'bookings', :action => 'index' }
+%li= link_to 'Timesheets', { :controller => 'timesheets' }
+%li= link_to 'New Timesheet', { :controller => 'timesheets', :action => 'new' }
+%li= link_to 'My Skills', { :controller => 'levels', :action => 'my_levels' }
