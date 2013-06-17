@@ -1,0 +1,42 @@
+= render 'nav/nav'
+%h2 Today's Shifts
+%div
+  - if @todayshifts.empty? && @todaylcshifts.empty?
+    %p You don't have any shifts scheduled for today. If you believe that this is an error, please speak with your manager!
+  - else
+    %p You have the following shift or shifts scheduled today. To log time spent, please click on the clock button for the appropriate shift.
+    %table.list.issues
+      %tr
+        %th Details
+        %th Shift
+        %th Log Time
+      - @todayshifts.each do |shift|
+        %tr
+          %td= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] }
+          %td= shift.tracker.name
+          %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]}
+      - @todaylcshifts.each do |shift|
+        %tr
+          %td
+            = link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] }
+          %td= shift.tracker.name
+          %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]}
+  %p All scheduled shifts for today (use these links if you are covering someone else's shift!)
+  %table.list.issues
+    %th Details
+    %th Shift
+    %th Log Time
+    - @allshiftstoday.each do |shift|
+      %tr
+        %td= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] }
+        %td= shift.tracker.name
+        %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]}
+    - @alllcshiftstoday.each do |shift|
+      %tr
+        %td= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] }
+        %td= shift.tracker.name
+        %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]}
+= render 'tasks' unless @mytasks.empty?
+= render 'goals' unless @mygoals.empty?
+= render 'watches' unless @mywatches.empty?
+= render 'task_pool' unless @taskpool.empty?
