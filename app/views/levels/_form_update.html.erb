@@ -1,4 +1,4 @@
-<% form_for(:level, level, :url => { :action => "update", :id => level }) do |f| %>
+<%= form_for(level, :url => { :action => "update", :id => level }) do |f| %>
   <%= f.select :rating, 1..3 %>
   <%= submit_tag "Update" %>
 <% end %>

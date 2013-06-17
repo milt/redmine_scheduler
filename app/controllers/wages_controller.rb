@@ -5,6 +5,7 @@ class WagesController < ApplicationController
   before_filter :find_users, :only => :index
   
   def index
+    @wage = Wage.new
   end
   
   def edit

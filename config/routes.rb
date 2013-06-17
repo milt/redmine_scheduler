@@ -9,6 +9,10 @@ RedmineApp::Application.routes.draw do
   end
 
   resources :levels do
+    member do
+      delete 'delete'
+    end
+
     collection do
       get 'my_levels'
       post 'bulk_create'

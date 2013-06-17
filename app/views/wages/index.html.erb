@@ -5,12 +5,12 @@
   <% @users.each do |user| %>
     <li><%= user.name %>
     <% if user.wage.present? %>
-        <% form_for(:wage, user.wage, :url => { :action => "update", :id => user.wage }) do |f| %>
+        <%= form_for(user.wage, :url => { :action => "update", :id => user.wage }) do |f| %>
           <%= f.text_field :amount %>
         <%= submit_tag "Update" %>
       <% end %>
     <% else %>
-      <% form_for(:wage, @wage, :url => { :action => "create", :user_id => user }) do |f| %>
+      <%= form_for(@wage, :url => { :action => "create", :user_id => user }) do |f| %>
         <%= f.text_field :amount %>
         <%= submit_tag "Assign" %>
       <% end %>

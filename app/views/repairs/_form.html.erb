@@ -1,11 +1,11 @@
 <%= javascript_include_tag 'redmine_scheduler.js', :plugin => 'redmine_scheduler' %>
 
-<% form_for :repair, @repair, :url => { :action => "create" } do |f| %>
+<%= form_for @repair, :url => { :action => "create" } do |f| %>
   <table>
     <tr><td><%= f.label :item_number %></td><td><%= f.text_field :item_number %></td></tr>
     <tr><td><%= f.label :item_desc %></td><td><%= f.text_field :item_desc %></td></tr>
     <tr><td><%= f.label :problem_desc %></td><td><%= f.text_field :problem_desc %></td></tr>
-    <tr><td>Patron Involved?</td><td><%= check_box_tag 'patron involved', 1, true, :onchange => "Element.toggle('patron')" %></td></tr>
+    <tr><td><%= label_tag :patron_involved, 'Patron Involved?' %></td><td><%= check_box_tag :patron_involved, 1, true, :onchange => "$('#patron').toggle()" %></td></tr>
   </table>
   <div id="patron">
     <table>
@@ -16,8 +16,8 @@
         <tr><td><%= f.label :checkout %></td><td><%= f.text_field :checkout %></td></tr>
     </table>
   </div>
-  <p><%= f.label :notes %><%= f.text_area :notes %></p>
-  <p><%= check_box_tag 'admonish', 1, false, :onchange => "jQuery('#submit-button').toggleDisabled();" %>I updated the condition notes in webco for the damaged item, and took it offline if necessary!</p>
+  <p><%= f.label :notes %></p><p><%= f.text_area :notes %></p>
+  <p><%= check_box_tag :admonish, 1, false, :onchange => "$('#submit-button').toggleDisabled();" %><%= label_tag :admonish, "I updated the condition notes in webco for the damaged item, and took it offline if necessary!" %></p>
 
   <%= submit_tag "Create", :id => 'submit-button', :disabled => true %>
 <% end %>

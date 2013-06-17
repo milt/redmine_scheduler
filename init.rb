@@ -17,8 +17,8 @@ Rails.configuration.to_prepare do
   require_dependency 'journal'
   Journal.send(:include, JournalPatch) unless Journal.included_modules.include? JournalPatch
 
-  require_dependency 'issue_observer'
-  IssueObserver.send(:include, IssueObserverPatch) unless IssueObserver.included_modules.include? IssueObserverPatch
+  #require_dependency 'issue_observer'
+  #IssueObserver.send(:include, IssueObserverPatch) unless IssueObserver.included_modules.include? IssueObserverPatch
 
   require_dependency 'project'
   Project.send(:include, ProjectPatch) unless Project.included_modules.include? ProjectPatch

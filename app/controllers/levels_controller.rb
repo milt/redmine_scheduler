@@ -3,6 +3,7 @@ class LevelsController < ApplicationController
   before_filter :role_check, :except => :my_levels
 
   def index
+    @level = Level.new
     @users = Group.stustaff.first.users.active
     @skills = Skill.all
 
