@@ -4,9 +4,6 @@ class TimesheetsController < ApplicationController
   before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
   before_filter :require_admstaff, :only => [:approve,:reject]
   before_filter :wage_check, :except => [:approve,:delete,:reject]
-  include TimesheetHelper
-  include TimesheetsHelper
-  require "prawn"   #needed for pdf generation
 
   def index
     @submitted = @timesheets.is_submitted.is_not_approved
@@ -71,6 +68,11 @@ class TimesheetsController < ApplicationController
       @wage = @timesheet.approve_time_wage.to_s
     else
       @wage = @timesheet.user.wage.amount.to_s
+    end
+
+    respond_to do |format|
+      format.html
+      format.pdf { render :layout => false }
     end
   end
 
