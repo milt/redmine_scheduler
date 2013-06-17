@@ -1,0 +1,14 @@
+%div
+  %h3 Currently Watching
+  %table.list.issues
+    %thead
+      %tr
+        %th Subject
+        %th Description
+        %th Due
+    - @mywatches.each do |watch|
+      %tbody
+        %tr
+          %td= link_to watch.subject, {:controller => 'issues', :action => 'show', :id => watch[:id] }
+          %td= link_to watch.description, {:controller => 'issues', :action => 'show', :id => watch[:id]} unless watch.description.nil?
+          %td= link_to watch.due_date, {:controller => 'issues', :action => 'show', :id => watch[:id] } unless watch.due_date.nil?

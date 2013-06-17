@@ -1,0 +1,16 @@
+%div
+  %h3 Task Pool
+  %table.list.issues
+    %thead
+      %tr
+        %th Area
+        %th Description
+        %th Due
+        %th Log Time
+    - @taskpool.each do |task|
+      %tbody
+        %tr
+          %td= link_to task.project, {:controller => 'projects', :action => 'show', :id => task.project[:id] }
+          %td= link_to task.subject, {:controller => 'issues', :action => 'show', :id => task[:id] }
+          %td= link_to task.due_date, {:controller => 'issues', :action => 'show', :id => task[:id] } unless task.due_date.nil?
+          %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => task[:id]}

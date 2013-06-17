@@ -1,0 +1,23 @@
+= render 'nav/nav'
+%h1 My Staff
+.analyze-options-container
+  .analyze-options-left
+    - form_tag(:action => :index) do
+      = label_tag(:hours, "Hours to Analyze:")
+      = text_field_tag(:hours, @hours)
+      = submit_tag("Update")
+  .analyze-options-right
+    Viewing the last #{@hours.to_s} hours of logged time.
+- @workgroups.each do |workgroup|
+  %div
+    %h3
+      = workgroup.name
+      \- #{link_to "Edit Membership...", {:controller => 'groups', :action => 'edit', :id => workgroup[:id], :tab => 'users'}}
+    - workgroup.users.each do |user|
+      .box.tabular
+        %h4= link_to user.name, :controller => 'activities', :action => 'index', :id => nil, :user_id => user, :from => (Date.today - 2.weeks)
+        = render :partial => 'time', :locals => { :user => user, :hours => @hours, :weeks => @weeks }
+        = render :partial => 'tasks', :locals => { :user => user }
+        = render :partial => 'goals', :locals => { :user => user }
+- content_for :header_tags do
+  = stylesheet_link_tag 'command', :plugin => 'redmine_scheduler'

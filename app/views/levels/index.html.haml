@@ -1,0 +1,34 @@
+= render 'nav/nav'
+%h1 Skill Levels
+- if !@goals.empty?
+  %h4 Completed Training Goals Awaiting Signoff:
+  %table
+    %tr
+      %th StuStaff
+      %th ProStaff
+      %th Description
+      %th Assigned
+    - @goals.each do |goal|
+      %tr
+        %td= goal.assigned_to.name
+        %td= goal.author.name
+        %td= link_to goal.subject, goal
+        %td= goal.created_on.strftime("%D")
+%h2 Assign Level:
+= render 'skill_sel'
+%br
+- @users.each do |user|
+  %h2= user.firstname
+  %table
+    %tr
+      %th Skill
+      %th
+      %th
+    - user.levels.each do |level|
+      %tr
+        %td= level.skill.name
+        %td= render 'form_update', :level => level
+        %td= button_to 'Delete', {:action => 'delete', :id => level}, :confirm => "Really?"
+  %p
+    Quick Add Skill:#{render :partial => 'form_create', :locals => {:user => user}}
+%br

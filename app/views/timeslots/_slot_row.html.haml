@@ -1,0 +1,5 @@
+%tr
+  %td
+    = check_box_tag('slot_ids[]', slot.id) unless slot.booked?
+    = link_to(' See Booking...', :controller => 'bookings', :action => 'show', :id => slot.booking) if slot.booked?
+    = slot.start_time.strftime("%I:%M:%S %p")

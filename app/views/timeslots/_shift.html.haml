@@ -1,0 +1,10 @@
+%div
+  %div
+    %p= shift.assigned_to.name
+    %p= shift.start_time.strftime("%I:%M:%S %p") + " to " + shift.end_time.strftime("%I:%M:%S %p")
+  %div
+    %table
+      %tr
+        %th Time
+      - @slots_by_shift[shift].each do |slot|
+        = render 'slot_row', :slot => slot unless slot.start_time <= DateTime.now

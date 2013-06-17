@@ -1,0 +1,10 @@
+%ul
+  - unassigned_equip_probs.each do |prob|
+    %li
+      Issue Subject:
+      %em= prob.subject
+      with Description:
+      = succeed "," do
+        %em= prob.description
+      Due Date:
+      %strong= prob.due_date.strftime("Week of %B %d, Year %Y")

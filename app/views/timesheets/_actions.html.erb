@@ -1,6 +1,0 @@
-<%= link_to "Show", action: 'show', id: sheet %>
-<% sheet.actions[User.current.timesheet_role].each do |a| %>
-  <% unless a[1] == :show %>
-    <%= link_to a[0], {action: a[1], id: sheet}, confirm: "Are you sure you want to " + a[1].to_s + " this timesheet?" %>
-  <% end %>
-<% end %>

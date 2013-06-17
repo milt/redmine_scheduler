@@ -1,0 +1,35 @@
+= render 'nav/nav'
+%div
+  %table.list.issues
+    - @total = 0
+  %h3 Shifts and Time Entries Sorted by Day
+  %tr
+    %th Day
+    %th Date
+    %th Task
+    %th # Hours Worked
+  - (1..7).each do |day|
+    - date = Date.commercial(@year_selected, @cweek, day)
+    = render 'time_entries', {:entries_by_day=>@entries_by_day, :date=>date}
+  %tr
+    %td
+    %td
+    %td
+    %td
+  %tr
+    %td
+    %td
+    %td Total # of Hours Worked:
+    %td= @total
+    %tr
+      %tr
+        %td
+        %td
+        %td
+          - if @timesheet.approved.present?
+            Amount Paid
+          - else
+            Wage
+        %td
+          $
+          \#{@wage}

@@ -1,0 +1,19 @@
+= render 'nav/nav'
+.contextual
+  = link_to l(:label_group_new), new_group_path, :class => 'icon icon-add'
+%h2= l(:label_group_plural)
+- if @groups.any?
+  %table.list.groups
+    %thead
+      %tr
+        %th= l(:label_group)
+        %th= l(:label_user_plural)
+        %th
+    %tbody
+      - @groups.each do |group|
+        %tr{:class => cycle 'odd', 'even'}
+          %td= link_to h(group), :action => 'edit', :id => group
+          %td{:align => "center"}= group.users.size
+          %td.buttons= link_to l(:button_delete), group, :confirm => l(:text_are_you_sure), :method => :delete, :class => 'icon icon-del'
+- else
+  %p.nodata= l(:label_no_data)

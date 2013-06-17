@@ -1,7 +1,0 @@
-<%= render 'repair', :repair => @repair %>
-<hr>
-<% if @repair.patron_name.present? %>
-  <%= link_to 'Print Agreement | ', {:action => 'show', :format => :pdf}, :popup => true, :confirm => "You must print TWO copies of this form and place one patron-signed (if patron involved) copy in Joan's mailbox and give the other copy to the patron." %>
-<% end %>
-<%= link_to 'Add Info | ', {:controller => 'issues', :action => :edit, :id => @repair.issue_id} %>
-<%= link_to 'New Repair', :action => 'new' %>

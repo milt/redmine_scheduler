@@ -1,0 +1,12 @@
+- unless User.current.anonymous?
+  %table
+    %tr
+      - unless User.current.admin
+        = render 'nav/stustaff' if User.current.is_stustaff?
+        = render 'nav/prostaff' if User.current.is_prostaff?
+        = render 'nav/adminstaff' if User.current.is_admstaff?
+      - else
+        = render 'nav/stustaff'
+        = render 'nav/prostaff'
+        = render 'nav/adminstaff'
+%hr

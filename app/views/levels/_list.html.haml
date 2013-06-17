@@ -1,0 +1,10 @@
+%ul
+  - levels.each do |level|
+    %li
+      - unless level.skillcat.name == "Authorization"
+        Level
+        %em= level.rating.to_s
+        in
+      = succeed "," do
+        %em= level.skill.name
+      Updated: #{level.updated_at.strftime("%D")}

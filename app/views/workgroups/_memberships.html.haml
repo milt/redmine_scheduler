@@ -1,0 +1,38 @@
+- roles = Role.find_all_givable
+- projects = Project.active.find(:all, :order => 'lft')
+.splitcontentleft
+  - if @group.memberships.any?
+    %table.list.memberships
+      %thead
+        %tr
+          %th= l(:label_project)
+          %th= l(:label_role_plural)
+          %th{:style => "width:15%"}
+      %tbody
+        - @group.memberships.each do |membership|
+          - next if membership.new_record?
+          %tr{:class => "#{cycle 'odd', 'even'} class", :id => "member-#{membership.id}"}
+            %td.project= h membership.project
+            %td.roles
+              %span{:id => "member-#{membership.id}-roles"}= h membership.roles.sort.collect(&:to_s).join(', ')
+              - remote_form_for(:membership, :url => { :action => 'edit_membership', :id => @group, :membership_id => membership },
+              - :html => { :id => "member-#{membership.id}-roles-form", :style => 'display:none;'}) do
+                %p
+                  - roles.each do |role|
+                    %label
+                      = check_box_tag 'membership[role_ids][]', role.id, membership.roles.include?(role)
+                      = h role
+                    %br/
+                %p
+                  = submit_tag l(:button_change)
+                  = link_to_function l(:button_cancel), "$('member-#{membership.id}-roles').show(); $('member-#{membership.id}-roles-form').hide(); return false;"
+            %td.buttons
+              = link_to_function l(:button_edit), "$('member-#{membership.id}-roles').hide(); $('member-#{membership.id}-roles-form').show(); return false;", :class => 'icon icon-edit'
+              = link_to_remote l(:button_delete), { :url => { :controller => 'workgroups', :action => 'destroy_membership', :id => @group, :membership_id => membership }, |
+                :method => :post },                                                                                                                                        |
+                :class => 'icon icon-del'                                                                                                                                  |
+  - end; reset_cycle
+  - else
+    %p.nodata= l(:label_no_data)
+.splitcontentright
+  = render :partial => 'members/membership_assignment', :locals => {:principal => @group, :projects => projects - @group.projects, :roles => roles }

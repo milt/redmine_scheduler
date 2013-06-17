@@ -1,0 +1,6 @@
+= render 'nav/nav'
+%h2
+  = link_to l(:label_group_plural), groups_path
+  » #{h(@group)}
+= render_tabs group_settings_tabs
+- html_title(l(:label_group), @group, l(:label_administration))

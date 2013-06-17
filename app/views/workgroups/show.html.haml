@@ -1,0 +1,7 @@
+= render 'nav/nav'
+%h2
+  = link_to l(:label_group_plural), workgroups_path
+  » #{h @group}
+%ul
+  - @group.users.each do |user|
+    %li= h user

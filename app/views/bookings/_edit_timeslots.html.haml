@@ -1,0 +1,10 @@
+%table
+  %th Include?
+  %th Timeslot Start Time
+  %th Timeslot End Time
+  - if !@shift.nil?
+    - @shift.timeslots.each do |timeslot|
+      %tr
+        %td= check_box_tag('slot_ids[]', timeslot.id, @timeslots.include?(timeslot) ) if timeslot.open? || @timeslots.include?(timeslot)
+        %td= timeslot.start_time.strftime("%I:%M:%S %p")
+        %td= timeslot.end_time.strftime("%I:%M:%S %p")

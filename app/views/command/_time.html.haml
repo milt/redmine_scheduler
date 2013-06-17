@@ -1,0 +1,7 @@
+.box.tabular
+  .time-title-container
+    .time-title-left Time Analysis
+    .time-title-right Fear it
+  %div
+    %img{:src => pie_url_by_attribute(user, hours, "project")}/
+    %img{:src => pie_url_by_attribute(user, hours.to_f, "activity")}/
