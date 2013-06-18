@@ -10,9 +10,13 @@ require 'user_patch'
 require 'mailer_patch'
 require 'time_entry_patch'
 require 'group_patch'
+require 'application_controller_patch'
 require_dependency 'redmine_scheduler/hooks'
 
 Rails.configuration.to_prepare do
+
+  require_dependency 'application_controller'
+  ApplicationController.send(:include, ApplicationControllerPatch) unless ApplicationController.included_modules.include? ApplicationControllerPatch
 
   require_dependency 'journal'
   Journal.send(:include, JournalPatch) unless Journal.included_modules.include? JournalPatch

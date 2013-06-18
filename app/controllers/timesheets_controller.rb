@@ -1,8 +1,10 @@
 class TimesheetsController < ApplicationController
   unloadable
+  load_and_authorize_resource
+
   before_filter :find_timesheets, :only => :index
   before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
-  before_filter :require_admstaff, :only => [:approve,:reject]
+  #before_filter :require_admstaff, :only => [:approve,:reject]
   before_filter :wage_check, :except => [:approve,:delete,:reject]
 
   def index
@@ -128,15 +130,6 @@ class TimesheetsController < ApplicationController
   end
 
   private
-
-  def require_admstaff
-    return unless require_login
-    if !User.current.is_admstaff?
-      render_403
-      return false
-    end
-    true
-  end
 
   def wage_check
     unless User.current.is_admstaff?
