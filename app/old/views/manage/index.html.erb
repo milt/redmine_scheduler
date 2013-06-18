@@ -1,8 +1,0 @@
-<%= render 'nav' %>
-<h2>Manage Lab Coach Bookings</h2>
-<%= render 'orph' unless @orphaned.empty? %>
-<%= will_paginate @orphaned, :param_name => 'orphaned_page' %>
-<%= render 'booked' unless @booked.empty? %>
-<!-- will_paginate @booked, :param_name => 'booked_page' -->
-<%= render 'cancelled' unless @cancelled.empty? %>
-<%= will_paginate @cancelled, :param_name => 'cancelled_page' %>

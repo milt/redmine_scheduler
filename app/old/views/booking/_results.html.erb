@@ -1,5 +1,0 @@
-<ul>
-<% @selected.each do |slot| %>
-  <li><%= slot.start_time.strftime('%I:%M %P') %> - <%= slot.coach.firstname + slot.coach.lastname %></li>
-<% end %>
-</ul>
