@@ -1,16 +1,17 @@
 require 'redmine'
 
 # Patches to the redmine core
-require 'journal_patch'
-require 'issue_observer_patch'
-require 'project_patch'
-require 'tracker_patch'
-require 'issue_patch'
-require 'user_patch'
-require 'mailer_patch'
-require 'time_entry_patch'
-require 'group_patch'
-require 'application_controller_patch'
+# require 'journal_patch'
+# require 'issue_observer_patch'
+# require 'project_patch'
+# require 'tracker_patch'
+# require 'issue_patch'
+# require 'user_patch'
+# require 'mailer_patch'
+# require 'time_entry_patch'
+# require 'group_patch'
+# require 'application_controller_patch'
+
 require_dependency 'redmine_scheduler/hooks'
 
 Rails.configuration.to_prepare do
@@ -58,9 +59,18 @@ Redmine::Plugin.register :redmine_scheduler do
   url 'http://'
   author_url 'http://digitalmedia.jhu.edu'
 
-  # permission :view_skills, :skills => :index
-  # permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] }
-  # permission :manage_wages, :wages => :all
+  settings  :partial => 'settings/redmine_scheduler_settings',
+            :default => {
+              "prostaff_group_id" => "2",
+              "stustaff_group_id" => "3",
+              "admstaff_group_id" => "4",
+              "fdshift_tracker_id" => "4",
+              "lcshift_tracker_id" => "5",
+              "task_tracker_id" => "7",
+              "goal_tracker_id" => "8",
+              "event_tracker_id" => "9",
+              "repair_tracker_id" => "10"
+            }
 
   menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :first => true, :if => Proc.new { User.current.is_stustaff? }
   menu :application_menu, :prostaff, { :controller => 'prostaff', :action => 'index' }, :caption => 'ProStaff', :first => true, :if => Proc.new { User.current.is_prostaff? }
@@ -77,8 +87,5 @@ Redmine::Plugin.register :redmine_scheduler do
   menu :application_menu, :skills, {:controller => 'skills', :action => 'index'}, :caption => 'Skills', :if => Proc.new { User.current.is_admstaff? }
   menu :application_menu, :repairs, {:controller => 'repairs', :action => 'new'}, :caption => 'New Repair'
 
-  #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
-  #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
-  menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'
-    #config.active_record.observers = :booking_observer
+  #config.active_record.observers = :booking_observer
 end

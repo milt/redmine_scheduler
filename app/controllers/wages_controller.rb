@@ -2,7 +2,6 @@ class WagesController < ApplicationController
   unloadable
   authorize_resource
   
-  before_filter :require_admstaff
   before_filter :find_users, :only => :index
   
   def index
@@ -51,15 +50,6 @@ class WagesController < ApplicationController
   end
   
   private
-  
-  def require_admstaff
-    return unless require_login
-    if !User.current.is_admstaff?
-      render_403
-      return false
-    end
-    true
-  end
 
   # def find_wages
   #   @wages = Wage.all

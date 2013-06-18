@@ -1,6 +1,5 @@
 class LevelsController < ApplicationController
   unloadable
-  before_filter :role_check, :except => :my_levels
   authorize_resource
 
   def index
@@ -120,11 +119,4 @@ class LevelsController < ApplicationController
     
   end
 
-  def role_check
-    if !User.current.is_admstaff?
-      render_403
-      return false
-    end
-    true
-  end
 end

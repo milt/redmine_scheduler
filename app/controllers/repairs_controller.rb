@@ -2,8 +2,6 @@ class RepairsController < ApplicationController
   unloadable
   authorize_resource
 
-  # before_filter :role_check
-
   def index
     @repairs = Repair.all
   end
@@ -46,13 +44,5 @@ class RepairsController < ApplicationController
   end
 
   private
-
-  # def role_check
-  #   if User.current.anonymous?
-  #     render_403
-  #     return false
-  #   end
-  #   true
-  # end
   
 end
