@@ -1,9 +1,9 @@
 class TimesheetsController < ApplicationController
   unloadable
-  authorize_resource
+  load_and_authorize_resource
 
-  before_filter :find_timesheets, :only => :index
-  before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
+  #before_filter :find_timesheets, :only => :index
+  #before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]
   #before_filter :require_admstaff, :only => [:approve,:reject]
   before_filter :wage_check, :except => [:approve,:delete,:reject]
 
@@ -152,40 +152,40 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  def find_timesheet
-    if params[:id].present?
-      @timesheet = Timesheet.find(params[:id])
-    end
-    if User.current.is_admstaff?
-      unless @timesheet.actions[:admin].map {|a| a[1]}.include?(action_name.to_sym)
-        flash[:warning] = "Invalid action for this timesheet!"
-        redirect_to :action => 'index'
-      end
-    elsif User.current.is_stustaff?
-      unless @timesheet.actions[:staff].map {|a| a[1]}.include?(action_name.to_sym)
-        flash[:warning] = "Invalid action for this timesheet, or you do not have permission!"
-        redirect_to :action => 'index'
-      end
-    else
-      render_403
-      return false
-    end
-  end
+  # def find_timesheet
+  #   if params[:id].present?
+  #     @timesheet = Timesheet.find(params[:id])
+  #   end
+  #   if User.current.is_admstaff?
+  #     unless @timesheet.actions[:admin].map {|a| a[1]}.include?(action_name.to_sym)
+  #       flash[:warning] = "Invalid action for this timesheet!"
+  #       redirect_to :action => 'index'
+  #     end
+  #   elsif User.current.is_stustaff?
+  #     unless @timesheet.actions[:staff].map {|a| a[1]}.include?(action_name.to_sym)
+  #       flash[:warning] = "Invalid action for this timesheet, or you do not have permission!"
+  #       redirect_to :action => 'index'
+  #     end
+  #   else
+  #     render_403
+  #     return false
+  #   end
+  # end
 
-  def find_timesheets
-    if User.current.is_stustaff?
-      @timesheets = Timesheet.weekof_from(DateTime.now - 3.years).for_user(User.current)
-      @drafts = @timesheets.is_not_submitted.is_not_approved
-      if !@drafts.empty?
-        flash[:warning] = "This is a reminder that you have an unsubmitted timesheet"
-      end
-    elsif User.current.is_admstaff?
-      @timesheets = Timesheet.weekof_from(DateTime.now - 3.years)
-    else
-      render_403
-      return false
-    end
-  end
+  # def find_timesheets
+  #   if User.current.is_stustaff?
+  #     @timesheets = Timesheet.weekof_from(DateTime.now - 3.years).for_user(User.current)
+  #     @drafts = @timesheets.is_not_submitted.is_not_approved
+  #     if !@drafts.empty?
+  #       flash[:warning] = "This is a reminder that you have an unsubmitted timesheet"
+  #     end
+  #   elsif User.current.is_admstaff?
+  #     @timesheets = Timesheet.weekof_from(DateTime.now - 3.years)
+  #   else
+  #     render_403
+  #     return false
+  #   end
+  # end
 
   def find_first_monday(year)
     t = Date.new(year, 1,1).wday     #checks which day (Mon = 1, Sun = 0) is first day of the year 

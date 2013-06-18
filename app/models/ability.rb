@@ -24,7 +24,8 @@ class Ability
       can [:index, :student_levels], :prostaff
       can [:index,:grab], :command
     elsif user.is_stustaff?
-      can [:create, :read, :update, :destroy, :submit, :print], Timesheet, :user => user
+      can [:create, :read, :update, :destroy, :submit, :print], Timesheet, :user_id => user.id
+      can :find, Timeslot
       can :manage, Booking
       can [:create, :read], Repair
       can :index, :stustaff
