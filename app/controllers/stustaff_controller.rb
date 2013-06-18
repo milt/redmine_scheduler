@@ -1,8 +1,8 @@
 class StustaffController < ApplicationController
   unloadable
 
-
   def index
+    authorize! :index, :stustaff
   	@allshiftstoday = Issue.today.open.fdshift
     @todayshifts = Issue.today.open.fdshift.foruser(User.current)
     @alllcshiftstoday = Issue.today.open.lcshift

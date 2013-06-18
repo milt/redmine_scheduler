@@ -2,6 +2,7 @@ class BookingsController < ApplicationController
   unloadable
   before_filter :find_timeslots, :only => [:new, :create]
   before_filter :find_booking, :only => [:show, :edit, :update, :cancel]
+  authorize_resource
 
   def index
     find_params

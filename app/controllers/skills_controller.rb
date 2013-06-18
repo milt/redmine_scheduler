@@ -1,6 +1,6 @@
 class SkillsController < ApplicationController #define skills, assign them to users
   unloadable
-  load_and_authorize_resource
+  authorize_resource
 
   #before_filter :require_admin, :find_users, :only => [:index, :edit] #finds users for skill assignment
   before_filter :find_skill, :only => [:edit, :update, :destroy]

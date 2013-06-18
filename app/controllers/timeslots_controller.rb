@@ -1,5 +1,6 @@
 class TimeslotsController < ApplicationController
   unloadable
+  authorize_resource
 
   def index
     @timeslots = Timeslot.after_now

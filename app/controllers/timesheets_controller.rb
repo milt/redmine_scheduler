@@ -1,6 +1,6 @@
 class TimesheetsController < ApplicationController
   unloadable
-  load_and_authorize_resource
+  authorize_resource
 
   before_filter :find_timesheets, :only => :index
   before_filter :find_timesheet, :only => [:print, :show, :edit, :update, :submit, :approve, :delete, :reject]

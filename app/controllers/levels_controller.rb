@@ -1,6 +1,7 @@
 class LevelsController < ApplicationController
   unloadable
   before_filter :role_check, :except => :my_levels
+  authorize_resource
 
   def index
     @level = Level.new
