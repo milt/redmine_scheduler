@@ -39,7 +39,11 @@ module IssuePatch
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
       scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
-      after_destroy :cancel_bookings 
+      after_destroy :cancel_bookings
+
+      def self.with_skills(*skills)
+        joins(:assigned_to).merge(User.with_skills(*skills))
+      end
     end
 
   end

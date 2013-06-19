@@ -26,3 +26,10 @@ en:
         patron_jhed: "Patron JHED"
         checkout: "Checkout Number"
         notes: "Notes"
+  views:
+    pagination:
+      first: "&laquo; First"
+      last: "Last &raquo;"
+      previous: "&lsaquo; Prev"
+      next: "Next &rsaquo;"
+      truncate: "..."

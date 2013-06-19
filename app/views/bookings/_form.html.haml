@@ -1,0 +1,15 @@
+= form_for @booking, :url => { :action => "create", :slot_ids => @timeslots } do |f|
+  %p
+    = f.label :name
+    = f.text_field :name
+    = check_box_tag('me')
+    Me
+  %p
+    = f.label :phone
+    = f.text_field :phone
+  %p
+    = f.label :email
+    = f.text_field :email
+  %p= f.label :project_desc
+  %p= f.text_area :project_desc
+  %p= submit_tag "Create"

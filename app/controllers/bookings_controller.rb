@@ -34,31 +34,11 @@ class BookingsController < ApplicationController
     @booking = Booking.new(params[:booking])
     @timeslot = Timeslot.new
 
-    if params[:from]
-      @from = DateTime.new(*(params[:from].values.map {|v| v.to_i}).push(0).push(DateTime.now.zone))
-    else
-      @from = DateTime.now + 30.minutes
-    end
+    timeslot_search_params
 
-    if params[:until]
-      @until = DateTime.new(*(params[:until].values.map {|v| v.to_i}).push(0).push(DateTime.now.zone))
-    else
-      @until = DateTime.now + 2.days
-    end
 
-    # if params[:from]
-    #   @from = Date.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i, params[])
-    # else
-    #   @from = Date.today
-    # end
+    @timeslots = Timeslot.open.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).page(params[:page]).per(10)
 
-    # if params[:until]
-    #   @to = Date.new(params[:to][:year].to_i, params[:to][:month].to_i, params[:to][:day].to_i)
-    # else
-    #   @to = Date.today + 2.weeks
-    # end
-
-    @timeslots = Timeslot.open.from_date_time(@from).until_date_time(@until).paginate(:page => params[:page], :per_page => 10)
     respond_to do |format|
       format.html # new.html.erb
       #format.json { render json: @timeslots }
@@ -146,6 +126,41 @@ class BookingsController < ApplicationController
 
   private
 
+  def timeslot_search_params
+    if params[:from]
+      @from = DateTime.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i, params[:from][:hour].to_i, params[:from][:minute].to_i, 0, DateTime.now.zone)
+      @from = DateTime.now if @from < DateTime.now
+    else
+      @from = DateTime.now + 30.minutes
+    end
+
+    if params[:until]
+      @until = DateTime.new(params[:until][:year].to_i, params[:until][:month].to_i, params[:until][:day].to_i, params[:until][:hour].to_i, params[:until][:minute].to_i, 0, DateTime.now.zone)
+    else
+      @until = DateTime.now + 2.days
+    end
+
+    if @from > @until
+      @until = @from
+    end
+
+    @all_coaches = Group.stustaff.first.users
+    @all_skills = Skill.all
+
+    if params[:skill_ids]
+      @skills = Skill.find(params[:skill_ids])
+    else
+      @skills = @all_skills
+    end
+
+    if params[:coach_ids]
+      @coaches = User.with_skills(*@skills).find(params[:coach_ids])
+    else
+      @coaches = User.with_skills(*@skills)
+    end
+
+  end
+
   def find_params
     if params[:from].present?
       @from = Date.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i)
@@ -165,15 +180,15 @@ class BookingsController < ApplicationController
   end
 
   def filter_orphaned(bookings)
-    @orph_bookings = bookings.orphaned.paginate(:page => params[:page], :per_page => 4)
+    @orph_bookings = bookings.orphaned.page(params[:page]).per(4)
   end
 
   def filter_cancelled(bookings)
-    @canc_bookings = bookings.cancelled.paginate(:page => params[:page], :per_page => 4)
+    @canc_bookings = bookings.cancelled.page(params[:page]).per(4)
   end
 
   def filter_active(bookings)
-    @act_bookings = bookings.active.paginate(:page => params[:page], :per_page => 4)
+    @act_bookings = bookings.active.page(params[:page]).per(4)
   end
 
   def find_timeslots

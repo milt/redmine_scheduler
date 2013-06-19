@@ -22,6 +22,10 @@ module UserPatch
       scope :gets_digest, lambda { { :conditions => {:digest => true} } }
       safe_attributes 'digest'
 
+      def self.with_skills(*skills)
+        joins(:skills).where("skills.id IN (?)", skills.map(&:id))
+      end
+
     end
 
   end

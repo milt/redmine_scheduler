@@ -3,33 +3,13 @@
 %table{:border => "0", :width => "1000"}
   %tr
     %td{:width => "700"}
-      = form_for @booking, :url => { :action => "create", :slot_ids => @timeslots } do |f|
-        %p
-          = f.label :name
-          = f.text_field :name
-          = check_box_tag('me')
-          Me
-        %p
-          = f.label :phone
-          = f.text_field :phone
-        %p
-          = f.label :email
-          = f.text_field :email
-        %p= f.label :project_desc
-        %p= f.text_area :project_desc
-        %p= submit_tag "Create"
+      = render 'form'
     %td{:width => "300"}
       #no_results
       #results
+        = render 'show_timeslots'
       #paginator
-= form_tag({}, method: 'get', remote: true, update: 'results') do
-  %p
-    = label_tag :from, 'from'
-    = select_datetime @from, :prefix => :from
-  %p
-    = label_tag :until, 'until'
-    = select_datetime @until, :prefix => :until
-  %p
-    = submit_tag "Search"
+        = paginate @timeslots, remote: true
+= render 'timeslots_search_form'
 %hr
 = link_to 'Return to index...', {:action => 'index'}

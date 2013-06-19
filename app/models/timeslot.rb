@@ -5,6 +5,13 @@ class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during whic
   scope :booked, lambda { { :conditions => "booking_id IS NOT NULL" } }
   scope :open, lambda { { :conditions => "booking_id IS NULL" } }
 
+  def self.limit_to_skills(*skills)
+    
+  end
+
+  def self.limit_to_coaches(*coaches)
+    joins(:issue).where("assigned_to_id IN (?)", coaches.map(&:id))
+  end
 
   def self.from_date_time(date_time)
     joins(:issue).where("start_time >= ?", date_time)

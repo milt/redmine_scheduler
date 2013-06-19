@@ -21,7 +21,7 @@
           %td= booking.apt_time.strftime("%D - %I:%M:%S %p")
           / probably can do with apt_time as well
           %td= link_to booking.author.name, user_path(booking.author)
-    = will_paginate @orph_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+    = paginate @orph_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
 / On active bookings
 - unless @act_bookings.empty?
   %div
@@ -39,7 +39,7 @@
           %td= link_to booking.coach, user_path(booking.coach)
           %td= booking.apt_time.strftime("%D - %I:%M:%S %p")
           %td= link_to booking.author.name, user_path(booking.author)
-    = will_paginate @act_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+    = paginate @act_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
 / On cancelled bookings
 - unless @canc_bookings.empty?
   %div
@@ -57,4 +57,4 @@
           %td= booking.coach
           %td= booking.apt_time.strftime("%D - %I:%M:%S %p")
           %td= link_to booking.author.name, user_path(booking.author)
-    = will_paginate @canc_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
+    = paginate @canc_bookings, :params=>{:from => {:year => @from.year.to_s, :month => @from.month.to_s, :day => @from.day.to_s}}
