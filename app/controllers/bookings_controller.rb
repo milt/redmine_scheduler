@@ -1,6 +1,6 @@
 class BookingsController < ApplicationController
   unloadable
-  before_filter :find_timeslots, :only => [:new, :create]
+  before_filter :find_timeslots, :only => :create
   before_filter :find_booking, :only => [:show, :edit, :update, :cancel]
   authorize_resource
 
@@ -32,6 +32,38 @@ class BookingsController < ApplicationController
 
   def new
     @booking = Booking.new(params[:booking])
+    @timeslot = Timeslot.new
+
+    if params[:from]
+      @from = DateTime.new(*(params[:from].values.map {|v| v.to_i}).push(0).push(DateTime.now.zone))
+    else
+      @from = DateTime.now + 30.minutes
+    end
+
+    if params[:until]
+      @until = DateTime.new(*(params[:until].values.map {|v| v.to_i}).push(0).push(DateTime.now.zone))
+    else
+      @until = DateTime.now + 2.days
+    end
+
+    # if params[:from]
+    #   @from = Date.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i, params[])
+    # else
+    #   @from = Date.today
+    # end
+
+    # if params[:until]
+    #   @to = Date.new(params[:to][:year].to_i, params[:to][:month].to_i, params[:to][:day].to_i)
+    # else
+    #   @to = Date.today + 2.weeks
+    # end
+
+    @timeslots = Timeslot.open.from_date_time(@from).until_date_time(@until).paginate(:page => params[:page], :per_page => 10)
+    respond_to do |format|
+      format.html # new.html.erb
+      #format.json { render json: @timeslots }
+      format.js
+    end
   end
 
   def create
@@ -157,8 +189,9 @@ class BookingsController < ApplicationController
         redirect_to :controller => 'timeslots', :action => 'find'
       end
     else
-      flash[:warning] = 'Cannot make a new Booking without some timeslots. Pick some here and click "Book..."'
-      redirect_to :controller => 'timeslots', :action => 'find'
+      @timeslots = []
+      # flash[:warning] = 'Cannot make a new Booking without some timeslots. Pick some here and click "Book..."'
+      # redirect_to :controller => 'timeslots', :action => 'find'
     end
   end
 

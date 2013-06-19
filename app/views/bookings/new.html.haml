@@ -19,6 +19,17 @@
         %p= f.text_area :project_desc
         %p= submit_tag "Create"
     %td{:width => "300"}
-      = render 'show_timeslots'
-%hr/
+      #no_results
+      #results
+      #paginator
+= form_tag({}, method: 'get', remote: true, update: 'results') do
+  %p
+    = label_tag :from, 'from'
+    = select_datetime @from, :prefix => :from
+  %p
+    = label_tag :until, 'until'
+    = select_datetime @until, :prefix => :until
+  %p
+    = submit_tag "Search"
+%hr
 = link_to 'Return to index...', {:action => 'index'}

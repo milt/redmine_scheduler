@@ -6,6 +6,15 @@ class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during whic
   scope :open, lambda { { :conditions => "booking_id IS NULL" } }
 
 
+  def self.from_date_time(date_time)
+    joins(:issue).where("start_time >= ?", date_time)
+  end
+
+  def self.until_date_time(date_time)
+    joins(:issue).where("end_time <= ?", date_time)
+  end
+
+
   def start_time #timeslots only have an integer, slot_time, to express their lenth in 30 minute increments from the start of the shift (issue)
     self.issue.start_time + (slot_time * 30).minutes #so, the start time is the start of the shift advanced by slot_time. minutes is a native ruby method for datetime
   end
