@@ -1,4 +1,4 @@
-= form_tag({}, method: 'get', remote: true, update: 'results') do
+= form_tag({}, method: 'get', remote: true, update: ['results','search_form']) do
   %p
     = label_tag :from, 'from'
     = select_datetime @from, :prefix => :from
@@ -21,11 +21,15 @@
       Skills
     %div{style: "display: none;"}
       %table
-        - @all_skills.each do |skill|
+        - @all_skills.group_by(&:skillcat).keys.each do |skillcat|
           %tr
-            %td
-              = label_tag skill.name
-            %td
-              = check_box_tag 'skill_ids[]', skill.id, @skills.include?(skill) ? true : false
+            %th
+              = skillcat.name
+          - skillcat.skills.each do |skill|
+            %tr
+              %td
+                = label_tag skill.name
+              %td
+                = check_box_tag 'skill_ids[]', skill.id, @skills.include?(skill) ? true : false
   %p
     = submit_tag "Search"

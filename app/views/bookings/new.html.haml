@@ -1,5 +1,7 @@
 %h2 New Booking
 = error_messages_for @booking
+#search_form
+  = render 'timeslots_search_form'
 %table{:border => "0", :width => "1000"}
   %tr
     %td{:width => "700"}
@@ -10,6 +12,5 @@
         = render 'show_timeslots'
       #paginator
         = paginate @timeslots, remote: true
-= render 'timeslots_search_form'
 %hr
 = link_to 'Return to index...', {:action => 'index'}

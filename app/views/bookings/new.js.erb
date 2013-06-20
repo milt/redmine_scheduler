@@ -1,3 +1,4 @@
 $("#no_results").html("<% if @timeslots.count < 1 %><div class='alert'>No timeslots found!</div><% end %>");
 $("#results").html("<%= escape_javascript(render 'show_timeslots') if @timeslots.count >= 1 %>");
 $("#paginator").html('<%= escape_javascript(paginate(@timeslots, remote: true).to_s) %>');
+$("#search_form").html("<%= escape_javascript(render 'timeslots_search_form') %>")
