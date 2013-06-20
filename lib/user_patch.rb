@@ -21,6 +21,7 @@ module UserPatch
       has_many :authored_bookings, :class_name => "Booking", :foreign_key => "author_id"
       scope :gets_digest, lambda { { :conditions => {:digest => true} } }
       safe_attributes 'digest'
+      has_many :issues, :foreign_key => 'assigned_to_id'
 
       def self.with_skills(*skills)
         joins(:skills).where("skills.id IN (?)", skills.map(&:id))

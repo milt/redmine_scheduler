@@ -40,6 +40,7 @@ module IssuePatch
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
       scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
       after_destroy :cancel_bookings
+      belongs_to :user, foreign_key: 'assigned_to_id'
 
       def self.with_skills(*skills)
         joins(:assigned_to).merge(User.with_skills(*skills))
