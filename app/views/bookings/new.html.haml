@@ -2,11 +2,6 @@
 = error_messages_for @booking
 #search_form
   = render 'timeslots_search_form'
-#no_results
-#results
-  = render 'timeslots_results'
-#paginator
-  = paginate @timeslots, remote: true
 %table{:border => "0", :width => "1000"}
   %tr
     %td{:width => "700"}

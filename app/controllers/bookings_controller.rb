@@ -36,8 +36,12 @@ class BookingsController < ApplicationController
 
     timeslot_search_params
 
+    @all_skills_by_skillcat = @all_skills.group_by(&:skillcat)
+    @timeslots = Timeslot.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).limit_to_skills(*@skills).order_for_form.uniq
 
-    @timeslots = Timeslot.open.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).limit_to_skills(*@skills).page(params[:page]).per(10)
+    @timeslots_by_time = @timeslots.group_by(&:start_time)
+    @times = Kaminari.paginate_array(@timeslots_by_time.keys).page(params[:page]).per(20)
+    @times_by_day = @times.group_by(&:to_date)
 
     respond_to do |format|
       format.html # new.html.erb

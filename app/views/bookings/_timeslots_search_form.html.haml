@@ -22,11 +22,11 @@
       Skills
     %div{style: "display: none;"}
       %table
-        - @all_skills.group_by(&:skillcat).keys.each do |skillcat|
+        - @all_skills_by_skillcat.keys.each do |skillcat|
           %tr
             %th
               = skillcat.name
-          - skillcat.skills.each do |skill|
+          - @all_skills_by_skillcat[skillcat].each do |skill|
             %tr
               %td
                 = label_tag skill.name

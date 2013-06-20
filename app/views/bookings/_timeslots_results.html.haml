@@ -1,14 +1,20 @@
 %table
-  %th Timeslot ID
-  %th Coach
-  %th Timeslot Date
-  %th Timeslot Start Time
-  %th Timeslot End Time
-  - @timeslots.each do |timeslot|
+  %tr
+    %th
+    - @coaches.each do |coach|
+      %th= coach.firstname
+  - @times_by_day.keys.each do |day|
     %tr
-      %td= timeslot.id
-      %td= timeslot.coach
-      %td= timeslot.slot_date
-      %td= timeslot.start_time.strftime("%I:%M:%S %p")
-      %td= timeslot.end_time.strftime("%I:%M:%S %p")
+      %th= day.strftime('%b %d, %Y')
+    - @times_by_day[day].each do |time|
+      %tr
+        %th= time.strftime('%l:%M %p')
+        - @coaches.each do |coach|
+          %td
+            - slot = @timeslots_by_time[time].detect{|t| t.coach == coach}
+            - if slot
+              - if slot.open?
+                = check_box_tag 'slot_ids[]', slot.id
+              - else
+                = check_box_tag 'slot_ids[]', slot.id, false, :disabled => true
 

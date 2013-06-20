@@ -1,24 +1,26 @@
 class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during which a lab coach is available
   belongs_to :issue #timeslots belong to shifts, which we are using redmine "issues" for
   belongs_to :booking
+  has_one :user, through: :issue
 
   scope :booked, lambda { { :conditions => "booking_id IS NOT NULL" } }
   scope :open, lambda { { :conditions => "booking_id IS NULL" } }
+  scope :order_for_form, joins(:issue, :user).order('issues.start_time ASC, slot_time ASC, users.id ASC')
 
   def self.limit_to_skills(*skills)
     joins(issue: {user: :skills}).where("skills.id IN (?)", skills.map(&:id))
   end
 
   def self.limit_to_coaches(*coaches)
-    joins(:issue).where("assigned_to_id IN (?)", coaches.map(&:id))
+    joins(:issue).where("issues.assigned_to_id IN (?)", coaches.map(&:id))
   end
 
   def self.from_date_time(date_time)
-    joins(:issue).where("start_time >= ?", date_time)
+    joins(:issue).where("issues.start_time >= ?", date_time)
   end
 
   def self.until_date_time(date_time)
-    joins(:issue).where("end_time <= ?", date_time)
+    joins(:issue).where("issues.end_time <= ?", date_time)
   end
 
 
