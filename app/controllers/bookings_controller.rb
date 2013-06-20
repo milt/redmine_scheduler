@@ -37,7 +37,7 @@ class BookingsController < ApplicationController
     timeslot_search_params
 
 
-    @timeslots = Timeslot.open.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).page(params[:page]).per(10)
+    @timeslots = Timeslot.open.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).limit_to_skills(*@skills).page(params[:page]).per(10)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -154,9 +154,9 @@ class BookingsController < ApplicationController
     end
 
     if params[:coach_ids]
-      @coaches = User.with_skills(*@skills).find(params[:coach_ids])
+      @coaches = User.find(params[:coach_ids])
     else
-      @coaches = User.with_skills(*@skills)
+      @coaches = @all_coaches
     end
 
   end

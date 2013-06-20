@@ -6,7 +6,7 @@ class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during whic
   scope :open, lambda { { :conditions => "booking_id IS NULL" } }
 
   def self.limit_to_skills(*skills)
-    
+    joins(issue: {user: :skills}).where("skills.id IN (?)", skills.map(&:id))
   end
 
   def self.limit_to_coaches(*coaches)

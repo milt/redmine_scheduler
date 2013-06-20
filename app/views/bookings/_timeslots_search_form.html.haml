@@ -5,15 +5,27 @@
   %p
     = label_tag :until, 'until'
     = select_datetime @until, :prefix => :until
-  %p
-    = label_tag :coach_ids
-    - @all_coaches.each do |coach|
-      = label_tag coach.name
-      = check_box_tag 'coach_ids[]', coach.id, @coaches.include?(coach) ? true : false
-  %p
-    = label_tag :skill_ids
-    - @all_skills.each do |skill|
-      = label_tag skill.name
-      = check_box_tag 'skill_ids[]', skill.id, @skills.include?(skill) ? true : false
+  %fieldset#coaches.collapsible.collapsed
+    %legend{onclick: "toggleFieldset(this);"}
+      Coaches
+    %div{style: "display: none;"}
+      %table
+        - @all_coaches.each do |coach|
+          %tr
+            %td
+              = label_tag coach.name
+            %td
+              = check_box_tag 'coach_ids[]', coach.id, @coaches.include?(coach) ? true : false
+  %fieldset#skills.collapsible.collapsed
+    %legend{onclick: "toggleFieldset(this);"}
+      Skills
+    %div{style: "display: none;"}
+      %table
+        - @all_skills.each do |skill|
+          %tr
+            %td
+              = label_tag skill.name
+            %td
+              = check_box_tag 'skill_ids[]', skill.id, @skills.include?(skill) ? true : false
   %p
     = submit_tag "Search"
