@@ -21,7 +21,7 @@ class Booking < ActiveRecord::Base
 
 
   def self.search(search)
-    where("name LIKE ?", "%#{search}%")
+    where("name LIKE ? OR project_desc LIKE ?", "%#{search}%", "%#{search}%")
   end
 
   def self.between(from_date,until_date)
