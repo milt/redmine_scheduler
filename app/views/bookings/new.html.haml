@@ -2,10 +2,10 @@
 = error_messages_for @booking
 #search_form
   = render 'timeslots_search_form'
-%table{:border => "0", :width => "1000"}
-  %tr
-    %td{:width => "700"}
-      = render 'form'
-    %td{:width => "300"}
+= render 'form'
+
 %hr
 = link_to 'Return to index...', {:action => 'index'}
+
+- content_for :header_tags do
+  - javascript_include_tag 'bookings.js', plugin: 'redmine_scheduler'

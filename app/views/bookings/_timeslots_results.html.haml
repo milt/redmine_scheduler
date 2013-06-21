@@ -14,7 +14,8 @@
             - slot = @timeslots_by_time[time].detect{|t| t.coach == coach}
             - if slot
               - if slot.open?
-                = check_box_tag 'slot_ids[]', slot.id
+                = check_box_tag 'slot_ids[]', slot.id, false, :class => 'timeslot_checkbox'
               - else
-                = check_box_tag 'slot_ids[]', slot.id, false, :disabled => true
-
+                = check_box_tag 'slot_ids[]', slot.id, false, {:disabled => true, :class => 'timeslot_checkbox'}
+:javascript
+  bindTimeslotCheckbox();

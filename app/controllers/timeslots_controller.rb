@@ -9,6 +9,15 @@ class TimeslotsController < ApplicationController
   def book
   end
 
+  def show
+    @timeslot = Timeslot.find(params[:id])
+
+    respond_to do |format|
+      format.html { render :layout => !request.xhr? }
+      format.xml { render :xml => @timeslot }
+    end
+  end
+
   def find
     #make a find for all labcoach shifts
     @shifts = Issue.lcshift
