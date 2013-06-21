@@ -19,6 +19,14 @@ class Booking < ActiveRecord::Base
   validate :cannot_update_active_without_timeslots, on: :update
   after_validation :set_apt_time, :set_coach, :set_author, on: :create
 
+  def self.between(from_date,until_date)
+    where( apt_time: from_date..until_date )
+  end
+
+  def self.with_coaches(*coaches)
+    where("coach_id IN (?)", coaches.map(&:id))
+  end
+
   def cannot_create_across_issues
     errors.add_to_base("Bookings cannot span multiple shifts.") if
           self.timeslots.map(&:issue_id).uniq.count > 1

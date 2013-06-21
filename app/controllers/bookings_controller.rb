@@ -5,29 +5,19 @@ class BookingsController < ApplicationController
   authorize_resource
 
   def index
-    find_params
+    find_index_params
 
-    if @date.nil?
-      @date = Date.today  #default selected date
-    end 
+    @bookings = Booking.between(@from,@until).with_coaches(*@coaches)
+    @booking = Booking.new
 
-    @bookings = Booking.from_date(@from).until_date(@to)
+    @active = @bookings.active.page(params[:active_page])
+    @cancelled = @bookings.cancelled.page(params[:cancelled_page])
+    @orphaned = @bookings.orphaned.page(params[:orphaned_page])
 
-    if params[:sort_by] == 'name'
-        @bookings = @bookings.sort_by(&:name)
-    end    
-    
-    if params[:sort_by] == 'coach'
-        @bookings = @bookings.sort_by(&:coach)
-    end    
-    
-    if params[:sort_by] == 'apt_time'
-        @bookings = @bookings.sort_by(&:apt_time)
-    end    
-    
-    filter_active(@bookings)
-    filter_orphaned(@bookings)
-    filter_cancelled(@bookings)
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def new
@@ -165,35 +155,50 @@ class BookingsController < ApplicationController
 
   end
 
-  def find_params
-    if params[:from].present?
+  def find_index_params
+    if params[:from]
       @from = Date.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i)
     else
       @from = Date.today
     end
 
-    if params[:to].present?
-      @to = Date.new(params[:to][:year].to_i, params[:to][:month].to_i, params[:to][:day].to_i)
+    if params[:until]
+      @until = Date.new(params[:until][:year].to_i, params[:until][:month].to_i, params[:until][:day].to_i)
     else
-      @to = Date.today + 2.weeks
+      @until = Date.today + 2.weeks
     end
+
+    @all_coaches = Group.stustaff.first.users
+
+    if params[:coach_ids]
+      @coaches = User.find(params[:coach_ids])
+    else
+      @coaches = @all_coaches
+    end
+
   end
 
-  def filter_date(bookings, date)
-    @bookings = bookings.select {|b| b.apt_time.to_date >= date}
+  def get_pages
+    params[:active_page] ? @active_page = params[:active_page].to_i : @active_page = 1
+    params[:cancelled_page] ? @cancelled_page = params[:cancelled_page].to_i : @cancelled_page = 1
+    params[:orphaned_page] ? @orphaned_page = params[:orphaned_page].to_i : @orphaned_page = 1
   end
 
-  def filter_orphaned(bookings)
-    @orph_bookings = bookings.orphaned.page(params[:page]).per(4)
-  end
+  # def filter_date(bookings, date)
+  #   @bookings = bookings.select {|b| b.apt_time.to_date >= date}
+  # end
 
-  def filter_cancelled(bookings)
-    @canc_bookings = bookings.cancelled.page(params[:page]).per(4)
-  end
+  # def filter_orphaned(bookings)
+  #   @orph_bookings = bookings.orphaned.page(params[:page]).per(4)
+  # end
 
-  def filter_active(bookings)
-    @act_bookings = bookings.active.page(params[:page]).per(4)
-  end
+  # def filter_cancelled(bookings)
+  #   @canc_bookings = bookings.cancelled.page(params[:page]).per(4)
+  # end
+
+  # def filter_active(bookings)
+  #   @act_bookings = bookings.active.page(params[:page]).per(4)
+  # end
 
   def find_timeslots
     if params[:slot_ids].present?

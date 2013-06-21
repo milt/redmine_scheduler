@@ -1,0 +1,30 @@
+- unless @bookings.active.empty?
+  %h3 Active
+  %table
+    %tr
+      %th Patron
+      %th Lab Coach
+      %th Description
+      %th At
+    = render @active
+    = paginate @active, remote: true, param_name: 'active_page'
+- unless @bookings.cancelled.empty?
+  %h3 Cancelled
+  %table
+    %tr
+      %th Patron
+      %th Lab Coach
+      %th Description
+      %th At
+    = render @cancelled
+    = paginate @cancelled, remote: true, param_name: 'cancelled_page'
+- unless @bookings.orphaned.empty?
+  %h3 Orphaned
+  %table
+    %tr
+      %th Patron
+      %th Lab Coach
+      %th Description
+      %th At
+    = render @orphaned
+    = paginate @orphaned, remote: true, param_name: 'orphaned_page'

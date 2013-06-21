@@ -1,8 +1,22 @@
-= form_tag(:action => 'index', :method => "get") do
+= form_tag({}, :method => "get", remote: true, update: ['results','search_form']) do
   %p
     = label_tag 'From'
     = select_date @from, :prefix => :from
   %p
-    = label_tag 'To'
-    = select_date @to, :prefix => :to
+    = label_tag 'Until'
+    = select_date @until, :prefix => :until
+  %p
+  %fieldset#coaches.collapsible.collapsed
+    %legend{onclick: "toggleFieldset(this);"}
+      Coaches
+    %div{style: "display: none;"}
+      %table
+        - @all_coaches.each do |coach|
+          %tr
+            %td
+              = label_tag coach.name
+            %td
+              = check_box_tag 'coach_ids[]', coach.id, @coaches.include?(coach) ? true : false, :class => 'coaches_checkbox'
+      = button_tag "Select All/None", :type => 'button', :onclick => "toggleCheckboxesBySelector($('.coaches_checkbox'));"
+
   = submit_tag("Search")

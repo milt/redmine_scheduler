@@ -1,0 +1,5 @@
+%tr
+  %td= booking.name
+  %td= booking.coach.name
+  %td= booking.project_desc
+  %td= booking.apt_time.strftime('%l:%M %p') + ", " + booking.apt_time.strftime('%b %d, %Y')
