@@ -19,6 +19,11 @@ class Booking < ActiveRecord::Base
   validate :cannot_update_active_without_timeslots, on: :update
   after_validation :set_apt_time, :set_coach, :set_author, on: :create
 
+
+  def self.search(search)
+    where("name LIKE ?", "%#{search}%")
+  end
+
   def self.between(from_date,until_date)
     where( apt_time: from_date..until_date )
   end

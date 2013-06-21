@@ -18,5 +18,8 @@
             %td
               = check_box_tag 'coach_ids[]', coach.id, @coaches.include?(coach) ? true : false, :class => 'coaches_checkbox'
       = button_tag "Select All/None", :type => 'button', :onclick => "toggleCheckboxesBySelector($('.coaches_checkbox'));"
+  %p
+    = label_tag 'For patron name'
+    = text_field_tag :search, params[:search]
 
   = submit_tag("Search")

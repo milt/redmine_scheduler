@@ -7,7 +7,7 @@ class BookingsController < ApplicationController
   def index
     find_index_params
 
-    @bookings = Booking.between(@from,@until).with_coaches(*@coaches)
+    @bookings = Booking.between(@from,@until).with_coaches(*@coaches).search(params[:search])
     @booking = Booking.new
 
     @active = @bookings.active.page(params[:active_page])
