@@ -1,18 +1,23 @@
 = form_for @booking, :url => { :action => "create" } do |f|
   #booking_attributes{style: "float:left"}
-    %p
-      = f.label :name
-      = f.text_field :name
-      = check_box_tag('me')
-      Me
-    %p
-      = f.label :phone
-      = f.text_field :phone
-    %p
-      = f.label :email
-      = f.text_field :email
-    %p= f.label :project_desc
-    %p= f.text_area :project_desc
+    %fieldset
+      %table
+        %tr
+          %th= f.label :name
+          %td
+            = f.text_field :name
+            = check_box_tag('me')
+            = label_tag 'Me'
+        %tr
+          %th= f.label :phone
+          %td= f.text_field :phone
+        %tr
+          %th= f.label :email
+          %td= f.text_field :email
+        %tr
+          %th= f.label :project_desc
+          %td= f.text_area :project_desc
+      %p= submit_tag "Create"
   #timeslot_selector{style: "float:left"}
     #no_results
     .page
@@ -20,9 +25,5 @@
         = render 'bookings/timeslots/results'
     #paginator
       = paginate @times, remote: true
-  #timeslot
-    #coach_name
-    #time
-    %ul#skills_list
-    %ul#auths_list
-  %p= submit_tag "Create"
+  #timeslot_info{style: "float:left"}
+    = render 'bookings/timeslots/timeslot'

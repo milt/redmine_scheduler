@@ -1,18 +1,19 @@
-%table
-  %tr
-    %th
-    - @coaches.each do |coach|
-      %th= coach.firstname
-  - @times_by_day.keys.each do |day|
+%fieldset
+  %table
     %tr
-      %th= day.strftime('%b %d, %Y')
-    - @times_by_day[day].each do |time|
+      %th
+      - @coaches.each do |coach|
+        %th= coach.firstname
+    - @times_by_day.keys.each do |day|
       %tr
-        %th= time.strftime('%l:%M %p')
-        - @coaches.each do |coach|
-          %td
-            - slot = @timeslots_by_time[time].detect{|t| t.coach == coach}
-            - if slot
-              = check_box_tag 'slot_ids[]', slot.id, false, :disabled => (!slot.open? ? true : false), :class => 'timeslot_checkbox', :data => render_timeslot_data(slot)
+        %th= day.strftime('%b %d, %Y')
+      - @times_by_day[day].each do |time|
+        %tr
+          %th= time.strftime('%l:%M %p')
+          - @coaches.each do |coach|
+            %td
+              - slot = @timeslots_by_time[time].detect{|t| t.coach == coach}
+              - if slot
+                = check_box_tag 'slot_ids[]', slot.id, false, :disabled => (!slot.open? ? true : false), :class => 'timeslot_checkbox', :data => render_timeslot_data(slot)
 :javascript
   bindTimeslotCheckbox();
