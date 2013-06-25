@@ -36,10 +36,3 @@
         = button_tag "Select All/None", :type => 'button', :onclick => "toggleCheckboxesBySelector($('.skills_checkbox'));"
     %p
       = submit_tag "Search"
-%p
-  = "slots: " + @timeslots.count.to_s
-  = "times: " + @times.count.to_s
-%p
-  = "from: " + @from.to_s
-%p
-  = "until: " + @until.to_s
