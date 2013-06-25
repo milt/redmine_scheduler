@@ -2,10 +2,10 @@
   %fieldset
     %p
       = label_tag :from, 'from'
-      = select_datetime @from, :prefix => :from
+      = select_datetime @from, :prefix => :from, :ampm => true
     %p
       = label_tag :until, 'until'
-      = select_datetime @until, :prefix => :until
+      = select_datetime @until, :prefix => :until, :ampm => true
     %fieldset#coaches.collapsible.collapsed
       %legend{onclick: "toggleFieldset(this);"}
         Coaches
