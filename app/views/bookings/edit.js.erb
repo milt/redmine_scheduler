@@ -1,0 +1,4 @@
+$("#no_results").html("<% if @timeslots.count < 1 %><div class='alert'>No timeslots found!</div><% end %>");
+$("#results").html("<div class='page'><%= escape_javascript(render 'bookings/timeslots/results') if @timeslots.count >= 1 %></div>");
+$("#paginator").html('<%= escape_javascript(paginate(@times, remote: true).to_s) %>');
+$("#search_form").html("<%= escape_javascript(render 'bookings/timeslots/search_form') %>");

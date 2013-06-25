@@ -14,6 +14,10 @@
             %td
               - slot = @timeslots_by_time[time].detect{|t| t.coach == coach}
               - if slot
-                = check_box_tag 'slot_ids[]', slot.id, false, :disabled => (!slot.open? ? true : false), :class => 'timeslot_checkbox', :data => render_timeslot_data(slot)
+                - case action_name
+                - when 'new'
+                  = check_box_tag 'slot_ids[]', slot.id, false, :disabled => (!slot.open? ? true : false), :class => 'timeslot_checkbox', :data => render_timeslot_data(slot)
+                - when 'edit'
+                  = check_box_tag 'slot_ids[]', slot.id, (@booking.timeslots.include?(slot)), :disabled => (!slot.open? ? true : false) && !@booking.timeslots.include?(slot), :class => 'timeslot_checkbox', :data => render_timeslot_data(slot)
 :javascript
   bindTimeslotCheckbox();

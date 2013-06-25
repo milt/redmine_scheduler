@@ -10,9 +10,9 @@ class BookingsController < ApplicationController
     @bookings = Booking.between(@from,@until).with_coaches(*@coaches).search(params[:search])
     @booking = Booking.new
 
-    @active = @bookings.active.page(params[:active_page])
-    @cancelled = @bookings.cancelled.page(params[:cancelled_page])
-    @orphaned = @bookings.orphaned.page(params[:orphaned_page])
+    @active = @bookings.active.page(params[:active_page]).per(10)
+    @cancelled = @bookings.cancelled.page(params[:cancelled_page]).per(10)
+    @orphaned = @bookings.orphaned.page(params[:orphaned_page]).per(10)
 
     respond_to do |format|
       format.html
@@ -25,13 +25,6 @@ class BookingsController < ApplicationController
     @timeslot = Timeslot.new
 
     timeslot_search_params
-
-    @all_skills_by_skillcat = @all_skills.group_by(&:skillcat)
-    @timeslots = Timeslot.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).limit_to_skills(*@skills).order_for_form.uniq
-
-    @timeslots_by_time = @timeslots.group_by(&:start_time)
-    @times = Kaminari.paginate_array(@timeslots_by_time.keys).page(params[:page]).per(20)
-    @times_by_day = @times.group_by(&:to_date)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -68,6 +61,12 @@ class BookingsController < ApplicationController
   end
 
   def edit
+    timeslot_search_params
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def update
@@ -125,13 +124,21 @@ class BookingsController < ApplicationController
       @from = DateTime.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i, params[:from][:hour].to_i, params[:from][:minute].to_i, 0, DateTime.now.zone)
       @from = DateTime.now if @from < DateTime.now
     else
-      @from = DateTime.now + 30.minutes
+      if @booking.new_record? #handle use on edit
+        @from = DateTime.now + 30.minutes
+      else
+        @from = @booking.timeslots.order(:slot_time).first.start_time - 1.hour
+      end
     end
 
     if params[:until]
       @until = DateTime.new(params[:until][:year].to_i, params[:until][:month].to_i, params[:until][:day].to_i, params[:until][:hour].to_i, params[:until][:minute].to_i, 0, DateTime.now.zone)
     else
-      @until = DateTime.now + 2.days
+      if @booking.new_record?
+        @until = DateTime.now + 2.days
+      else
+        @until = @booking.timeslots.order(:slot_time).last.end_time + 1.hour
+      end
     end
 
     if @from > @until
@@ -152,6 +159,13 @@ class BookingsController < ApplicationController
     else
       @coaches = @all_coaches
     end
+
+    @all_skills_by_skillcat = @all_skills.group_by(&:skillcat)
+    @timeslots = Timeslot.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).limit_to_skills(*@skills) #.order_for_form.uniq
+
+    @timeslots_by_time = @timeslots.group_by(&:start_time)
+    @times = Kaminari.paginate_array(@timeslots_by_time.keys).page(params[:page]).per(20)
+    @times_by_day = @times.group_by(&:to_date)
 
   end
 
@@ -183,22 +197,6 @@ class BookingsController < ApplicationController
     params[:cancelled_page] ? @cancelled_page = params[:cancelled_page].to_i : @cancelled_page = 1
     params[:orphaned_page] ? @orphaned_page = params[:orphaned_page].to_i : @orphaned_page = 1
   end
-
-  # def filter_date(bookings, date)
-  #   @bookings = bookings.select {|b| b.apt_time.to_date >= date}
-  # end
-
-  # def filter_orphaned(bookings)
-  #   @orph_bookings = bookings.orphaned.page(params[:page]).per(4)
-  # end
-
-  # def filter_cancelled(bookings)
-  #   @canc_bookings = bookings.cancelled.page(params[:page]).per(4)
-  # end
-
-  # def filter_active(bookings)
-  #   @act_bookings = bookings.active.page(params[:page]).per(4)
-  # end
 
   def find_timeslots
     if params[:slot_ids].present?
