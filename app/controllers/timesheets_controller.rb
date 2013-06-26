@@ -11,18 +11,33 @@ class TimesheetsController < ApplicationController
 
   def new
     @timesheet = Timesheet.new
-    @edit = true
-    @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week) #get list of valid weeks to make timesheets for
-    find_user #find the user to make the sheet for
-    find_selection_week_year #process the result of the week selection, creates @cweek and @year_selected
-    yearstart = find_first_monday(@year_selected) #no longer used?
-    @weekof = Date.commercial(@year_selected,@cweek,1)
-    validate_existence(@user,@weekof) #see if there is an existing timesheet
-    find_entries_by_day(@weekof) # pull entries for viewing/editing
-    find_shifts_by_day(@weekof) # pull shifts for adding time entries
-    get_goals(@user)
-    get_tasks(@user)
+
+    params[:user] ? @user = User.find(params[:user]) : @user = User.current
+    params[:weekof] ? @weekof = Date.parse(params[:weekof]) : @weekof = Date.today.beginning_of_week
+
+    @entries_by_day = @user.time_entries.on_tyear(@weekof.year).on_tweek(@weekof.cweek).group_by(&:spent_on)
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
+
   end
+
+  # def new
+  #   @timesheet = Timesheet.new
+  #   @edit = true
+  #   @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week) #get list of valid weeks to make timesheets for
+  #   find_user #find the user to make the sheet for
+  #   find_selection_week_year #process the result of the week selection, creates @cweek and @year_selected
+  #   yearstart = find_first_monday(@year_selected) #no longer used?
+  #   @weekof = Date.commercial(@year_selected,@cweek,1)
+  #   validate_existence(@user,@weekof) #see if there is an existing timesheet
+  #   find_entries_by_day(@weekof) # pull entries for viewing/editing
+  #   find_shifts_by_day(@weekof) # pull shifts for adding time entries
+  #   get_goals(@user)
+  #   get_tasks(@user)
+  # end
 
   def create
     find_selection_week

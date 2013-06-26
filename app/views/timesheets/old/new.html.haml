@@ -1,0 +1,29 @@
+%br/
+%h2
+  New Timesheet for #{@user.name}
+= form_tag do
+  = select_tag :week_sel, options_for_select(@past_weeks,params[:week_sel])
+  = hidden_field_tag 'user', @user.id.to_s
+  = submit_tag "Update"
+%br/
+= render 'entries_shifts_by_weekdays'
+%br/
+= render 'tasks', :tasks => @tasks
+%br/
+= render 'goals', :goals => @goals
+%br/
+:javascript
+  function directsubmitcheck(){
+    if (document.getElementById("creatensubmit").checked == true){
+      if (confirm('Are you sure you want to directly submit your timesheet?') == false){
+        document.getElementById("creatensubmit").checked = false
+      }
+    }else{
+      
+    }
+  }
+= form_for @timesheet, :url => {:action => 'create', :weekof => @weekof, :user => @user.id} do |f|
+  %p
+    = check_box_tag 'creatensubmit','yes'
+    = label_tag "Immediate Submission, note: there will be no draft created in this case"
+  %p= submit_tag "Create", :onclick => "return directsubmitcheck();"

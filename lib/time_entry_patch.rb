@@ -31,6 +31,10 @@ module TimeEntryPatch
           Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.present?  
       end
 
+      def self.unpaid
+        where(timesheet_id: nil)
+      end
+
     end
 
   end
@@ -40,6 +44,11 @@ module TimeEntryPatch
   end
 
   module InstanceMethods
+
+    def week_spent_on
+      "Week Beginning " + self.spent_on.beginning_of_week.strftime('%b %d, %Y')
+    end
+
     def cweek
       self.spent_on.cweek
     end

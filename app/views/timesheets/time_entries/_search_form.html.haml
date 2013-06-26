@@ -1,0 +1,6 @@
+= form_tag( {}, :method => "get", remote: true, update: 'results') do
+  - if User.current.is_admstaff?
+    = select_tag :user, options_from_collection_for_select(Group.stustaff.first.users.active, :id, :name, @user.id), onchange: "$(this).parent('form').submit();"
+  = label_tag :weekof, "Week Beginning: "
+  = select_tag :weekof, options_from_collection_for_select(weeks_for_select, :to_s, :to_s, @weekof.to_s), onchange: "$(this).parent('form').submit();"
+%hr

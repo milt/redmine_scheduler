@@ -1,0 +1,15 @@
+%h3 Timesheet for #{@user.name} : Week of Monday, #{@weekof.strftime('%b %d, %Y')}
+%p
+  User
+  = @user.name
+%p
+  Weekof
+  = @weekof.to_s
+= @entries_by_day.inspect
+
+- days_in_week.each do |day|
+  %h4= day.strftime('%b %d, %Y')
+  - unless @entries_by_day.empty?
+    %ul
+      - @entries_by_day[day].each do |entry|
+        %li= entry.id
