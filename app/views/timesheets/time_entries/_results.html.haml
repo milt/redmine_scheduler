@@ -3,6 +3,9 @@
 - days_in_week.each do |day|
   %hr
   %h3= day.strftime('%A, %b %d, %Y')
+  #issues_for_day{data: {role: 'collabsible'}}
+    %legend{onclick: "(this).parent.toggle();"} Issues
+    FOO
   .time-entries-on-day{ style: 'float:left' }
     - if @time_entries.ondate(day).empty?
       %p No entries for this day.
