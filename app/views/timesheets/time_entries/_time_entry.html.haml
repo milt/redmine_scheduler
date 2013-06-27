@@ -5,3 +5,6 @@
   %td= time_entry.hours.to_s
   %td= time_entry.activity.name
   %td= time_entry.comments.truncate(20)
+  %td
+    = link_to image_tag('edit.png'), edit_time_entry_path(time_entry, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}")
+    = link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => time_entry, :back_url => "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}, :confirm => l(:text_are_you_sure), :method => :delete

@@ -1,14 +1,25 @@
 %h3 Timesheet for #{@user.name} : Week of Monday, #{@weekof.strftime('%b %d, %Y')}
 
 - days_in_week.each do |day|
-  %h3= day.strftime('%b %d, %Y')
-  %table
-    %tr
-      %th ID
-      %th Project
-      %th Shift/Issue
-      %th Hours
-      %th Activity
-      %th Comments
-    - @time_entries.ondate(day).each do |entry|
-      = render 'timesheets/time_entries/time_entry', time_entry: entry
+  %hr
+  %h3= day.strftime('%A, %b %d, %Y')
+  .time-entries-on-day{ style: 'float:left' }
+    - if @time_entries.ondate(day).empty?
+      %p No entries for this day.
+    - else
+      %table.list
+        %tr
+          %th ID
+          %th Project
+          %th Shift/Issue
+          %th Hours
+          %th Activity
+          %th Comments
+          %th Actions
+        - @time_entries.ondate(day).each do |entry|
+          = render 'timesheets/time_entries/time_entry', time_entry: entry
+  .hours-on-day{ style: 'float:right' }
+    %h3= @time_entries.ondate(day).sum(&:hours).to_s + " Hours"
+%hr
+.total-hours{ style: 'float:right' }
+  %h3 Total: #{@time_entries.sum(&:hours).to_s} Hours
