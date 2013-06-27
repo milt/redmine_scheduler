@@ -15,7 +15,7 @@ class TimesheetsController < ApplicationController
     params[:user] ? @user = User.find(params[:user]) : @user = User.current
     params[:weekof] ? @weekof = Date.parse(params[:weekof]) : @weekof = Date.today.beginning_of_week
 
-    @entries_by_day = @user.time_entries.on_tyear(@weekof.year).on_tweek(@weekof.cweek).group_by(&:spent_on)
+    @time_entries = @user.time_entries.on_tyear(@weekof.year).on_tweek(@weekof.cweek)
 
     respond_to do |format|
       format.html

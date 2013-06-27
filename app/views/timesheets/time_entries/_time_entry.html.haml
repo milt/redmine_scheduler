@@ -1,0 +1,7 @@
+%tr
+  %td= time_entry.id.to_s
+  %td= time_entry.project.name
+  %td= time_entry.issue.subject.truncate(20)
+  %td= time_entry.hours.to_s
+  %td= time_entry.activity.name
+  %td= time_entry.comments.truncate(20)
