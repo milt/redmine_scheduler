@@ -45,6 +45,10 @@ module IssuePatch
       def self.with_skills(*skills)
         joins(:assigned_to).merge(User.with_skills(*skills))
       end
+
+      def self.shifts
+        where("tracker_id = ? OR tracker_id = ?", Tracker.fdshift_track.first.id, Tracker.lcshift_track.first.id)
+      end
     end
 
   end

@@ -4,3 +4,7 @@
   = render 'timesheets/time_entries/search_form'
 #results
   = render 'timesheets/time_entries/results'
+- content_for :header_tags do
+  = stylesheet_link_tag 'timesheets', :plugin => 'redmine_scheduler'
+= form_for @timesheet, :url => { :action => "create" } do |f|
+  = f.submit "Create"

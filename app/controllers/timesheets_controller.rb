@@ -16,6 +16,9 @@ class TimesheetsController < ApplicationController
     params[:weekof] ? @weekof = Date.parse(params[:weekof]) : @weekof = Date.today.beginning_of_week
 
     @time_entries = @user.time_entries.on_tyear(@weekof.year).on_tweek(@weekof.cweek)
+    @shifts = Issue.shifts.from_date(@weekof).until_date(@weekof + 6.days)
+    @fd_shifts = @shifts.fdshift
+    @lc_shifts = @shifts.lcshift.foruser(@user)
 
     respond_to do |format|
       format.html
