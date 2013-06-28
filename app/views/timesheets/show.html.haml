@@ -36,6 +36,8 @@
 .total-hours
   %h3 Total: #{@time_entries.sum(&:hours).to_s} Hours
   %h3 Wage: $#{@timesheet.user.wage.amount.to_s}0/hr
+%p
+  = link_to "Return to Index...", timesheets_path
 
 - content_for :header_tags do
   = stylesheet_link_tag 'timesheets', :plugin => 'redmine_scheduler'

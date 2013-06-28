@@ -1,0 +1,9 @@
+%h2 Timesheets
+#search-form
+  = render 'search_form'
+#timesheets-table
+  = render 'table'
+
+- content_for :header_tags do
+  = stylesheet_link_tag 'timesheets', :plugin => 'redmine_scheduler'
+  = javascript_include_tag 'redmine_scheduler', :plugin => 'redmine_scheduler'

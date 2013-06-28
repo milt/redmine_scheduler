@@ -1,0 +1,2 @@
+= form_tag( {}, method: 'get', remote: true, update: ['timesheets-table', 'search-form']) do
+  = select_tag :user, options_from_collection_for_select(Group.stustaff.first.users, :id, :name, params[:user]), onchange: "$(this).parent('form').submit();"

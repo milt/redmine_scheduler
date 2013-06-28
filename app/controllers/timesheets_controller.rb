@@ -5,8 +5,19 @@ class TimesheetsController < ApplicationController
   before_filter :wage_check, :except => [:approve,:delete,:reject]
 
   def index
-    @submitted = @timesheets.is_submitted.is_not_approved
-    @approved = @timesheets.is_submitted.is_approved
+    if params[:user]
+      @user = User.find(params[:user])
+      @timesheets = @timesheets.for_user(@user)
+    end
+
+    @submitted = @timesheets.is_submitted.is_not_approved.page(params[:submitted_page]).per(1)
+    @approved = @timesheets.is_submitted.is_approved.page(params[:approved_page])
+    @rejected = @timesheets.rejected.page(params[:rejected_page])
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def new

@@ -42,6 +42,10 @@ class Timesheet < ActiveRecord::Base
   scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
   scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
+  def self.rejected
+    where(submitted: nil, approved: nil)
+  end
+
   @@state_actions = {
     :draft      => {
       :admin => [['Edit', :edit], ['Delete', :delete], ['Submit', :submit]],
@@ -220,13 +224,18 @@ class Timesheet < ActiveRecord::Base
   end
 
   def reject_now
-    if self.release
-      self.submitted = nil
-      return true
-    else
-      return false
-    end
+    self.time_entries.clear
+    self.submitted = self.approved = nil
+    self.save
   end
+  # def reject_now
+  #   if self.release
+  #     self.submitted = nil
+  #     return true
+  #   else
+  #     return false
+  #   end
+  # end
 
   def approve_now
     self.approved = DateTime.now
