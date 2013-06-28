@@ -27,8 +27,8 @@
 .timesheet-metadata
   - if @timesheet.submitted?
     %h3 Submitted: #{@timesheet.submitted}
-  - if @timesheet.printed?
-    %h3 Last Printed: #{@timesheet.printed}
+  - if @timesheet.print_date?
+    %h3 Last Printed: #{@timesheet.print_date}
   - if @timesheet.approved?
     %h3 Approved: #{@timesheet.approved}
   - if @timesheet.notes?
