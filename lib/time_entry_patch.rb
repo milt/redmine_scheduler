@@ -35,6 +35,10 @@ module TimeEntryPatch
         where(timesheet_id: nil)
       end
 
+      def self.on_week(week)
+        where("spent_on IN (?)", (week.to_date..(week.to_date + 6.days)).to_a)
+      end
+
     end
 
   end

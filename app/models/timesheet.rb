@@ -3,7 +3,7 @@ class Timesheet < ActiveRecord::Base
   has_many :time_entries, :dependent => :nullify
   belongs_to :user       # possible to divide user between employee and staff/boss?
   has_one :wage, :through => :user
-  attr_accessible :submitted, :approved    #not sure if necessary
+  attr_accessible :submitted, :approved, :user_id, :weekof, :notes    #not sure if necessary
 
   validates :user_id, uniqueness: {scope: :weekof, message: "User can only have one timesheet per pay period"}
   #validates_presence_of :user_id, :pay_period #, :print_date
@@ -14,6 +14,8 @@ class Timesheet < ActiveRecord::Base
   #   :message => "Cannot submit before print."
 
   validates :submitted, presence: true, :on => :update, if: "approved.present?"
+
+  before_create :submit_now
 
   default_scope :order => 'weekof ASC'
   scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
@@ -204,13 +206,17 @@ class Timesheet < ActiveRecord::Base
     self.print_date = DateTime.now
   end
 
+  # def submit_now
+  #   if self.commit
+  #     self.submitted = DateTime.now
+  #     return true
+  #   else
+  #    return false
+  #   end
+  # end
+
   def submit_now
-    if self.commit
-      self.submitted = DateTime.now
-      return true
-    else
-     return false
-    end
+    self.submitted = DateTime.now
   end
 
   def reject_now

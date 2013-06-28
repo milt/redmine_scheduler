@@ -47,3 +47,4 @@
         %h3= @time_entries.ondate(day).sum(&:hours).to_s + " Hours"
 .total-hours
   %h3 Total: #{@time_entries.sum(&:hours).to_s} Hours
+  %h3 Wage: $#{@user.wage.amount.to_s}0/hr

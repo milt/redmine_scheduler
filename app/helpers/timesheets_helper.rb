@@ -7,7 +7,7 @@ module TimesheetsHelper
   end
 
   def days_in_week
-    (@weekof..(@weekof + 6.days)).to_a
+    (@weekof.to_date..(@weekof.to_date + 6.days)).to_a
   end
 
 end

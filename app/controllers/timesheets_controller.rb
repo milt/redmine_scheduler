@@ -12,10 +12,20 @@ class TimesheetsController < ApplicationController
   def new
     @timesheet = Timesheet.new
 
-    params[:user] ? @user = User.find(params[:user]) : @user = User.current
+    if params[:user]
+      @user = User.find(params[:user])
+    else
+      if User.current.is_admstaff?
+        @user = Group.stustaff.first.users.first
+      else
+        @user = User.current
+      end
+    end
+
     params[:weekof] ? @weekof = Date.parse(params[:weekof]) : @weekof = Date.today.beginning_of_week
 
     @time_entries = @user.time_entries.on_tyear(@weekof.year).on_tweek(@weekof.cweek)
+
     @shifts = Issue.shifts.from_date(@weekof).until_date(@weekof + 6.days)
     @fd_shifts = @shifts.fdshift
     @lc_shifts = @shifts.lcshift.foruser(@user)
@@ -42,23 +52,54 @@ class TimesheetsController < ApplicationController
   #   get_tasks(@user)
   # end
 
-  def create
-    find_selection_week
-    find_user
-    timesheet = Timesheet.new
-    timesheet.user = @user
-    timesheet.weekof = @weekof
+  # def create
+  #   find_selection_week
+  #   find_user
+  #   timesheet = Timesheet.new
+  #   timesheet.user = @user
+  #   timesheet.weekof = @weekof
 
-    if timesheet.save
-      if params[:creatensubmit] == 'yes'
-        @timesheet = timesheet
-        submit  
-      else
-        redirect_to :action => 'index'
-      end
+  #   if timesheet.save
+  #     if params[:creatensubmit] == 'yes'
+  #       @timesheet = timesheet
+  #       submit  
+  #     else
+  #       redirect_to :action => 'index'
+  #     end
+  #   else
+  #     flash[:warning] = "Could not save. Errors: " + timesheet.errors.full_messages.join(", ") #'Invalid Options... Try again!'
+  #     redirect_to action: 'new', timesheet: {user_id: @user, weekof: @weekof}
+  #   end
+  # end
+
+  def create
+    @timesheet = Timesheet.new(params[:timesheet])
+    @timesheet.user = User.find(params[:user])
+    @timesheet.weekof = params[:weekof]
+    @timesheet.time_entries = @timesheet.user.time_entries.on_week(@timesheet.weekof)
+
+    if @timesheet.save
+      flash[:notice] = 'Timesheet submitted. Please print it out and submit it to the manager.'
+      redirect_to @timesheet
     else
-      flash[:warning] = "Could not save. Errors: " + timesheet.errors.full_messages.join(", ") #'Invalid Options... Try again!'
-      redirect_to action: 'new', timesheet: {user_id: @user, weekof: @weekof}
+      flash[:warning] = "Timesheet could not be saved: #{@timesheet.errors.full_messages}"
+      redirect_to action: 'new', user: @user, weekof: @timesheet.weekof
+    end
+  end
+
+  def show
+
+    if @timesheet.time_entries.empty?
+      @time_entries = @timesheet.user.time_entries.on_week(@timesheet.weekof)
+    else
+      @time_entries = @timesheet.time_entries
+    end
+
+    @weekof = @timesheet.weekof
+
+    respond_to do |format|
+      format.html
+      format.pdf { render :layout => false }
     end
   end
 
@@ -71,22 +112,22 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  def show
-    @show = true
-    @year_selected = @timesheet.weekof.year
-    @cweek = @timesheet.weekof.to_date.cweek
-    find_entries_by_day(@weekof)
-    if @timesheet.approved.present?
-      @wage = @timesheet.approve_time_wage.to_s
-    else
-      @wage = @timesheet.user.wage.amount.to_s
-    end
+  # def show
+  #   @show = true
+  #   @year_selected = @timesheet.weekof.year
+  #   @cweek = @timesheet.weekof.to_date.cweek
+  #   find_entries_by_day(@weekof)
+  #   if @timesheet.approved.present?
+  #     @wage = @timesheet.approve_time_wage.to_s
+  #   else
+  #     @wage = @timesheet.user.wage.amount.to_s
+  #   end
 
-    respond_to do |format|
-      format.html
-      format.pdf { render :layout => false }
-    end
-  end
+  #   respond_to do |format|
+  #     format.html
+  #     format.pdf { render :layout => false }
+  #   end
+  # end
 
   def edit
     @edit = true
