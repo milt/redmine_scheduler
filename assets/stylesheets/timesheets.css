@@ -1,6 +1,6 @@
 .day {
   clear:both;
-  overflow:scroll;
+  overflow:auto;
 }
 
 .day-left {
