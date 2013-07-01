@@ -35,7 +35,9 @@ class TimesheetsController < ApplicationController
 
     params[:weekof] ? @weekof = Date.parse(params[:weekof]) : @weekof = Date.today.beginning_of_week
 
-    @time_entries = @user.time_entries.on_tyear(@weekof.year).on_tweek(@weekof.cweek)
+    @time_entries = @user.time_entries.on_week(@weekof).not_on_timesheet
+
+    @previous_sheets = @user.timesheets.weekof_on(@weekof)
 
     @shifts = Issue.shifts.from_date(@weekof).until_date(@weekof + 6.days)
     @fd_shifts = @shifts.fdshift
@@ -86,8 +88,8 @@ class TimesheetsController < ApplicationController
   def create
     @timesheet = Timesheet.new(params[:timesheet])
     @timesheet.user = User.find(params[:user])
-    @timesheet.weekof = params[:weekof]
-    @timesheet.time_entries = @timesheet.user.time_entries.on_week(@timesheet.weekof)
+    @timesheet.weekof = Date.parse(params[:weekof])
+    @timesheet.commit_time_entries
 
     if @timesheet.save
       flash[:notice] = 'Timesheet submitted. Please print it out and submit it to the manager.'

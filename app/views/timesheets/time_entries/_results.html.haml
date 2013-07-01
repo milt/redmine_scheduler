@@ -1,5 +1,8 @@
 %h3 Timesheet for #{@user.name} : Week of Monday, #{@weekof.strftime('%b %d, %Y')}
 
+- if @previous_sheets
+  = @previous_sheets.count
+
 - days_in_week.each do |day|
   .box.day
     .day-left

@@ -2,7 +2,7 @@ module TimesheetsHelper
   
   def weeks_for_select
     weeks = []
-    (Date.today - 1.year).step(Date.today, 7) {|d| weeks << d.beginning_of_week }
+    (Date.today - 52.weeks).step(Date.today, 7) {|d| weeks << d.beginning_of_week }
     return weeks
   end
 

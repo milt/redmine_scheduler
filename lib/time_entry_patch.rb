@@ -17,26 +17,26 @@ module TimeEntryPatch
       scope :on_tyear, lambda {|d| { :conditions => ["tyear = ?", d] } }
       scope :sort_by_date, :order => "spent_on ASC"
       scope :last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
-      validate :cannot_create_if_timesheet_exists, on: :create
+      #validate :cannot_create_if_timesheet_exists, on: :create
       validate :locked_when_attached_to_timesheet, on: :update
 
       
       def locked_when_attached_to_timesheet
-        errors.add_to_base("Cannot edit because this time entry is attached to timesheet #{self.timesheet_id}.") if
-          Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.present?
+        errors[:base] << "Cannot edit because this time entry is attached to timesheet #{self.timesheet_id}." unless
+          timesheet_id_was == nil || timesheet_id.nil?
       end
 
       def cannot_create_if_timesheet_exists
-        errors.add_to_base("Cannot create time entry because there is already a timesheet submitted for the given week: #{Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.first.id}") if
+        errors[:base] << "Cannot create time entry because there is already a timesheet submitted for the given week: #{Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.first.id}" if
           Timesheet.for_user(self.user).weekof_on(self.spent_on.monday).is_submitted.present?  
       end
 
-      def self.unpaid
+      def self.not_on_timesheet
         where(timesheet_id: nil)
       end
 
       def self.on_week(week)
-        where("spent_on IN (?)", (week.to_date..(week.to_date + 6.days)).to_a)
+        where("spent_on IN (?)", (week..(week + 6.days)).to_a)
       end
 
     end

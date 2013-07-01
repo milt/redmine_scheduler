@@ -5,7 +5,7 @@ class Timesheet < ActiveRecord::Base
   has_one :wage, :through => :user
   attr_accessible :submitted, :approved, :user_id, :weekof, :notes    #not sure if necessary
 
-  validates :user_id, uniqueness: {scope: :weekof, message: "User can only have one timesheet per pay period"}
+  #validates :user_id, uniqueness: {scope: :weekof, message: "User can only have one timesheet per pay period"}
   #validates_presence_of :user_id, :pay_period #, :print_date
   validates :user_id, :weekof, presence: true
   # validates_presence_of :print_date,
@@ -154,13 +154,8 @@ class Timesheet < ActiveRecord::Base
   end
 
   #commit time entries to timesheet:
-  def commit
-    if self.time_entries.empty? && !self.entries_for_week.empty?
-      self.time_entries += self.entries_for_week
-      return true
-    else
-      return false
-    end
+  def commit_time_entries
+    self.time_entries = user.time_entries.not_on_timesheet.on_week(weekof)
   end
   
   #release entries from the sheet.

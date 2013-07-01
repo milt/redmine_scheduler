@@ -7,6 +7,14 @@
     %th Hours
     %th Submitted At
     %th Approved At
+    %th Actions
+  - if @rejected.present?
+    %tr
+      %th{rowspan: "#{(@rejected.count + 1).to_s}"} Rejected
+    = render @rejected
+    - if @rejected.num_pages > 1
+      %tr
+        %th.paginator{colspan: "7"}= paginate @rejected, remote: true, param_name: 'rejected_page'
   - if @submitted.present?
     %tr
       %th{rowspan: "#{(@submitted.count + 1).to_s}"} Submitted
@@ -21,10 +29,3 @@
     - if @approved.num_pages > 1
       %tr
         %th.paginator{colspan: "7"}= paginate @approved, remote: true, param_name: 'approved_page'
-  - if @rejected.present?
-    %tr
-      %th{rowspan: "#{(@rejected.count + 1).to_s}"} Rejected
-    = render @rejected
-    - if @rejected.num_pages > 1
-      %tr
-        %th.paginator{colspan: "7"}= paginate @rejected, remote: true, param_name: 'rejected_page'

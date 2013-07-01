@@ -8,7 +8,7 @@ module IssuePatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
-      has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
+      has_many :timeslots, :inverse_of => :issue, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
       has_many :bookings, :through => :timeslots, :dependent => :destroy
       has_one :repair, :dependent => :nullify
       safe_attributes 'start_time', 'end_time' #since our migration adds start_time and end_time to issues for use as shifts, we need to mark these as safe for editing.
@@ -183,7 +183,8 @@ module IssuePatch
     end
     
     def create_timeslots #generate timeslots for this shift
-      self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
+      #self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
+      self.shift_duration_index.times {|i| timeslots.create(slot_time: i)}
     end
     
     def recreate_timeslots # for now, just orphans all bookings and runs create again.
