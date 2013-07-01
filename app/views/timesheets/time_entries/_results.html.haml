@@ -1,7 +1,18 @@
 %h3 Timesheet for #{@user.name} : Week of Monday, #{@weekof.strftime('%b %d, %Y')}
 
-- if @previous_sheets
-  = @previous_sheets.count
+- unless @previous_sheets.empty?
+  #previous-sheets
+    %h4 Previous Timesheets for this Week:
+    %table.list
+      %tr
+        %th Staff Name
+        %th Week Of
+        %th Notes
+        %th Hours
+        %th Submitted At
+        %th Approved At
+        %th Actions
+      = render @previous_sheets
 
 - days_in_week.each do |day|
   .box.day
