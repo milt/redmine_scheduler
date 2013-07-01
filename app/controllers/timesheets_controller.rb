@@ -10,7 +10,7 @@ class TimesheetsController < ApplicationController
       @timesheets = @timesheets.for_user(@user)
     end
 
-    @submitted = @timesheets.is_submitted.is_not_approved.page(params[:submitted_page]).per(1)
+    @submitted = @timesheets.is_submitted.is_not_approved.page(params[:submitted_page])
     @approved = @timesheets.is_submitted.is_approved.page(params[:approved_page])
     @rejected = @timesheets.rejected.page(params[:rejected_page])
 
