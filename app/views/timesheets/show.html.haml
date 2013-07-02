@@ -1,4 +1,5 @@
 %h3 Timesheet for #{@timesheet.user.name} : Week of Monday, #{@timesheet.weekof.strftime('%b %d, %Y')}
+= render 'actions', timesheet: @timesheet
 
 - days_in_week.each do |day|
   .box.day

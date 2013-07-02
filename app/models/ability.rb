@@ -9,7 +9,16 @@ class Ability
       can :manage, Skill
       can :manage, Skillcat
       can :manage, Wage
-      can :manage, Timesheet
+      can [:read, :create, :print], Timesheet
+
+      can [:approve, :reject], Timesheet do |timesheet|
+        timesheet.submitted_not_approved?
+      end
+
+      can [:edit, :update, :submit, :delete], Timesheet do |timesheet|
+        timesheet.rejected?
+      end
+
       can :manage, Timeslot
       can :manage, Booking
       can :manage, Level
@@ -24,7 +33,13 @@ class Ability
       can [:index, :student_levels], :prostaff
       can [:index,:grab], :command
     elsif user.is_stustaff?
-      can [:create, :read, :update, :destroy, :submit, :print], Timesheet, :user_id => user.id
+
+      can [:create, :read, :print], Timesheet, :user_id => user.id
+
+      can [:edit, :update, :submit, :delete], Timesheet do |timesheet|
+        timesheet.rejected? && (timesheet.user == user)
+      end
+
       can :find, Timeslot
       can :manage, Booking
       can [:create, :read], Repair

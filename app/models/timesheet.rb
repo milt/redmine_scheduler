@@ -188,7 +188,6 @@ class Timesheet < ActiveRecord::Base
   def reject_now
     self.time_entries.clear
     self.submitted = self.approved = nil
-    self.save
   end
   # def reject_now
   #   if self.release

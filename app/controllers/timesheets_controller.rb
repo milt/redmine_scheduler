@@ -142,13 +142,16 @@ class TimesheetsController < ApplicationController
   #   end
   # end
 
+  # def edit
+  #   @edit = true
+  #   @weekof = @timesheet.weekof.to_date
+  #   @year_selected = @timesheet.weekof.year
+  #   @cweek = @timesheet.weekof.to_date.cweek
+  #   find_entries_by_day(@weekof)
+  #   find_shifts_by_day(@weekof)
+  # end
+
   def edit
-    @edit = true
-    @weekof = @timesheet.weekof.to_date
-    @year_selected = @timesheet.weekof.year
-    @cweek = @timesheet.weekof.to_date.cweek
-    find_entries_by_day(@weekof)
-    find_shifts_by_day(@weekof)
   end
 
   def update
@@ -176,12 +179,21 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  def delete
-    if @timesheet.status != :draft
-      require_admstaff
-    end
+  # def delete
 
-    if @timesheet.delete_now && @timesheet.save
+  #   if @timesheet.delete_now && @timesheet.save
+  #     flash[:notice] = "Timesheet has been successfully deleted!"
+  #     redirect_to :action => 'index'
+  #   else
+  #     flash[:warning] = "An error occurred when deleting the timesheet.."
+  #     redirect_to :action => 'index'
+  #   end
+  # end
+
+  def delete
+    @timesheet.destroy
+
+    if @timesheet.save
       flash[:notice] = "Timesheet has been successfully deleted!"
       redirect_to :action => 'index'
     else
@@ -191,7 +203,9 @@ class TimesheetsController < ApplicationController
   end
 
   def reject
-    if @timesheet.reject_now && @timesheet.save
+    @timesheet.reject_now
+
+    if @timesheet.save
       flash[:notice] = "Timesheet successfully rejected"
       redirect_to :action => 'index'
     else

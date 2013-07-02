@@ -25,3 +25,11 @@
 #previous-sheets {
   width:50%;
 }
+
+.timesheet-actions div {
+  float:left;
+}
+
+.actions {
+  overflow:auto;
+}
