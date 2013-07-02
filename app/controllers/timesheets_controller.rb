@@ -47,43 +47,7 @@ class TimesheetsController < ApplicationController
       format.html
       format.js
     end
-
   end
-
-  # def new
-  #   @timesheet = Timesheet.new
-  #   @edit = true
-  #   @past_weeks = dates(Date.today.beginning_of_week, (Date.today-365.day).beginning_of_week) #get list of valid weeks to make timesheets for
-  #   find_user #find the user to make the sheet for
-  #   find_selection_week_year #process the result of the week selection, creates @cweek and @year_selected
-  #   yearstart = find_first_monday(@year_selected) #no longer used?
-  #   @weekof = Date.commercial(@year_selected,@cweek,1)
-  #   validate_existence(@user,@weekof) #see if there is an existing timesheet
-  #   find_entries_by_day(@weekof) # pull entries for viewing/editing
-  #   find_shifts_by_day(@weekof) # pull shifts for adding time entries
-  #   get_goals(@user)
-  #   get_tasks(@user)
-  # end
-
-  # def create
-  #   find_selection_week
-  #   find_user
-  #   timesheet = Timesheet.new
-  #   timesheet.user = @user
-  #   timesheet.weekof = @weekof
-
-  #   if timesheet.save
-  #     if params[:creatensubmit] == 'yes'
-  #       @timesheet = timesheet
-  #       submit  
-  #     else
-  #       redirect_to :action => 'index'
-  #     end
-  #   else
-  #     flash[:warning] = "Could not save. Errors: " + timesheet.errors.full_messages.join(", ") #'Invalid Options... Try again!'
-  #     redirect_to action: 'new', timesheet: {user_id: @user, weekof: @weekof}
-  #   end
-  # end
 
   def create
     @timesheet = Timesheet.new(params[:timesheet])
@@ -125,36 +89,36 @@ class TimesheetsController < ApplicationController
     end
   end
 
-  # def show
-  #   @show = true
-  #   @year_selected = @timesheet.weekof.year
-  #   @cweek = @timesheet.weekof.to_date.cweek
-  #   find_entries_by_day(@weekof)
-  #   if @timesheet.approved.present?
-  #     @wage = @timesheet.approve_time_wage.to_s
-  #   else
-  #     @wage = @timesheet.user.wage.amount.to_s
-  #   end
-
-  #   respond_to do |format|
-  #     format.html
-  #     format.pdf { render :layout => false }
-  #   end
-  # end
-
-  # def edit
-  #   @edit = true
-  #   @weekof = @timesheet.weekof.to_date
-  #   @year_selected = @timesheet.weekof.year
-  #   @cweek = @timesheet.weekof.to_date.cweek
-  #   find_entries_by_day(@weekof)
-  #   find_shifts_by_day(@weekof)
-  # end
-
   def edit
+    @user = @timesheet.user
+
+    @weekof = @timesheet.weekof
+
+    @time_entries = @user.time_entries.on_week(@weekof).not_on_timesheet
+
+    @previous_sheets = []
+
+    @shifts = Issue.shifts.from_date(@weekof).until_date(@weekof + 6.days)
+    @fd_shifts = @shifts.fdshift
+    @lc_shifts = @shifts.lcshift.foruser(@user)
+
+    respond_to do |format|
+      format.html
+      #format.js
+    end
   end
 
   def update
+    @timesheet.commit_time_entries
+    @timesheet.submit_now
+
+    if @timesheet.update_attributes(params[:timesheet])
+      flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully resubmitted."
+      redirect_to @timesheet
+    else
+      flash[:warning] = "Could not save. Errors: " + timesheet.errors.full_messages.join(", ")
+      redirect_to edit_timesheet_path(@timesheet)
+    end
   end
 
   def submit
@@ -178,17 +142,6 @@ class TimesheetsController < ApplicationController
       redirect_to :action => 'index'
     end
   end
-
-  # def delete
-
-  #   if @timesheet.delete_now && @timesheet.save
-  #     flash[:notice] = "Timesheet has been successfully deleted!"
-  #     redirect_to :action => 'index'
-  #   else
-  #     flash[:warning] = "An error occurred when deleting the timesheet.."
-  #     redirect_to :action => 'index'
-  #   end
-  # end
 
   def delete
     @timesheet.destroy

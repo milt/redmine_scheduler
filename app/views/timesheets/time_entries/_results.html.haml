@@ -55,7 +55,7 @@
         .add-time
           %p
             Log time on #{day.strftime('%A')}
-            = link_to image_tag('time_add.png'), {controller: 'timelog', action: 'new', time_entry: {project_id: nil, spent_on: day}, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}
+            = link_to image_tag('time_add.png'), {controller: 'timelog', action: 'new', time_entry: {user_id: @user.id, project_id: nil, spent_on: day}, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}
     .day-right
       .hours-on-day
         %h3= @time_entries.ondate(day).sum(&:hours).to_s + " Hours"
