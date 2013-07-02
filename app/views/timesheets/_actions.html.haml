@@ -1,0 +1,9 @@
+- if timesheet.submitted_not_approved?
+  - if can? :show, timesheet
+    = link_to "Show", timesheet_path(timesheet)
+  - if can? :print, timesheet
+    = link_to "Print", print_timesheet_path(timesheet)
+  - if can? :approve, timesheet
+    = link_to "Approve", approve_timesheet_path(timesheet), method: :put
+  - if can? :reject, timesheet
+    = link_to "Reject", reject_timesheet_path(timesheet), method: :put, confirm: "Are you sure you want to reject #{timesheet.user.name}'s timesheet for #{timesheet.weekof.to_s}?"

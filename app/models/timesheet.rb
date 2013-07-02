@@ -46,49 +46,16 @@ class Timesheet < ActiveRecord::Base
     where(submitted: nil, approved: nil)
   end
 
-  @@state_actions = {
-    :draft      => {
-      :admin => [['Edit', :edit], ['Delete', :delete], ['Submit', :submit]],
-      :staff => [['Edit', :edit], ['Delete', :delete], ['Submit', :submit]]
-    },
-    :submitted  => {
-      :admin => [['Print', :print], ['Show', :show], ['Approve', :approve], ['Delete', :delete], ['Reject', :reject]],
-      :staff => [['Print', :print], ['Show', :show]]
-    },
-    :approved       => {
-      :admin => [['Print', :print], ['Show', :show]],
-      :staff => [['Print', :print], ['Show', :show]]
-    }
-  }
+  def rejected?
+    !submitted? && !approved?
+  end
 
-  #status bools
   def printed?
     self.print_date.present?
   end
 
-  def submitted?
-    self.submitted.present?
-  end
-
-  def approved?
-    self.approved.present?
-  end
-
-  #status checker
-  def status
-    if !self.submitted? && !self.approved?
-      return :draft
-    elsif self.submitted? && !self.approved?
-      return :submitted
-    elsif self.submitted? && self.approved?
-      return :approved
-    else
-      return nil
-    end
-  end
-  
-  def actions
-    @@state_actions[self.status]
+  def submitted_not_approved?
+    submitted? && !approved?
   end
 
   #methods used before time entries are attached.

@@ -5,4 +5,4 @@
   %td= timesheet.time_entries.sum(&:hours) unless timesheet.time_entries.empty?
   %td= timesheet.submitted.to_s if timesheet.submitted
   %td= timesheet.approved.to_s if timesheet.approved
-  %td= render 'actions'
+  %td= render 'actions', timesheet: timesheet

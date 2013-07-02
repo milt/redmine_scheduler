@@ -165,7 +165,9 @@ class TimesheetsController < ApplicationController
   end
 
   def approve
-    if @timesheet.approve_now && @timesheet.save
+    @timesheet.approve_now
+
+    if @timesheet.save
       flash[:notice] = "Timesheet for #{@timesheet.user.name} for the week starting on #{@timesheet.weekof} was successfully approved."
       redirect_to :action => 'index'
     else
