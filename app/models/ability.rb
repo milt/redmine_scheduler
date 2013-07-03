@@ -18,7 +18,7 @@ class Ability
       can [:edit, :update, :submit, :delete], Timesheet do |timesheet|
         timesheet.rejected?
       end
-
+      can :manage, Fine
       can :manage, Timeslot
       can :manage, Booking
       can :manage, Level

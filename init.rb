@@ -84,6 +84,7 @@ Redmine::Plugin.register :redmine_scheduler do
   menu :application_menu, :levels, { :controller => 'levels' }, :caption => 'Skill Levels', :if => Proc.new { User.current.is_admstaff? }
   menu :application_menu, :wages, {:controller => 'wages', :action => 'index'}, :caption => 'Wages', :if => Proc.new { User.current.is_admstaff? }
   menu :application_menu, :skills, {:controller => 'skills', :action => 'index'}, :caption => 'Skills', :if => Proc.new { User.current.is_admstaff? }
+  menu :application_menu, :fines, {:controller => 'fines', :action => 'index'}, :caption => 'Fines', :if => Proc.new { User.current.is_admstaff? }
   menu :application_menu, :repairs, {:controller => 'repairs', :action => 'new'}, :caption => 'New Repair'
 
   #config.active_record.observers = :booking_observer

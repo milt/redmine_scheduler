@@ -1,6 +1,7 @@
 class Repair < ActiveRecord::Base
   belongs_to :issue
   belongs_to :user
+  has_one :fine
   validates :item_number, :item_desc, :problem_desc, presence: true
   validates :item_number, numericality: true
   validates :item_desc, length: {maximum: 128}
