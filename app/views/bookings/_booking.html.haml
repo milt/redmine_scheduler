@@ -5,6 +5,4 @@
   %td= booking.project_desc.truncate(60)
   %td= booking.apt_time.strftime('%l:%M %p') + ", " + booking.apt_time.strftime('%b %d, %Y')
   %td
-    - unless booking.cancelled
-      = link_to 'Show', {action: 'show', id: booking}
-      = link_to 'Cancel', {:action => :cancel, :id => booking}, :method => "post", :confirm => "Do you really want to cancel this booking?"
+    = render "actions", booking: booking

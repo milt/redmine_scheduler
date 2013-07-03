@@ -1,0 +1,9 @@
+.booking-actions
+  - if booking.active?
+    = link_to "Show", booking_path(booking)
+    = link_to "Edit", edit_booking_path(booking)
+    = link_to "Cancel", cancel_booking_path(booking), method: :put, confirm: "Are you sure you want to cancel this booking?"
+
+  - if booking.cancelled? || booking.orphaned?
+    = link_to "Show", booking_path(booking)
+    = link_to "Rebook", edit_booking_path(booking)

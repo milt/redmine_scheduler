@@ -19,6 +19,13 @@ class Booking < ActiveRecord::Base
   validate :cannot_update_active_without_timeslots, on: :update
   after_validation :set_apt_time, :set_coach, :set_author, on: :create
 
+  def active?
+    !self.cancelled? && self.timeslots.present?
+  end
+
+  def orphaned?
+    !self.cancelled? && self.timeslots.empty?
+  end
 
   def self.search(search)
     where("name LIKE ? OR project_desc LIKE ?", "%#{search}%", "%#{search}%")
