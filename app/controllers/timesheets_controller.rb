@@ -35,8 +35,8 @@ class TimesheetsController < ApplicationController
 
     params[:weekof] ? @weekof = Date.parse(params[:weekof]) : @weekof = Date.today.beginning_of_week
 
-    @time_entries = @user.time_entries.on_week(@weekof).not_on_timesheet
 
+    @time_entries = @user.time_entries.on_week(@weekof).not_on_timesheet
     @previous_sheets = @user.timesheets.weekof_on(@weekof)
 
     @shifts = Issue.shifts.from_date(@weekof).until_date(@weekof + 6.days)
@@ -44,8 +44,15 @@ class TimesheetsController < ApplicationController
     @lc_shifts = @shifts.lcshift.foruser(@user)
 
     respond_to do |format|
-      format.html
-      format.js
+      if rejected_check && User.current.is_stustaff?
+        format.html do
+          flash[:notice] =  'There is already a rejected timesheet for this user. Please edit and resubmit or delete it.'
+          redirect_to edit_timesheet_path(@prev_rejected_sheets.first)
+        end
+      else
+        format.html
+        format.js
+      end
     end
   end
 
@@ -175,86 +182,17 @@ class TimesheetsController < ApplicationController
       if User.current.wage.nil?
         flash[:warning] = "You don't seem to be assigned a wage. Please speak to your manager."
         redirect_to session[:return_to]
-        #redirect_to :action => 'index'  #works well with all actions except when triggered going into timesheet index
       end
     end
   end
 
-  def find_user
-    if params[:timesheet].present?
-      @user = User.find(params[:timesheet][:user_id])
-    elsif params[:user].present?
-      @user = User.find(params[:user].to_i)
+  def rejected_check
+    @prev_rejected_sheets = @user.timesheets.rejected
+    if @prev_rejected_sheets.empty?
+      return false
     else
-      @user = User.current
+      return true
     end
-  end
-
-  def find_first_monday(year)
-    t = Date.new(year, 1,1).wday     #checks which day (Mon = 1, Sun = 0) is first day of the year 
-    if t == 0
-      return Date.new(year, 1,2)
-    elsif t == 1
-      return Date.new(year, 1,1)
-    else
-      return Date.new(year, 1,(1+8-t))     #cases designed to return the first Monday of the year's date
-    end
-  end
-
-  def validate_existence(user,weekof)
-    existing = Timesheet.for_user(user).weekof_on(weekof)
-    if !existing.empty?
-      flash.now[:warning] = "There is already a timesheet for the selected week. Please select another."
-    end
-  end
-
-  def find_entries_by_day(weekof)
-    if @timesheet.id != nil
-      @entries_by_day = @timesheet.entries_for_week.group_by(&:spent_on)
-    else
-      @entries = TimeEntry.foruser(@user).from_date(weekof).until_date(weekof + 1.week).sort_by_date
-      @entries_by_day = @entries.group_by(&:spent_on)  
-    end
-  end
-
-  def dates(to,from)
-    dates = []
-    date = to
-    while date >= from do
-      dates << [date.strftime("Week of %B %d, Year %Y"), date.to_s]
-      date -= 7.day
-    end
-    return dates
-  end
-
-  #retrieving information from selection
-  def find_selection_week_year
-    if params[:week_sel].present?
-      w = Date.parse(params[:week_sel])
-      @cweek = w.cweek
-      @year_selected = w.year
-    else
-      @cweek = Date.today.cweek
-      @year_selected = Date.today.year
-    end
-  end
-
-  #I know this is more or less redundant from method above
-  def find_selection_week
-    if params[:weekof].present?
-      @weekof = Date.parse(params[:weekof])
-    else
-      flash[:notice] = "You must specify a pay period."
-      redirect_to :action => 'new'
-    end
-  end
-
-  def find_shifts_by_day(weekof)
-    issues = Issue.from_date(weekof).until_date(weekof + 1.week)
-    fdshifts = issues.fdshift
-    lcshifts = issues.lcshift
-    
-    @shifts_by_day = (fdshifts+lcshifts).group_by(&:start_date)
   end
 
   def get_goals(user)

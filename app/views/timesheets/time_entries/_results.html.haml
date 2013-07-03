@@ -1,5 +1,4 @@
 %h3 Timesheet for #{@user.name} : Week of Monday, #{@weekof.strftime('%b %d, %Y')}
-
 - unless @previous_sheets.empty?
   #previous-sheets
     %h4 Previous Timesheets for this Week:
@@ -52,10 +51,11 @@
               %th Actions
             - @time_entries.ondate(day).each do |entry|
               = render 'timesheets/time_entries/time_entry', time_entry: entry
-        .add-time
-          %p
-            Log time on #{day.strftime('%A')}
-            = link_to image_tag('time_add.png'), {controller: 'timelog', action: 'new', time_entry: {user_id: @user.id, project_id: nil, spent_on: day}, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}
+        - unless User.current.is_admstaff?
+          .add-time
+            %p
+              Log time on #{day.strftime('%A')}
+              = link_to image_tag('time_add.png'), {controller: 'timelog', action: 'new', time_entry: {user_id: @user.id, project_id: nil, spent_on: day}, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}
     .day-right
       .hours-on-day
         %h3= @time_entries.ondate(day).sum(&:hours).to_s + " Hours"

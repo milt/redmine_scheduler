@@ -33,3 +33,7 @@
 .actions {
   overflow:auto;
 }
+
+#timesheets-table td {
+  vertical-align: middle;
+}
