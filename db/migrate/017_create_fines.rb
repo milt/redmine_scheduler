@@ -5,6 +5,10 @@ class CreateFines < ActiveRecord::Migration
       t.string :patron_phone
       t.string :patron_email
       t.string :patron_jhed
+      t.float :amount
+      t.datetime :paid
+      t.string :payment_method
+      t.string :notes
       t.references :repair
       t.timestamps
     end
