@@ -16,6 +16,13 @@ class FinesController < ApplicationController
   end
 
   def create
+    if @fine.save
+      flash[:notice] = "Fine successfully created."
+      redirect_to @fine
+    else
+      flash[:warning] = "Fine was not saved."
+      render action: "new"
+    end
   end
 
   def show

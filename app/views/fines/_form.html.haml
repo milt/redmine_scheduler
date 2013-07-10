@@ -1,0 +1,21 @@
+= form_for @fine do |f|
+  %p
+    = f.label :patron_name
+    = f.text_field :patron_name
+  %p
+    = f.label :patron_phone
+    = f.text_field :patron_phone
+  %p
+    = f.label :patron_email
+    = f.text_field :patron_email
+  %p
+    = f.label :patron_jhed
+    = f.text_field :patron_jhed
+  %p
+    = f.label :amount
+    = f.text_field :amount
+  %p
+    = f.label :notes
+    = f.text_area :notes
+  %p
+    = f.submit
