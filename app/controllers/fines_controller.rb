@@ -3,6 +3,13 @@ class FinesController < ApplicationController
   load_and_authorize_resource
 
   def index
+    @paid = @fines.paid
+    @unpaid = @fines.unpaid
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def new
