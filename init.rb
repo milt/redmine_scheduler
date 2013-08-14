@@ -78,7 +78,7 @@ Redmine::Plugin.register :redmine_scheduler do
 
   menu :application_menu, :bookings, { :controller => 'bookings', :action => 'index' }, :caption => 'Bookings'
 
-  menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'Anaylze Time', :if => Proc.new { User.current.is_admstaff? || User.current.is_prostaff? }
+  #menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'Anaylze Time', :if => Proc.new { User.current.is_admstaff? || User.current.is_prostaff? }
   menu :application_menu, :student_levels, {:controller=> 'prostaff', :action => 'student_levels'}, :caption => 'Student Levels', :if => Proc.new { User.current.is_prostaff? }
   menu :application_menu, :timesheets, { :controller => 'timesheets' }, :caption => 'Timesheets', :if => Proc.new { User.current.is_admstaff? || User.current.is_stustaff? }
   menu :application_menu, :levels, { :controller => 'levels' }, :caption => 'Skill Levels', :if => Proc.new { User.current.is_admstaff? }
