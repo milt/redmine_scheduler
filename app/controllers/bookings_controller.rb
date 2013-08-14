@@ -203,12 +203,12 @@ class BookingsController < ApplicationController
       @timeslots = params[:slot_ids].map {|id| Timeslot.find(id)}
       if @timeslots.detect {|slot| slot.booked?}
         flash[:warning] = 'One or more timeslots is already booked. Please select available slots here and click "Book..."'
-        redirect_to :controller => 'timeslots', :action => 'find'
+        redirect_to :controller => 'bookings', :action => 'new'
       end
       # send user back if the timeslots cover more than one shift. Suspenders and a belt.
       if @timeslots.map(&:issue_id).uniq.count > 1
         flash[:warning] = 'You can not make a booking that covers more than one shift. Please try again.'
-        redirect_to :controller => 'timeslots', :action => 'find'
+        redirect_to :controller => 'bookings', :action => 'new'
       end
     else
       @timeslots = []
