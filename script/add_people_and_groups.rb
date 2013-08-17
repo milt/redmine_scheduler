@@ -52,7 +52,7 @@ User.find(:all, :conditions => ["lastname = ?", "Manager"]).map {|u| managergrou
 
 #give wages to all stustaff
 stustaffgroup.users.each do |u|
-  u.create_wage(:amount => 12.0)
+  u.create_wage(:amount => 12)
 end
 
 # assign 3 random skill levels to stustaff

@@ -3,6 +3,7 @@ class Timesheet < ActiveRecord::Base
   has_many :time_entries, :dependent => :nullify
   belongs_to :user       # possible to divide user between employee and staff/boss?
   has_one :wage, :through => :user
+  monetize :approve_time_wage_cents, allow_nil: true
   attr_accessible :submitted, :approved, :user_id, :weekof, :notes    #not sure if necessary
 
   #validates :user_id, uniqueness: {scope: :weekof, message: "User can only have one timesheet per pay period"}
@@ -200,7 +201,7 @@ class Timesheet < ActiveRecord::Base
 
   def approve_now
     self.approved = DateTime.now
-    self.approve_time_wage = self.user.wage.amount
+    self.approve_time_wage_cents = self.user.wage.amount_cents
   end
 
   def delete_now
