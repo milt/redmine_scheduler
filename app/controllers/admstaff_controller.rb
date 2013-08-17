@@ -5,6 +5,8 @@ class AdmstaffController < ApplicationController
     authorize! :index, :admin
 
     notification_check
+
+    @reminders = Reminder.all
   end
 
   private

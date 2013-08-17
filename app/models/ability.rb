@@ -25,6 +25,7 @@ class Ability
       can :manage, Repair
       can :index, :admin
       can [:index,:grab], :command
+      can :manage, Reminder
     elsif user.is_prostaff?
       can :manage, Timeslot
       can :manage, Booking
@@ -32,6 +33,7 @@ class Ability
       can :manage, Repair
       can [:index, :student_levels], :prostaff
       can [:index,:grab], :command
+      can :read, Reminder
     elsif user.is_stustaff?
 
       can [:create, :read, :print], Timesheet, :user_id => user.id
@@ -44,6 +46,7 @@ class Ability
       can :manage, Booking
       can [:create, :read], Repair
       can :index, :stustaff
+      can :read, Reminder
     else
 
     end

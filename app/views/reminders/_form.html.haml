@@ -1,0 +1,7 @@
+= form_for @reminder, remote: true do |f|
+  %p
+    = f.label :message
+  %p
+    = f.text_area :message
+  %p
+    = f.submit
