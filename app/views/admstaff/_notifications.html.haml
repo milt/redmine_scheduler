@@ -1,0 +1,7 @@
+#admstaff-notifications-list.box
+  %h3 Notifications
+  %ul
+    - @notifications.keys.each do |notification|
+      %li
+        = notification + " "
+        = link_to "View...", @notifications[notification]
