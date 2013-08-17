@@ -26,6 +26,14 @@ en:
         patron_jhed: "Patron JHED"
         checkout: "Checkout Number"
         notes: "Notes"
+      fine:
+        patron_name: "Patron Name"
+        patron_phone: "Patron Phone"
+        patron_email: "Patron Email"
+        patron_jhed: "Patron JHED"
+        notes: "Notes"
+        payment_method: "Payment Method"
+        amount: "Fine Amount (USD)"
   views:
     pagination:
       first: "&laquo; First"

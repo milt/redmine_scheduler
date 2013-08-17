@@ -20,14 +20,11 @@ class FinesController < ApplicationController
       @fine.patron_phone = @repair.patron_phone
       @fine.patron_email = @repair.patron_email
       @fine.patron_jhed = @repair.patron_jhed
+      @fine.repair = @repair
     end
   end
 
   def create
-    if params[:repair_id]
-      @repair = Repair.find(params[:repair_id])
-      @fine.repair = @repair
-    end
     if @fine.save
       flash[:notice] = "Fine successfully created."
       redirect_to @fine
@@ -44,7 +41,7 @@ class FinesController < ApplicationController
   end
 
   def update
-    if @fine.save
+    if @fine.update_attributes(params[:fine])
       flash[:notice] = "Fine successfully updated."
       redirect_to @fine
     else

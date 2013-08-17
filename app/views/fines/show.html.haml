@@ -1,7 +1,7 @@
 %h2 Fine # #{@fine.id}
 #fine-show
   #fine-show-info.box
-    %h3 Info
+    %h3 Info (#{link_to "Edit...", edit_fine_path(@fine)})
     %table
       %tr
         %th Patron Name

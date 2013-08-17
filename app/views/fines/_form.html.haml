@@ -1,4 +1,4 @@
-= form_for @fine, url: {action: 'create', repair_id: @repair} do |f|
+= form_for @fine do |f|
   %p
     = f.label :patron_name
     = f.text_field :patron_name
@@ -18,4 +18,5 @@
     = f.label :notes
     = f.text_area :notes
   %p
+    = f.hidden_field :repair_id
     = f.submit
