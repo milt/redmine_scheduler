@@ -5,7 +5,8 @@
   %td= fine.patron_jhed
   %td= fine.amount
   %td= fine.notes
-  %td
-    - if fine.repair.present?
-      = link_to fine.repair.id.to_s, repair_path(fine.repair)
+  - unless current_page?(controller: 'repairs')
+    %td
+      - if fine.repair.present?
+        = link_to fine.repair.id.to_s, repair_path(fine.repair)
 

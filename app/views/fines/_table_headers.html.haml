@@ -5,4 +5,5 @@
   %th Patron JHED
   %th Amount
   %th Notes
-  %th Repair
+  - unless current_page?(controller: 'repairs')
+    %th Repair
