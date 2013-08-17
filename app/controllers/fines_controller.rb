@@ -3,8 +3,8 @@ class FinesController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @paid = @fines.paid
-    @unpaid = @fines.unpaid
+    @paid = @fines.paid.search(params[:search]).page(params[:paid_page]).per(10)
+    @unpaid = @fines.unpaid.search(params[:search]).page(params[:unpaid_page]).per(10)
 
     respond_to do |format|
       format.html
@@ -13,6 +13,7 @@ class FinesController < ApplicationController
   end
 
   def new
+    @fine = Fine.new
   end
 
   def create

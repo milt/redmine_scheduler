@@ -1,0 +1,11 @@
+%tr
+  %td= fine.patron_name
+  %td= fine.patron_phone
+  %td= fine.patron_email
+  %td= fine.patron_jhed
+  %td= fine.amount
+  %td= fine.notes
+  %td
+    - if fine.repair.present?
+      = link_to fine.repair.id.to_s, repair_path(fine.repair)
+

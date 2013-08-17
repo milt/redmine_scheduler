@@ -1,0 +1,10 @@
+%h3 Unpaid Fines
+%table#unpaid.list
+  = render 'table_headers'
+  = render @unpaid || "No Unpaid Fines"
+  = paginate @unpaid, remote: true, param_name: 'unpaid_page'
+%h3 Paid Fines
+%table#paid.list
+  = render 'table_headers'
+  = render @paid || "No Paid Fines"
+  = paginate @paid, remote: true, param_name: 'paid_page'

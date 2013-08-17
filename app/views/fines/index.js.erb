@@ -1,0 +1,3 @@
+$("#no_results").html("<% if @fines.count < 1 %><div class='alert'>No Fines found!</div><% end %>");
+$("#results").html("<div class='page'><%= escape_javascript(render 'results') if @fines.count >= 1 %></div>");
+$("#search_form").html("<%= escape_javascript(render 'search_form') %>");
