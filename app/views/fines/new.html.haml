@@ -1,3 +1,8 @@
 %h2 New Fine
 
-= render 'form'
+#fine-form
+  = render 'form'
+- if @repair.present?
+  #fine-repair
+    %h3 Associated Repair:
+    = render 'repairs/repair', repair: @repair

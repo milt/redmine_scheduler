@@ -32,8 +32,9 @@
   %p= repair.notes
 - if repair.fines.present?
   #repair-fines
-    = render 'fines/table', fines: repair.fines
+    %h4 #{repair.fines.count} Fines, Total of $#{repair.fines.sum(&:amount)}, $#{repair.fines.paid.sum(&:amount)} Paid, $#{repair.fines.unpaid.sum(&:amount)} Due
+    = render 'fines/mini_list', fines: repair.fines
 #repair-actions
-  - unless current_page?(controller: 'fines')
+  - unless controller.controller_name == "fines"
     %p
       = link_to "New Fine...", {controller: 'fines', action: 'new', repair_id: repair}

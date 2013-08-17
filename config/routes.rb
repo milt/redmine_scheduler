@@ -1,5 +1,11 @@
 RedmineApp::Application.routes.draw do
-  resources :repairs, :skillcats, :skills, :wages, :fines
+  resources :repairs, :skillcats, :skills, :wages
+
+  resources :fines do
+    member do
+      post 'pay'
+    end
+  end
 
   resources :bookings do
     member do

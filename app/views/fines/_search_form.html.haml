@@ -1,7 +1,7 @@
 = form_tag({}, :method => "get", remote: true, update: ['results','search_form']) do
   %fieldset
     %p
-      = label_tag 'For Patron Name'
+      = label_tag 'Search for:'
       = text_field_tag :search, params[:search]
 
     = submit_tag("Search")

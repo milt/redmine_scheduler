@@ -5,5 +5,5 @@
   %th Patron JHED
   %th Amount
   %th Notes
-  - unless current_page?(controller: 'repairs')
+  - unless controller.controller_name == 'repairs'
     %th Repair

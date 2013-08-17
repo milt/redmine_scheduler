@@ -1,10 +1,11 @@
 class FinesController < ApplicationController
   unloadable
   load_and_authorize_resource
+  before_filter :paid_check, only: [:edit, :update, :pay]
 
   def index
-    @paid = @fines.paid.search(params[:search]).page(params[:paid_page]).per(10)
-    @unpaid = @fines.unpaid.search(params[:search]).page(params[:unpaid_page]).per(10)
+    @paid = @fines.paid.search(params[:search]).page(params[:paid_page]).per(20)
+    @unpaid = @fines.unpaid.search(params[:search]).page(params[:unpaid_page]).per(20)
 
     respond_to do |format|
       format.html
@@ -13,10 +14,20 @@ class FinesController < ApplicationController
   end
 
   def new
-    @fine = Fine.new
+    if params[:repair_id]
+      @repair = Repair.find(params[:repair_id])
+      @fine.patron_name = @repair.patron_name
+      @fine.patron_phone = @repair.patron_phone
+      @fine.patron_email = @repair.patron_email
+      @fine.patron_jhed = @repair.patron_jhed
+    end
   end
 
   def create
+    if params[:repair_id]
+      @repair = Repair.find(params[:repair_id])
+      @fine.repair = @repair
+    end
     if @fine.save
       flash[:notice] = "Fine successfully created."
       redirect_to @fine
@@ -33,5 +44,34 @@ class FinesController < ApplicationController
   end
 
   def update
+    if @fine.save
+      flash[:notice] = "Fine successfully updated."
+      redirect_to @fine
+    else
+      flash[:warning] = "Fine was not saved."
+      render action: 'edit'
+    end
+  end
+
+  def pay
+    @fine.payment_method = params[:fine][:payment_method]
+    @fine.paid = DateTime.now
+
+    if @fine.save
+      flash[:notice] = "Fine paid via #{@fine.payment_method} at #{@fine.paid}"
+      redirect_to @fine
+    else
+      flash[:warning] = "Payment Failed!"
+      redirect_to @fine
+    end
+  end
+
+  private
+
+  def paid_check
+    if @fine.paid?
+      flash[:warning] = "Cannot edit or pay again if fine is already paid!"
+      redirect_to @fine
+    end
   end
 end

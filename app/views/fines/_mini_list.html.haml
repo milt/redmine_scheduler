@@ -1,0 +1,7 @@
+%ul
+  - fines.each do |fine|
+    - if fine.paid?
+      %strike
+        %li= link_to "$#{fine.amount}", fine_path(fine)
+    - else
+      %li= link_to "$#{fine.amount}", fine_path(fine)
