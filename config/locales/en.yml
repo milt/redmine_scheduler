@@ -34,6 +34,9 @@ en:
         notes: "Notes"
         payment_method: "Payment Method"
         amount: "Fine Amount (USD)"
+      reminder:
+        message: "Message"
+        user: "Author"
   views:
     pagination:
       first: "&laquo; First"
