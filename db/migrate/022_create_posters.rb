@@ -10,6 +10,11 @@ class CreatePosters < ActiveRecord::Migration
       t.string :patron_dept
       t.string :patron_email
       t.string :affiliation
+      t.string :payment_reference
+      t.integer :budget_number
+      t.string :budget_name
+      t.string :budget_email
+      t.string :budget_phone
       t.float :doc_width
       t.float :doc_height
       t.float :print_width
@@ -19,6 +24,7 @@ class CreatePosters < ActiveRecord::Migration
       t.integer :total_cents
       t.integer :deposit_cents
       t.text :notes
+      t.integer :quantity
     end
     add_index :posters, :user_id
     add_index :posters, :issue_id
