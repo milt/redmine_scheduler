@@ -24,6 +24,7 @@ module UserPatch
       has_many :issues, :foreign_key => 'assigned_to_id'
       has_many :timeslots, :through => :issues
       has_many :reminders, dependent: :destroy
+      has_many :posters
 
       def self.with_skills(*skills)
         joins(:skills).where("skills.id IN (?)", skills.map(&:id))
