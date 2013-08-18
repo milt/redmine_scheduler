@@ -77,7 +77,6 @@ class BookingsController < ApplicationController
       @timeslots = params[:slot_ids].map {|id| Timeslot.find(id)}
     end
 
-    #TODO.. process the changes in timeslot
     @booking.attributes = params[:booking]
 
     if params[:me].present?
@@ -85,6 +84,11 @@ class BookingsController < ApplicationController
     end
     
     @booking.timeslots = @timeslots
+
+    unless @booking.timeslots.empty?
+      @booking.cancelled = nil
+    end
+    
     respond_to do |format|
       if @booking.save
         flash[:notice] = 'Booking was successfully updated.'
@@ -124,8 +128,10 @@ class BookingsController < ApplicationController
       @from = DateTime.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i, params[:from][:hour].to_i, params[:from][:minute].to_i, 0, DateTime.now.zone)
       @from = DateTime.now if @from < DateTime.now
     else
-      if @booking.new_record? #handle use on edit
+      if @booking.timeslots.empty? #handle use on new + edit
         @from = DateTime.now + 30.minutes
+      elsif @booking.timeslots.empty? && @booking.apt_time.present?
+        @from = @booking.apt_time - 1.day
       else
         @from = @booking.timeslots.order(:slot_time).first.start_time - 1.hour
       end
@@ -136,6 +142,8 @@ class BookingsController < ApplicationController
     else
       if @booking.new_record?
         @until = DateTime.now + 2.days
+      elsif @booking.timeslots.empty? && @booking.apt_time.present?
+        @until = @booking.apt_time + 1.day
       else
         @until = @booking.timeslots.order(:slot_time).last.end_time + 1.hour
       end

@@ -9,7 +9,7 @@ RedmineApp::Application.routes.draw do
 
   resources :bookings do
     member do
-      post 'cancel'
+      put 'cancel'
       #post 'new'
     end
   end
