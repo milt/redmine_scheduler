@@ -25,6 +25,7 @@ class CreatePosters < ActiveRecord::Migration
       t.integer :deposit_cents
       t.text :notes
       t.integer :quantity
+      t.string :file_name
     end
     add_index :posters, :user_id
     add_index :posters, :issue_id

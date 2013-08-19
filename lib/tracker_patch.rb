@@ -14,6 +14,7 @@ module TrackerPatch
       scope :goal_track, :conditions => { :name => "Training Goal" }
       scope :event_track, :conditions => { :name => "Event" }
       scope :repair_track, :conditions => { :name => "Equipment Problem" }
+      scope :poster_track, :conditions => { :name => "Poster Print" }
 
     end
 

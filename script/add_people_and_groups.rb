@@ -3,6 +3,7 @@
 prostaffgroup = Group.find(:all, :conditions => ["lastname = ?", "Prostaff"]).first
 stustaffgroup = Group.find(:all, :conditions => ["lastname = ?", "Stustaff"]).first
 managergroup = Group.find(:all, :conditions => ["lastname = ?", "Manager"]).first
+postergroup = Group.find(:all, :conditions => ["lastname = ?", "Poster Print Team"]).first
 
 #-------------previously located in seeds.rb----------------
 #student staff manager
@@ -49,6 +50,9 @@ stustaff4.save
 User.find(:all, :conditions => ["lastname = ?", "Prostaff"]).map {|u| prostaffgroup.users << u}
 User.find(:all, :conditions => ["lastname = ?", "Stustaff"]).map {|u| stustaffgroup.users << u}
 User.find(:all, :conditions => ["lastname = ?", "Manager"]).map {|u| managergroup.users << u}
+postergroup.users << stustaff1
+postergroup.users << stustaff3
+
 
 #give wages to all stustaff
 stustaffgroup.users.each do |u|

@@ -62,6 +62,17 @@ namespace :redmine_scheduler do
 
     repair_project = Project.create(repair_project_params)
 
+    poster_project_params = {
+      :name => "Poster Printing",
+      :description => "Project for printing posters.",
+      :homepage => "",
+      :is_public => false,
+      :identifier => "poster-print",
+      :status => 1
+    }
+
+    poster_project = Project.create(poster_project_params)
+
     #Required Trackers
 
     fd_tracker_params = {
@@ -120,6 +131,14 @@ namespace :redmine_scheduler do
 
     equipment_problem_tracker = Tracker.create(equipment_problem_tracker_params)
 
+    poster_print_tracker_params = {
+      :name => "Poster Print",
+      :is_in_chlog => false,
+      :is_in_roadmap => false
+    }
+
+    poster_print_tracker = Tracker.create(poster_print_tracker_params)
+
     #add staff role
     staff_role_params = {
       :name => "Staff",
@@ -174,6 +193,9 @@ namespace :redmine_scheduler do
     WorkflowRule.copy_one(feature_tracker, manager_role, equipment_problem_tracker, manager_role)
     WorkflowRule.copy_one(feature_tracker, dev_role, equipment_problem_tracker, staff_role)
 
+    WorkflowRule.copy_one(feature_tracker, manager_role, poster_print_tracker, manager_role)
+    WorkflowRule.copy_one(feature_tracker, dev_role, poster_print_tracker, staff_role)
+
     activity_list = [
       "Helping Patrons",
       "Self Training",
@@ -195,6 +217,7 @@ namespace :redmine_scheduler do
     training_project.activities << activities
     development_project.activities << activities
     repair_project.activities << activities
+    poster_project.activities << activities
 
     #make default modules
     shift_module_params = [
@@ -227,6 +250,9 @@ namespace :redmine_scheduler do
 
     repair_project.trackers.clear
     repair_project.trackers << equipment_problem_tracker
+
+    poster_project.trackers.clear
+    poster_project.trackers << poster_print_tracker
 
     #Default skillcat
     skillcat_general_params = {
@@ -296,6 +322,7 @@ namespace :redmine_scheduler do
     prostaffgroup = Group.create!(:lastname => "Prostaff", :type => "Group")
     stustaffgroup = Group.create!(:lastname => "Stustaff", :type => "Group")
     managergroup = Group.create!(:lastname => "Manager", :type => "Group")
+    postergroup = Group.create!(:lastname => "Poster Print Team", :type => "Group")
 
     #add groups to project roles
     fd_managermember = Member.new(:principal => managergroup, :project => front_desk_project)
@@ -337,6 +364,16 @@ namespace :redmine_scheduler do
     repair_staffmember = Member.new(:principal => prostaffgroup, :project => repair_project)
     repair_staffmember.member_roles << MemberRole.new(:role => staff_role)
     repair_staffmember.save
+
+    print_managermember = Member.new(:principal => managergroup, :project => poster_project)
+    print_managermember.member_roles << MemberRole.new(:role => manager_role)
+    print_managermember.save
+
+    print_staffmember = Member.new(:principal => postergroup, :project => poster_project)
+    print_staffmember.member_roles << MemberRole.new(:role => staff_role)
+    print_staffmember.save
+
+
 
   end
 end

@@ -20,11 +20,16 @@ class Poster < ActiveRecord::Base
             :payment_type,
             :total_cents,
             :deposit_cents,
+            :file_name,
             :quantity, presence: true
 
   validate :width_and_border_limit
 
   validates :print_width, :print_height, numericality: { greater_than: 17.0}
+
+  validates :issue_id, uniqueness: true
+  validates_associated :issue
+  before_validation :build_issue_for_poster, :unless => :issue_id?
 
 
       
@@ -41,6 +46,15 @@ class Poster < ActiveRecord::Base
     if (print_width + border) > 44.0
       errors.add(:print_width, "can't exceed 44 inches.")
     end
+  end
+
+  def build_issue_for_poster
+    i = self.build_issue
+    i.tracker = Tracker.poster_track.first
+    i.project = Project.poster_project.first
+    i.subject = "#{self.patron_name} | #{self.print_width} x #{self.print_height}"
+    i.author = User.current
+    i.start_date = Date.today
   end
 
   def minimum_deposit
