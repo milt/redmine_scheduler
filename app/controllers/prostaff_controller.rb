@@ -3,6 +3,8 @@ class ProstaffController < ApplicationController
 
   def index
     authorize! :index, :prostaff
+
+    @reminders = Reminder.all
   end
 
   def student_levels

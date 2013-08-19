@@ -1,4 +1,5 @@
 .box{ id: "reminder-#{reminder.id}" }
   %li
     = reminder.message + " - " + reminder.user.firstname
-    = link_to image_tag('delete.png'), reminder, remote: true, method: 'delete'
+    - if can? :delete, Reminder
+      = link_to image_tag('delete.png'), reminder, remote: true, method: 'delete'
