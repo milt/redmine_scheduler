@@ -61,7 +61,23 @@
     %p
       = f.label :payment_type
       = f.select :payment_type, [['J-Cash', 'jcash'], ['Check', 'check'], ['University Budget Code', 'budget']]
-    %fieldset#poster-payment-detail
+    %fieldset#poster-payment-check{ style: "display: none;"}
+      %p
+        = f.label :payment_reference
+        = f.text_field :payment_reference
+    %fieldset#poster-payment-budget{ style: "display: none;"}
+      %p
+        = f.label :budget_number
+        = f.text_field :budget_number
+      %p
+        = f.label :budget_name
+        = f.text_field  :budget_name
+      %p
+        = f.label :budget_email
+        = f.text_field :budget_email
+      %p
+        = f.label :budget_phone
+        = f.text_field :budget_phone
     %p Display Total
     %p Display Min. deposit
     %p

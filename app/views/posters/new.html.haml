@@ -1,3 +1,6 @@
 %h2 New Poster Print
 = error_messages_for @poster
 = render 'form'
+
+- content_for :header_tags do
+  - javascript_include_tag 'posters.js', plugin: 'redmine_scheduler'
