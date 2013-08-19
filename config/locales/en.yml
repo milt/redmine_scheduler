@@ -37,6 +37,26 @@ en:
       reminder:
         message: "Message"
         user: "Author"
+      poster:
+        user: "Staff Entering"
+        dropoff: "Drop-Off Date & Time"
+        pickup: "Pick-Up Date & Time"
+        patron_name: "Name"
+        patron_phone: "Phone"
+        patron_dept: "Department/Group"
+        patron_email: "JHU Email"
+        affiliation: "Affiliation"
+        doc_width: "Document Width (inches)"
+        doc_height: "Document Height (inches)"
+        print_width: "Print Width (inches)"
+        print_height: "Print Height (inches)"
+        border: "Border"
+        paper_type: "Paper Type"
+        payment_type: "Payment Type"
+        total: "Total (USD)"
+        deposit: "Deposit"
+        file_name: "File Name"
+        quantity: "Quantity"
   views:
     pagination:
       first: "&laquo; First"

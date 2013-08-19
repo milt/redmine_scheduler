@@ -26,6 +26,7 @@ class CreatePosters < ActiveRecord::Migration
       t.text :notes
       t.integer :quantity
       t.string :file_name
+      t.string :paper_type
     end
     add_index :posters, :user_id
     add_index :posters, :issue_id

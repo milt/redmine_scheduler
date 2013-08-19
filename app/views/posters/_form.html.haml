@@ -1,0 +1,74 @@
+= form_for @poster do |f|
+  %fieldset#poster-dates
+    %legend Date & Time
+    %p
+      = f.label :dropoff
+      = f.text_field :dropoff
+    %p
+      = f.label :pickup
+      = f.text_field :pickup
+  %fieldset#poster-patron
+    %legend Patron Information
+    %p
+      = f.label :patron_name
+      = f.text_field :patron_name
+    %p
+      = f.label :patron_phone
+      = f.text_field :patron_phone
+    %p
+      = f.label :patron_dept
+      = f.text_field :patron_dept
+    %p
+      = f.label :patron_email
+      = f.text_field :patron_email
+    %p
+      = f.label :affiliation
+      = f.select :affiliation, [['Student', 'student'],['Staff', 'staff'],['DMC Staff', 'dmc']]
+  %fieldset#poster-document
+    %legend Document Information
+    %p Uploader goes here!
+    %p
+      = f.label :file_name
+      = f.text_field :file_name
+    %p
+      = f.label :doc_width
+      = f.text_field :doc_width
+    %p
+      = f.label :doc_height
+      = f.text_field :doc_height
+    %p Document Aspect Ratio goes here!
+  %fieldset#poster-print
+    %legend Print Information
+    %p
+      = f.label :print_width
+      = f.text_field :print_width
+    %p
+      = f.label :print_height
+      = f.text_field :print_height
+    %p Print aspect ratio goes here
+    %p
+      = f.label :border
+      = f.text_field :border
+    %p
+      = f.label :paper_type
+      = f.select :paper_type, [['Matte', 'matte'],['Glossy', 'glossy']]
+    %p Paper & Ink Cost goes here
+    %p
+      = f.label :quantity
+      = f.text_field :quantity
+  %fieldset#poster-payment
+    %legend Payment Information
+    %p
+      = f.label :payment_type
+      = f.select :payment_type, [['J-Cash', 'jcash'], ['Check', 'check'], ['University Budget Code', 'budget']]
+    %fieldset#poster-payment-detail
+    %p Display Total
+    %p Display Min. deposit
+    %p
+      = f.label :deposit
+      = f.text_field :deposit
+    %p Display Balance Due
+    %p
+      = f.label :notes
+      = f.text_area :notes
+  = f.submit
