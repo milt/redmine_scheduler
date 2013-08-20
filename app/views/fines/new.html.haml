@@ -6,3 +6,6 @@
   #fine-repair
     %h3 Associated Repair:
     = render 'repairs/repair', repair: @repair
+
+- content_for :header_tags do
+  - stylesheet_link_tag 'fines', :plugin => 'redmine_scheduler'

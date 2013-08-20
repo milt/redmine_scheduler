@@ -1,1 +1,9 @@
-= text_field_tag 'settings[foo]', @settings["foo"]
+%h2 Print Settings:
+
+
+
+%h2 All Settings:
+- Setting.plugin_redmine_scheduler.sort.each do |key,value|
+  %p
+    = label_tag key
+    = text_field_tag "settings[#{key}]", value
