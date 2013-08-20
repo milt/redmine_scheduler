@@ -36,7 +36,9 @@
     %p
       = f.label :doc_height
       = f.text_field :doc_height
-    %p Document Aspect Ratio goes here!
+    %p
+      = label_tag "Document Aspect Ratio"
+      = text_field_tag :doc_aspect, "", disabled: true
   %fieldset#poster-print
     %legend Print Information
     %p
@@ -45,7 +47,9 @@
     %p
       = f.label :print_height
       = f.text_field :print_height
-    %p Print aspect ratio goes here
+    %p
+      = label_tag "Print Aspect Ratio"
+      = text_field_tag :print_aspect, "", disabled: true
     %p
       = f.label :border
       = f.text_field :border
