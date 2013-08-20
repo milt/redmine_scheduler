@@ -59,6 +59,11 @@ en:
         deposit: "Deposit"
         file_name: "File Name"
         quantity: "Quantity"
+        payment_reference: "Check/Reference #"
+        budget_number: "Budget Number (8-10 Digits)"
+        budget_name: "Budget Admin Name"
+        budget_email: "Budget Admin Email"
+        budget_phone: "Budget Admin Phone"
   views:
     pagination:
       first: "&laquo; First"

@@ -3,10 +3,10 @@
     %legend Date & Time
     %p
       = f.label :dropoff
-      = f.text_field :dropoff
+      = f.datetime_select :dropoff, default: DateTime.now
     %p
       = f.label :pickup
-      = f.text_field :pickup
+      = f.datetime_select :pickup, default: DateTime.now + 2.days
   %fieldset#poster-patron
     %legend Patron Information
     %p
