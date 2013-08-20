@@ -1,0 +1,4 @@
+form#new_poster label {
+	display: inline-block;
+	width: 160px;
+}
