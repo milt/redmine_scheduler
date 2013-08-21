@@ -12,6 +12,7 @@ $(document).ready(function(){
   var minDeposit;
   var paperCost = 3.50;
   var total;
+  var serviceCharge = 10.00;
 
 
   //pulldown settings at load
@@ -84,11 +85,21 @@ $(document).ready(function(){
     $("#paper_cost").val(paperCost);
   };
 
+  var updateMinDeposit = function() {
+    if ( paymentType == "budget" ) {
+      minDeposit = total;
+    } else {
+      minDeposit = (total/2).toFixed(2);
+    }
+    $("#minimum_deposit").val(minDeposit);
+  };
+
   var updateTotal = function() {
     if ((quantity > 0) && printWidth && printHeight && paperCost) {
-      total = (taxScale)*(((printWidth)*(printHeight)/144)*(paperCost)*(quantity)) + (10) + ((2)*(quantity - 1));
+      total = (taxScale)*( ((printWidth)*(printHeight)/144)*(paperCost)*(quantity) + serviceCharge) //+ ((2)*(quantity - 1)); // the hell is that?!?!
       total = total.toFixed(2);
       $("#poster_total").val(total);
+      updateMinDeposit();
     }
   };
 
@@ -116,6 +127,11 @@ $(document).ready(function(){
 
   $("#poster_affiliation").change(function(){
     affiliation = $(this).val();
+    if ( affiliation == "dmc" ) {
+      serviceCharge = 0.00;
+    } else {
+      serviceCharge = 10.00;
+    }
     updateCost();
     updateTotal();
   });
@@ -156,6 +172,10 @@ $(document).ready(function(){
       break;
     }
     updateTotal();
+  });
+
+  $("#poster_deposit").change(function() {
+    $("#balance_due").val((total - $(this).val()).toFixed(2));
   });
 
 });
