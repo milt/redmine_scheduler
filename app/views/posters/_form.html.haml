@@ -47,10 +47,12 @@
     %p
       = f.label :paper_type
       = f.select :paper_type, [['Matte', 'matte'],['Glossy', 'glossy']]
-    %p Paper & Ink Cost goes here
+    %p
+      = label_tag "Paper & Ink Cost"
+      = text_field_tag :paper_cost, "3.50", disabled: true
     %p
       = f.label :quantity
-      = f.text_field :quantity
+      = f.text_field :quantity, value: "1"
   %fieldset#poster-payment
     %legend Payment Information
     %p
@@ -73,12 +75,18 @@
       %p
         = f.label :budget_phone
         = f.text_field :budget_phone
-    %p Display Total
-    %p Display Min. deposit
+    %p
+      = f.label :total
+      = f.text_field :total, disabled: true
+    %p
+      = label_tag "Minimum Deposit"
+      = text_field_tag :minimum_deposit, "0.00", disabled: true
     %p
       = f.label :deposit
       = f.text_field :deposit
-    %p Display Balance Due
+    %p
+      = label_tag "Balance Due"
+      = text_field_tag :balance_due, "0.00", disabled: true
     %p
       = f.label :notes
       = f.text_area :notes

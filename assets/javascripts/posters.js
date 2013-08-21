@@ -8,17 +8,24 @@ $(document).ready(function(){
   var printHeight;
   var printRatio;
   var border;
+  var posterSettings;
+  var minDeposit;
+  var paperCost = 3.50;
+  var total;
+
 
   //pulldown settings at load
   var affiliation = $("#poster_affiliation").val();
   var paperType = $("#poster_paper_type").val();
   var paymentType = $("#poster_payment_type").val();
+  var quantity = parseInt($("#poster_quantity").val());
 
   //get user-configurable variables from redmine
-
+  $.getJSON( "/poster_settings", function( json ) {
+    posterSettings = json;
+  });
 
   //functions
-
   //clear unused/hidden fields
   var clearCheck = function() {
     $("#poster-payment-check input").each(function() {
@@ -41,27 +48,87 @@ $(document).ready(function(){
     }
   };
 
+  //display paper cost
+  var updateCost = function() {
+    switch(paperType)
+    {
+      case "matte":
+        switch(affiliation)
+        {
+          case "student":
+            paperCost = posterSettings.poster_matte_student;
+            break;
+          case "staff":
+            paperCost = posterSettings.poster_matte_staff;
+            break;
+          case "dmc":
+            paperCost = posterSettings.poster_matte_dmc;
+            break;
+        }
+        break;
+      case "glossy":
+        switch(affiliation)
+        {
+          case "student":
+            paperCost = posterSettings.poster_glossy_student;
+            break;
+          case "staff":
+            paperCost = posterSettings.poster_glossy_staff;
+            break;
+          case "dmc":
+            paperCost = posterSettings.poster_glossy_dmc;
+            break;
+        }
+        break;
+    }
+    $("#paper_cost").val(paperCost);
+  };
+
+  var updateTotal = function() {
+    if ((quantity > 0) && printWidth && printHeight && paperCost) {
+      total = (taxScale)*(((printWidth)*(printHeight)/144)*(paperCost)*(quantity)) + (10) + ((2)*(quantity - 1));
+      total = total.toFixed(2);
+      $("#poster_total").val(total);
+    }
+  };
+
+
+
+
+
   //form events
   $("#poster_print_width").change(function() {
     printWidth = parseFloat($(this).val());
     updatePrintAspect();
+    updateTotal();
   });
 
   $("#poster_print_height").change(function() {
     printHeight = parseFloat($(this).val());
     updatePrintAspect();
+    updateTotal();
   });
 
   $("#poster_border").change(function() {
     border = parseFloat($(this).val());
+    updateTotal();
   });
 
   $("#poster_affiliation").change(function(){
-    affiliation = $("#poster_affiliation").val();
+    affiliation = $(this).val();
+    updateCost();
+    updateTotal();
   });
 
   $("#poster_paper_type").change(function(){
-    paperType = $("#poster_paper_type").val();
+    paperType = $(this).val();
+    updateCost();
+    updateTotal();
+  });
+
+  $("#poster_quantity").change(function() {
+    quantity = parseInt($(this).val());
+    updateTotal();
   });
 
   $("#poster_payment_type").change(function(){
@@ -88,6 +155,7 @@ $(document).ready(function(){
       taxScale = untaxed;
       break;
     }
+    updateTotal();
   });
 
 });
