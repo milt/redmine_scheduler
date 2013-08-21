@@ -13,8 +13,6 @@ class Poster < ActiveRecord::Base
             :patron_dept,
             :patron_email,
             :affiliation,
-            :doc_width,
-            :doc_height,
             :print_width,
             :print_height,
             :border,

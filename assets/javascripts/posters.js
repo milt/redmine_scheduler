@@ -1,25 +1,5 @@
 $(document).ready(function(){
 
-  //handle document size calculation
-  var updateDocAspect = function() {
-    var docWidth = parseFloat($("#poster_doc_width").val());
-    var docHeight = parseFloat($("#poster_doc_height").val());
-    var docRatio = docWidth / docHeight;
-    //round to 1 decimal place
-    docRatio = Math.round(docRatio*10)/10;
-    if (docWidth && docHeight){
-     $("#doc_aspect").val(docRatio);
-    }
-  };
-
-  $("#poster_doc_width").change(function(){
-    updateDocAspect();
-  });
-
-  $("#poster_doc_height").change(function(){
-    updateDocAspect();
-  });
-
   //handle print size calculation
   var updatePrintAspect = function() {
     var printWidth = parseFloat($("#poster_print_width").val());

@@ -15,8 +15,6 @@ class CreatePosters < ActiveRecord::Migration
       t.string :budget_name
       t.string :budget_email
       t.string :budget_phone
-      t.float :doc_width
-      t.float :doc_height
       t.float :print_width
       t.float :print_height
       t.float :border
