@@ -43,7 +43,7 @@
       = text_field_tag :print_aspect, "", disabled: true
     %p
       = f.label :border
-      = f.text_field :border
+      = f.text_field :border, value: "0"
     %p
       = f.label :paper_type
       = f.select :paper_type, [['Matte', 'matte'],['Glossy', 'glossy']]

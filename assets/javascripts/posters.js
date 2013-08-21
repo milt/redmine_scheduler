@@ -6,8 +6,10 @@ $(document).ready(function(){
   var taxScale = taxed;
   var printWidth;
   var printHeight;
+  var printRatio;
+  var border;
 
-  //form settings at load
+  //pulldown settings at load
   var affiliation = $("#poster_affiliation").val();
   var paperType = $("#poster_paper_type").val();
   var paymentType = $("#poster_payment_type").val();
@@ -31,9 +33,7 @@ $(document).ready(function(){
   };
   //handle print size calculation
   var updatePrintAspect = function() {
-    printWidth = parseFloat($("#poster_print_width").val());
-    printHeight = parseFloat($("#poster_print_height").val());
-    var printRatio = printWidth / printHeight;
+    printRatio = printWidth / printHeight;
     //round to 1 decimal place
     printRatio = Math.round(printRatio*10)/10;
     if (printWidth && printHeight){
@@ -42,12 +42,18 @@ $(document).ready(function(){
   };
 
   //form events
-  $("#poster_print_width").change(function(){
+  $("#poster_print_width").change(function() {
+    printWidth = parseFloat($(this).val());
     updatePrintAspect();
   });
 
-  $("#poster_print_height").change(function(){
+  $("#poster_print_height").change(function() {
+    printHeight = parseFloat($(this).val());
     updatePrintAspect();
+  });
+
+  $("#poster_border").change(function() {
+    border = parseFloat($(this).val());
   });
 
   $("#poster_affiliation").change(function(){

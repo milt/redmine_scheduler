@@ -1,5 +1,8 @@
 RedmineApp::Application.routes.draw do
-  resources :repairs, :skillcats, :skills, :wages, :reminders, :posters
+  resources :repairs, :skillcats, :skills, :wages, :reminders
+
+  resources :posters, :except => [:settings]
+  get "poster_settings", to: "posters#settings"
 
   resources :fines do
     member do

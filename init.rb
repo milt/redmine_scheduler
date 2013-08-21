@@ -69,7 +69,13 @@ Redmine::Plugin.register :redmine_scheduler do
               "task_tracker_id" => "7",
               "goal_tracker_id" => "8",
               "event_tracker_id" => "9",
-              "repair_tracker_id" => "10"
+              "repair_tracker_id" => "10",
+              "poster_matte_student" => "3.50",
+              "poster_matte_staff" => "5.00",
+              "poster_matte_dmc" => "0.00",
+              "poster_glossy_student" => "4.00",
+              "poster_glossy_staff" => "5.50",
+              "poster_glossy_dmc" => "0.00"
             }
 
   menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :first => true, :if => Proc.new { User.current.is_stustaff? }

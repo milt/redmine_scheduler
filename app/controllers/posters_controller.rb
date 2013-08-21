@@ -21,4 +21,10 @@ class PostersController < ApplicationController
 
   def show
   end
+
+  def settings
+    @poster_settings = Setting.plugin_redmine_scheduler.select{|k| k.include?("poster_")}
+
+    render json: @poster_settings
+  end
 end
