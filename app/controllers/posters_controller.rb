@@ -25,6 +25,10 @@ class PostersController < ApplicationController
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.pdf { render :layout => false }
+    end
   end
 
   def settings

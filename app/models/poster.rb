@@ -90,6 +90,7 @@ class Poster < ActiveRecord::Base
   end
 
   def balance_due
+    total - deposit
   end
 
   def document_ratio
