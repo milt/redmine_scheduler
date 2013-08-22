@@ -26,7 +26,8 @@
       = f.select :affiliation, [['Student', 'student'],['Staff', 'staff'],['DMC Staff', 'dmc']]
   %fieldset#poster-document
     %legend Document Information
-    %p Uploader goes here!
+    #poster-attachment
+      = render :partial => 'attachments/form', :locals => {:container => @poster}
     %p
       = f.label :file_name
       = f.text_field :file_name

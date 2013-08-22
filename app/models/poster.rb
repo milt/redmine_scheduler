@@ -1,5 +1,6 @@
 class Poster < ActiveRecord::Base
   unloadable
+  acts_as_attachable
   monetize :total_cents
   monetize :deposit_cents
   belongs_to :user
@@ -39,6 +40,7 @@ class Poster < ActiveRecord::Base
   validates :issue_id, uniqueness: true
   validates_associated :issue
   before_validation :build_issue_for_poster, :unless => :issue_id?
+  after_save :move_attachments_to_issue
 
 
       
@@ -75,6 +77,12 @@ class Poster < ActiveRecord::Base
     i.subject = "#{self.patron_name} | #{self.print_width} x #{self.print_height}"
     i.author = User.current
     i.start_date = Date.today
+  end
+
+  def move_attachments_to_issue
+    attachments.each do |attachment|
+      issue.attachments << attachment
+    end
   end
 
   def minimum_deposit
