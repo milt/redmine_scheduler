@@ -1,5 +1,11 @@
 $(document).ready(function(){
 
+  //get user-configurable variables from redmine
+  var posterSettings;
+  $.getJSON( "/poster_settings", function( json ) {
+    posterSettings = json;
+  });
+
   //default vars
   var untaxed = 1.00;
   var taxed = 1.06;
@@ -8,23 +14,25 @@ $(document).ready(function(){
   var printHeight;
   var printRatio;
   var border;
-  var posterSettings;
+  var quantity;
   var minDeposit;
   var paperCost = 3.50;
   var total;
   var serviceCharge = 10.00;
 
 
-  //pulldown settings at load
+  //get settings at load so things work on rails validation errors.
   var affiliation = $("#poster_affiliation").val();
   var paperType = $("#poster_paper_type").val();
   var paymentType = $("#poster_payment_type").val();
-  var quantity = parseInt($("#poster_quantity").val());
 
-  //get user-configurable variables from redmine
-  $.getJSON( "/poster_settings", function( json ) {
-    posterSettings = json;
-  });
+  //get dimensions to handle reload for validation error
+  if ($("#poster_print_width").val() != "") { printWidth = parseFloat($("#poster_print_width").val()); }
+  if ($("#poster_print_height").val() != "") { printHeight = parseFloat($("#poster_print_height").val()); }
+  if ($("#poster_print_border").val() != "") { border = parseFloat($("#poster_print_border").val()); }
+  if ($("#poster_quantity").val() != "") { quantity = parseInt($("#poster_quantity").val()); }
+
+
 
   //functions
   //clear unused/hidden fields
@@ -104,7 +112,14 @@ $(document).ready(function(){
   };
 
 
+  if ($("#poster_total").val() != "") {
+    total = parseFloat($("#poster_total").val()).toFixed(2);
+    updateMinDeposit();
+  }
 
+  if ($("#poster_deposit").val() != "") {
+    $("#balance_due").val((total - $("#poster_deposit").val()).toFixed(2));
+  }
 
 
   //form events

@@ -22,8 +22,10 @@ class Poster < ActiveRecord::Base
             :deposit_cents,
             :file_name,
             :quantity, presence: true
+  validates :total_cents, :deposit_cents, numericality: { only_integer: true }
 
   validate :width_and_border_limit
+  validate :deposit_is_sufficient
 
   validates :print_width, :print_height, numericality: { greater_than: 17.0}
 
@@ -56,6 +58,15 @@ class Poster < ActiveRecord::Base
       end
     end
   end
+
+  def deposit_is_sufficient
+    unless (affiliation == "dmc") || (payment_type == "budget") || total == 0
+      if (deposit < (total/2))
+        errors.add(:deposit, "Can't be less than 1/2 of total.")
+      end
+    end
+  end
+
 
   def build_issue_for_poster
     i = self.build_issue

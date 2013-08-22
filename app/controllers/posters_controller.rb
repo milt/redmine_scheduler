@@ -10,6 +10,7 @@ class PostersController < ApplicationController
   end
 
   def create
+    @poster.user = User.current
     if @poster.save
       flash[:notice] = "Poster order submitted."
       redirect_to @poster.issue
