@@ -1,27 +1,20 @@
 $(document).ready(function(){
 
-  //get user-configurable variables from redmine
-  var posterSettings;
-  $.getJSON( "/poster_settings", function( json ) {
-    posterSettings = json;
-  });
-
   //default vars
   var untaxed = 1.00;
   var taxed = 1.06;
-  var taxScale = taxed;
+  var taxScale;
   var printWidth;
   var printHeight;
   var printRatio;
   var border;
   var quantity;
   var minDeposit;
-  var paperCost = 3.50;
+  var paperCost;
   var total;
   var serviceCharge = 10.00;
   var deposit;
   var posterSettings;
-
   var affiliation;
   var paperType;
   var paymentType;
@@ -51,85 +44,108 @@ $(document).ready(function(){
 
   //display paper cost
   var updateCost = function() {
-    switch(paperType)
-    {
-      case "matte":
-        switch(affiliation)
-        {
-          case "student":
-            paperCost = posterSettings.poster_matte_student;
-            break;
-          case "staff":
-            paperCost = posterSettings.poster_matte_staff;
-            break;
-          case "dmc":
-            paperCost = posterSettings.poster_matte_dmc;
-            break;
-        }
-        break;
-      case "glossy":
-        switch(affiliation)
-        {
-          case "student":
-            paperCost = posterSettings.poster_glossy_student;
-            break;
-          case "staff":
-            paperCost = posterSettings.poster_glossy_staff;
-            break;
-          case "dmc":
-            paperCost = posterSettings.poster_glossy_dmc;
-            break;
-        }
-        break;
+    if (paperType && affiliation && posterSettings) {
+      switch(paperType)
+      {
+        case "matte":
+          switch(affiliation)
+          {
+            case "student":
+              paperCost = posterSettings.poster_matte_student;
+              break;
+            case "staff":
+              paperCost = posterSettings.poster_matte_staff;
+              break;
+            case "dmc":
+              paperCost = posterSettings.poster_matte_dmc;
+              break;
+          }
+          break;
+        case "glossy":
+          switch(affiliation)
+          {
+            case "student":
+              paperCost = posterSettings.poster_glossy_student;
+              break;
+            case "staff":
+              paperCost = posterSettings.poster_glossy_staff;
+              break;
+            case "dmc":
+              paperCost = posterSettings.poster_glossy_dmc;
+              break;
+          }
+          break;
+      }
     }
     $("#paper_cost").val(paperCost);
   };
 
-  var updateMinDeposit = function() {
-    if ( paymentType == "budget" ) {
-      minDeposit = total;
-    } else {
-      minDeposit = (total/2).toFixed(2);
+  var checkSufficientDeposit = function() {
+    if (minDeposit && deposit) {
+      if (minDeposit > deposit) {
+        $("#poster_deposit").css("background-color", "red");
+      } else {
+        $("#poster_deposit").css("background-color", "green");
+      }
     }
-    $("#minimum_deposit").val(minDeposit);
   };
 
-  var updateForAffiliation = function() {
-    switch(paymentType)
-    {
-    case "jcash":
-      clearCheck();
-      clearBudget();
-      $("#poster-payment-check").hide();
-      $("#poster-payment-budget").hide();
-      taxScale = taxed;
-      break;
-    case "check":
-      clearBudget();
-      $("#poster-payment-check").show();
-      $("#poster-payment-budget").hide();
-      taxScale = taxed;
-      break;
-    case "budget":
-      clearCheck();
-      $("#poster-payment-check").hide();
-      $("#poster-payment-budget").show();
-      taxScale = untaxed;
-      break;
+  var updateMinDeposit = function() {
+    if (paymentType && total) {
+      if ( paymentType == "budget" ) {
+        minDeposit = total;
+      } else {
+        minDeposit = (total/2).toFixed(2);
+      }
+    }
+    $("#minimum_deposit").val(minDeposit);
+    checkSufficientDeposit();
+  };
+
+  var updatePayment = function() {
+    if (paymentType) {
+      switch(paymentType)
+      {
+      case "jcash":
+        clearCheck();
+        clearBudget();
+        $("#poster-payment-check").hide();
+        $("#poster-payment-budget").hide();
+        taxScale = taxed;
+        break;
+      case "check":
+        clearBudget();
+        $("#poster-payment-check").show();
+        $("#poster-payment-budget").hide();
+        taxScale = taxed;
+        break;
+      case "budget":
+        clearCheck();
+        $("#poster-payment-check").hide();
+        $("#poster-payment-budget").show();
+        taxScale = untaxed;
+        break;
+      }
     }
   };
 
   var updateBalanceDue = function() {
-    $("#balance_due").val((total - deposit).toFixed(2));
+    if (total && deposit) {
+      $("#balance_due").val((total - deposit).toFixed(2));
+    }
   };
 
+
+
   var updateTotal = function() {
-    if ((quantity > 0) && printWidth && printHeight && paperCost) {
+    if ((quantity > 0) && printWidth && printHeight && paperCost && taxScale) {
       total = (taxScale)*( ((printWidth)*(printHeight)/144)*(paperCost)*(quantity) + serviceCharge) //+ ((2)*(quantity - 1)); // the hell is that?!?!
       total = total.toFixed(2);
       $("#poster_total").val(total);
+
+      updateMinDeposit();
+      updateBalanceDue();
     }
-    updateMinDeposit();
   };
 
   //get user-configurable variables from redmine
@@ -165,7 +181,8 @@ $(document).ready(function(){
     }
 
     //set cost and form elements
-    updateForAffiliation();
+    updatePrintAspect();
+    updatePayment();
     updateCost();
   });
 
@@ -196,7 +213,6 @@ $(document).ready(function(){
     } else {
       serviceCharge = 10.00;
     }
-    updateForAffiliation();
     updateCost();
     updateTotal();
   });
@@ -214,13 +230,13 @@ $(document).ready(function(){
 
   $("#poster_payment_type").change(function(){
     paymentType = $(this).val();
-    updateForAffiliation();
+    updatePayment();
     updateTotal();
   });
 
   $("#poster_deposit").change(function() {
     deposit = parseFloat($(this).val()).toFixed(2);
+    checkSufficientDeposit();
     updateBalanceDue();
   });
-
 });
