@@ -12,6 +12,9 @@ class PostersController < ApplicationController
   def create
     @poster.user = User.current
     @poster.save_attachments(params[:attachments])
+    if params[:attachments]
+      @poster.file_name = params[:attachments]["1"]["filename"]
+    end
     if @poster.save
       flash[:notice] = "Poster order submitted."
       redirect_to @poster.issue

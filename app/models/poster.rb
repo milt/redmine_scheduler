@@ -21,8 +21,9 @@ class Poster < ActiveRecord::Base
             :payment_type,
             :total_cents,
             :deposit_cents,
-            :file_name,
             :quantity, presence: true
+
+  validates :file_name, presence: { message: "You must choose a file for upload!"}
   validates :total_cents, :deposit_cents, numericality: { only_integer: true }
 
   validate :width_and_border_limit
