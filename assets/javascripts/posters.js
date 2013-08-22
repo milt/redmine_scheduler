@@ -19,20 +19,12 @@ $(document).ready(function(){
   var paperCost = 3.50;
   var total;
   var serviceCharge = 10.00;
+  var deposit;
+  var posterSettings;
 
-
-  //get settings at load so things work on rails validation errors.
-  var affiliation = $("#poster_affiliation").val();
-  var paperType = $("#poster_paper_type").val();
-  var paymentType = $("#poster_payment_type").val();
-
-  //get dimensions to handle reload for validation error
-  if ($("#poster_print_width").val() != "") { printWidth = parseFloat($("#poster_print_width").val()); }
-  if ($("#poster_print_height").val() != "") { printHeight = parseFloat($("#poster_print_height").val()); }
-  if ($("#poster_print_border").val() != "") { border = parseFloat($("#poster_print_border").val()); }
-  if ($("#poster_quantity").val() != "") { quantity = parseInt($("#poster_quantity").val()); }
-
-
+  var affiliation;
+  var paperType;
+  var paymentType;
 
   //functions
   //clear unused/hidden fields
@@ -102,24 +94,81 @@ $(document).ready(function(){
     $("#minimum_deposit").val(minDeposit);
   };
 
+  var updateForAffiliation = function() {
+    switch(paymentType)
+    {
+    case "jcash":
+      clearCheck();
+      clearBudget();
+      $("#poster-payment-check").hide();
+      $("#poster-payment-budget").hide();
+      taxScale = taxed;
+      break;
+    case "check":
+      clearBudget();
+      $("#poster-payment-check").show();
+      $("#poster-payment-budget").hide();
+      taxScale = taxed;
+      break;
+    case "budget":
+      clearCheck();
+      $("#poster-payment-check").hide();
+      $("#poster-payment-budget").show();
+      taxScale = untaxed;
+      break;
+    }
+  };
+
+  var updateBalanceDue = function() {
+    $("#balance_due").val((total - deposit).toFixed(2));
+  };
+
   var updateTotal = function() {
     if ((quantity > 0) && printWidth && printHeight && paperCost) {
       total = (taxScale)*( ((printWidth)*(printHeight)/144)*(paperCost)*(quantity) + serviceCharge) //+ ((2)*(quantity - 1)); // the hell is that?!?!
       total = total.toFixed(2);
       $("#poster_total").val(total);
-      updateMinDeposit();
     }
+    updateMinDeposit();
   };
 
+  //get user-configurable variables from redmine
 
-  if ($("#poster_total").val() != "") {
-    total = parseFloat($("#poster_total").val()).toFixed(2);
-    updateMinDeposit();
-  }
+  $.getJSON( "/poster_settings", function( json ) {
+    posterSettings = json;
 
-  if ($("#poster_deposit").val() != "") {
-    $("#balance_due").val((total - $("#poster_deposit").val()).toFixed(2));
-  }
+    //stuff to do after getting JSON data
+
+    //get settings at ready so things work on rails validation errors.
+    affiliation = $("#poster_affiliation").val();
+    paperType = $("#poster_paper_type").val();
+    paymentType = $("#poster_payment_type").val();
+
+
+
+
+    //get dimensions to handle reload for validation error
+    if ($("#poster_print_width").val() != "") { printWidth = parseFloat($("#poster_print_width").val()); }
+    if ($("#poster_print_height").val() != "") { printHeight = parseFloat($("#poster_print_height").val()); }
+    if ($("#poster_print_border").val() != "") { border = parseFloat($("#poster_print_border").val()); }
+    if ($("#poster_quantity").val() != "") { quantity = parseInt($("#poster_quantity").val()); }
+
+
+    if ($("#poster_total").val() != "") {
+      total = parseFloat($("#poster_total").val()).toFixed(2);
+      updateMinDeposit();
+    }
+
+    if ($("#poster_deposit").val() != "") {
+      deposit = parseFloat($("#poster_deposit").val()).toFixed(2);
+      updateBalanceDue();
+    }
+
+    //set cost and form elements
+    updateForAffiliation();
+    updateCost();
+  });
+
 
 
   //form events
@@ -147,6 +196,7 @@ $(document).ready(function(){
     } else {
       serviceCharge = 10.00;
     }
+    updateForAffiliation();
     updateCost();
     updateTotal();
   });
@@ -163,34 +213,14 @@ $(document).ready(function(){
   });
 
   $("#poster_payment_type").change(function(){
-    paymentType = $("#poster_payment_type").val();
-    switch(paymentType)
-    {
-    case "jcash":
-      clearCheck();
-      clearBudget();
-      $("#poster-payment-check").hide();
-      $("#poster-payment-budget").hide();
-      taxScale = taxed;
-      break;
-    case "check":
-      clearBudget();
-      $("#poster-payment-check").show();
-      $("#poster-payment-budget").hide();
-      taxScale = taxed;
-      break;
-    case "budget":
-      clearCheck();
-      $("#poster-payment-check").hide();
-      $("#poster-payment-budget").show();
-      taxScale = untaxed;
-      break;
-    }
+    paymentType = $(this).val();
+    updateForAffiliation();
     updateTotal();
   });
 
   $("#poster_deposit").change(function() {
-    $("#balance_due").val((total - $(this).val()).toFixed(2));
+    deposit = parseFloat($(this).val()).toFixed(2);
+    updateBalanceDue();
   });
 
 });
