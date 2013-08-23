@@ -28,6 +28,7 @@ class Poster < ActiveRecord::Base
 
   validate :width_and_border_limit
   validate :deposit_is_sufficient
+  validate :pickup_must_be_at_least_48_hours_from_dropoff
 
   validates :print_width, :print_height, numericality: { greater_than: 17.0}
 
@@ -51,6 +52,11 @@ class Poster < ActiveRecord::Base
   before_validation :build_issue_for_poster, :unless => :issue_id?
   after_save :move_attachments_to_issue
 
+  def pickup_must_be_at_least_48_hours_from_dropoff
+    if (pickup - dropoff)/60/60 < 48.0
+      errors.add(:pickup, "can't be less than 48 hours from dropoff.")
+    end
+  end
 
   def width_and_border_limit
     unless (print_width == nil) || (print_height == nil)

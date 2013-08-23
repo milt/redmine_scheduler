@@ -11,6 +11,7 @@ class PostersController < ApplicationController
 
   def create
     @poster.user = User.current
+    @poster.dropoff = DateTime.now
     if params[:attachments]
       @poster.save_attachments(params[:attachments])
       @poster.file_name = params[:attachments][params[:attachments].keys.first]["filename"]
