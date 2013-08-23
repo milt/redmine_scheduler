@@ -76,8 +76,13 @@ $(document).ready(function(){
           }
           break;
       }
+      if ( affiliation == "dmc" ) {
+        serviceCharge = 0.00;
+      } else {
+        serviceCharge = 10.00;
+      }
+      $("#paper_cost").val(paperCost);
     }
-    $("#paper_cost").val(paperCost);
   };
 
   var checkSufficientDeposit = function() {
@@ -145,6 +150,7 @@ $(document).ready(function(){
 
       updateMinDeposit();
       updateBalanceDue();
+      checkSufficientDeposit();
     }
   };
 
@@ -170,20 +176,20 @@ $(document).ready(function(){
     if ($("#poster_quantity").val() != "") { quantity = parseInt($("#poster_quantity").val()); }
 
 
-    if ($("#poster_total").val() != "") {
-      total = parseFloat($("#poster_total").val()).toFixed(2);
-      updateMinDeposit();
-    }
-
-    if ($("#poster_deposit").val() != "") {
-      deposit = parseFloat($("#poster_deposit").val()).toFixed(2);
-      updateBalanceDue();
-    }
-
     //set cost and form elements
     updatePrintAspect();
     updatePayment();
     updateCost();
+
+    if ($("#poster_total").val() != "") {
+      total = parseFloat($("#poster_total").val()).toFixed(2);
+    }
+
+    if ($("#poster_deposit").val() != "") {
+      deposit = parseFloat($("#poster_deposit").val()).toFixed(2);
+    }
+    updateMinDeposit();
+    updateBalanceDue();
   });
 
 
@@ -208,11 +214,6 @@ $(document).ready(function(){
 
   $("#poster_affiliation").change(function(){
     affiliation = $(this).val();
-    if ( affiliation == "dmc" ) {
-      serviceCharge = 0.00;
-    } else {
-      serviceCharge = 10.00;
-    }
     updateCost();
     updateTotal();
   });
