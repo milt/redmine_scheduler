@@ -1,6 +1,6 @@
 gem "prawn"
 gem "prawnto"
-gem "rpam"
+gem "rpam-ruby19"
 gem "gchart"
 gem "kaminari"
 gem "haml"
