@@ -19,8 +19,8 @@ class CreatePosters < ActiveRecord::Migration
       t.float :print_height
       t.float :border
       t.string :payment_type
-      t.integer :total_cents
-      t.integer :deposit_cents
+      t.integer :total_cents, default: 0
+      t.integer :deposit_cents, default: 0
       t.text :notes
       t.integer :quantity
       t.string :file_name

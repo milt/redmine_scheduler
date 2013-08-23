@@ -1,7 +1,7 @@
 pdf.font "Helvetica"
 pdf.default_leading -6
 
-pdf.text "DMC Poster Print Order #" + @poster.id.to_s, :size => 24, :align => :left, :style => :bold
+pdf.text "DMC Poster Print Order #" + @poster.issue.id.to_s, :size => 24, :align => :left, :style => :bold
 pdf.stroke_horizontal_rule
 
 address = "Mattin Arts Center\n

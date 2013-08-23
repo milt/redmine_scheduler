@@ -75,7 +75,7 @@ class Poster < ActiveRecord::Base
     i = self.build_issue
     i.tracker = Tracker.poster_track.first
     i.project = Project.poster_project.first
-    i.subject = "#{self.patron_name} | #{self.print_width} x #{self.print_height}"
+    i.subject = "#{patron_name} | #{file_name} | #{print_width}\" x #{print_height}\""
     i.author = User.current
     i.start_date = Date.today
   end
@@ -93,10 +93,8 @@ class Poster < ActiveRecord::Base
     total - deposit
   end
 
-  def document_ratio
-  end
-
-  def print_ratio
+  def aspect_ratio
+    print_width / print_height
   end
 
 end
