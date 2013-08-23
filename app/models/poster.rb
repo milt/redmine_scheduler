@@ -40,24 +40,22 @@ class Poster < ActiveRecord::Base
 
   validates :issue_id, uniqueness: true
   validates_associated :issue
+
+  validates :payment_reference, :presence => true, :if => Proc.new { |p| p.payment_type == "check" }
+  validates :budget_number,
+            :budget_name,
+            :budget_email,
+            :budget_phone,
+            :presence => true, :if => Proc.new { |p| p.payment_type == "budget" }
+
   before_validation :build_issue_for_poster, :unless => :issue_id?
   after_save :move_attachments_to_issue
 
 
-      
-      # :payment_reference
-      # :budget_number
-      # :budget_name
-      # :budget_email
-      # :budget_phone
-      # :total_cents
-      # :deposit_cents
-      # :notes
-
   def width_and_border_limit
     unless (print_width == nil) || (print_height == nil)
       if (print_width + border) > 44.0
-        errors.add(:print_width, "can't exceed 44 inches.")
+        errors.add(:print_width, "can't exceed 44 inches including border.")
       end
     end
   end
