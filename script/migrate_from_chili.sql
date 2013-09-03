@@ -1,3 +1,4 @@
+-- superuser required for this stuff. Make wrapper, server, user mapping, connect
 CREATE FOREIGN DATA WRAPPER postgresql VALIDATOR postgresql_fdw_validator;
 
 CREATE SERVER chili
@@ -143,25 +144,109 @@ AS t1(
  end_time timestamp without time zone
 );
 
--- journals NOT DONE
+-- journals
 INSERT INTO journals (
-
      id,
      journalized_id,
      user_id,
      notes,
      created_on,
-     private_notes    | boolean
-
-  ) SELECT * FROM dblink('select * from journals')
+     journalized_type
+  ) SELECT * FROM dblink('select id,journaled_id,user_id,notes,created_at,type from journals')
 AS t1(
    id integer,
    journaled_id integer,
    user_id integer,
    notes text,
    created_at timestamp without time zone,
-   version integer,
-   activity_type character varying(255),
-   changes text,
    type character varying(255)
 );
+
+-- make the journalized_type work right
+UPDATE journals SET journalized_type = trim(trailing 'Journal' from journalized_type);
+
+-- need to populate journal_details. In sha'Allah, we can do this in ruby.
+
+-- levels
+INSERT INTO levels SELECT * FROM dblink('select * from levels')
+AS t1(
+ id integer,
+ skill_id integer,
+ user_id integer,
+ rating integer,
+ created_at timestamp without time zone,
+ updated_at timestamp without time zone
+);
+
+-- member_roles
+
+INSERT INTO member_roles SELECT * FROM dblink('select * from member_roles')
+AS t1(
+ id integer,
+ member_id integer,
+ role_id integer,
+ inherited_from integer
+);
+
+-- members
+
+INSERT INTO members SELECT * FROM dblink('select * from members')
+AS t1(
+ id integer,
+ user_id integer,
+ project_id integer,
+ created_on timestamp without time zone,
+ mail_notification boolean
+);
+
+-- projects
+
+INSERT INTO projects (
+ id,
+ name,
+ description,
+ homepage,
+ is_public,
+ parent_id,
+ created_on,
+ updated_on,
+ identifier,
+ status,
+ lft,
+ rgt,
+ suppress_email
+) SELECT * FROM dblink('select * from projects')
+AS t1(
+ id integer,
+ name character varying(255),
+ description text,
+ homepage character varying(255),
+ is_public boolean,
+ parent_id integer,
+ created_on timestamp without time zone,
+ updated_on timestamp without time zone,
+ identifier character varying(255),
+ status integer,
+ lft integer,
+ rgt integer,
+ suppress_email boolean
+);
+
+-- projects_trackers
+-- queries
+-- repairs
+-- roles
+-- settings
+-- skills
+-- skillcats
+-- time_entries (maybe don't do this)
+-- timesheets (maybe don't)
+-- tokens (safe?)
+-- trackers
+-- user_preferences
+-- users
+-- wages  ..Convert amount to amount_cents
+-- watchers
+-- workflows .. some strangeness here
+
+
