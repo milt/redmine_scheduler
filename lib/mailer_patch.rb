@@ -10,21 +10,18 @@ module MailerPatch
       unloadable # Send unloadable so it will not be unloaded in development
 
         def booking_add(booking)
-            recipients	booking.coach.mail
-            from	"DMC Lab Coach Notifier <notification@redmine.com>"
-            subject	"You have a Lab Coach Signup!"
-            sent_on	Time.now
-            body	("Booking scheduled with " + booking.name + " on " + booking.apt_time.strftime("%m/%d/%Y at %I:%M:%S %p") + "\nYou can contact this patron at " + booking.phone + " or " + booking.email + "\n\nProject Description:\n" + booking.project_desc + "\n\n\n\n*Do Not Reply to this Email\nThis email is an auto-generated message.  Replies to automated messages are not monitored.")
+          @booking = booking
+
+          mail :to => booking.coach.mail,
+            :subject => "New Booking Added"
         end
 
         def daily_digest(user)
-          recipients user.mail
-          from "Squid Digest <digitalmedia@jhu.edu>"
-          subject 'Squid Daily Digest'
-          sent_on Time.now
-          body :user => user,
-               :digest => user.journal_digest
-          render_multipart('digest', body)
+          @user = user
+          @digest = user.journal_digest
+
+          mail :to => user.mail,
+            :subject => "Squid Daily Digest"
         end
     end
 
@@ -39,4 +36,3 @@ module MailerPatch
       
   end
 end
-

@@ -48,6 +48,8 @@ Rails.configuration.to_prepare do
 
   require_dependency 'group'
   Group.send(:include, GroupPatch) unless Group.included_modules.include? GroupPatch
+  
+  ActiveRecord::Base.observers << BookingObserver
 
 end
 

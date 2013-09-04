@@ -1,0 +1,10 @@
+New Booking Added!
+------------------
+
+You have a new booking scheduled with <%= @booking.name %> on <%= @booking.apt_time.strftime("%m/%d/%Y at %I:%M:%S %p") %> by <%= @booking.author.name %>
+
+You can contact this patron at <%= @booking.phone %> or <%= @booking.email %>
+
+Project Description: <%= @booking.project_desc %>
+
+Do not reply to this email. Or else.
