@@ -1,6 +1,6 @@
 = Redmine Scheduler
 
-A skill-aware lab coach/tutor scheduling plugin for ChiliProject. Developed for internal use at the JHU Digital Media Center, EXTREMELY domain specific, but feel free to use anything here.
+A skill-aware lab coach/tutor scheduling plugin for Redmine. Developed for internal use at the JHU Digital Media Center, EXTREMELY domain specific, but feel free to use anything here.
 
 == Installation:
 
