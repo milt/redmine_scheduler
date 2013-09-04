@@ -1,4 +1,6 @@
 -- superuser required for this stuff. Make wrapper, server, user mapping, connect
+CREATE EXTENSION dblink;
+
 CREATE FOREIGN DATA WRAPPER postgresql VALIDATOR postgresql_fdw_validator;
 
 CREATE SERVER chili
@@ -400,7 +402,7 @@ AS t1(
  updated_at timestamp without time zone
 );
 -- set amount_cents for manual assignment later
-UPDATE wages SET amount_cents = 1200;ß
+UPDATE wages SET amount_cents = 1200;
 
 -- watchers
 INSERT INTO watchers SELECT * FROM dblink('select * from watchers')
