@@ -233,20 +233,193 @@ AS t1(
 );
 
 -- projects_trackers
--- queries
+
+INSERT INTO projects_trackers SELECT * FROM dblink('select * from projects_trackers')
+AS t1(
+  project_id integer,
+  tracker_id integer
+);
+
+-- queries Don't do
+
 -- repairs
+
+INSERT INTO repairs SELECT * FROM dblink('select * from repairs')
+AS t1(
+ id integer,
+ issue_id integer,
+ item_number integer,
+ item_desc character varying(255),
+ problem_desc text,
+ patron_name character varying(255),
+ patron_phone character varying(255),
+ patron_email character varying(255),
+ patron_jhed character varying(255),
+ checkout integer,
+ notes text,
+ created_at timestamp without time zone,
+ updated_at timestamp without time zone,
+ user_id integer
+);
+
 -- roles
--- settings
+
+-- first, get rid of defaults
+TRUNCATE roles;
+
+INSERT INTO roles SELECT * FROM dblink('select * from roles')
+AS t1(
+ id integer,
+ name character varying(30),
+ position integer,
+ assignable boolean,
+ builtin integer,
+ permissions text
+);
+
+-- settings this should be checked later...
+INSERT INTO settings SELECT * FROM dblink('select * from settings')
+AS t1(
+ id integer,
+ name character varying(255),
+ value text,
+ updated_on timestamp without time zone
+);
+
+
 -- skills
+INSERT INTO skills SELECT * FROM dblink('select * from skills')
+AS t1(
+ id integer,
+ name character varying(255),
+ skillcat_id integer
+);
+
 -- skillcats
+INSERT INTO skillcats SELECT * FROM dblink('select * from skillcats')
+AS t1(
+ id integer,
+ name character varying(255),
+ descr text
+);
+
 -- time_entries (maybe don't do this)
 -- timesheets (maybe don't)
+
 -- tokens (safe?)
+INSERT INTO tokens SELECT * FROM dblink('select * from tokens')
+AS t1(
+ id integer,
+ user_id integer,
+ action character varying(30),
+ value character varying(40),
+ created_on timestamp without time zone
+);
+
+
 -- trackers
+INSERT INTO trackers SELECT * FROM dblink('select * from trackers')
+AS t1(
+ id integer,
+ name character varying(30),
+ is_in_chlog boolean,
+ position integer,
+ is_in_roadmap boolean
+);
+
 -- user_preferences
+INSERT INTO user_preferences SELECT * FROM dblink('select * from user_preferences')
+AS t1(
+ id integer,
+ user_id integer,
+ others text,
+ hide_mail boolean,
+ time_zone character varying(255)
+);
+
+
 -- users
--- wages  ..Convert amount to amount_cents
+
+-- first, clear...
+TRUNCATE users;
+
+INSERT INTO users (
+ id,
+ login,
+ hashed_password,
+ firstname,
+ lastname,
+ mail,
+ admin,
+ status,
+ last_login_on,
+ language,
+ auth_source_id,
+ created_on,
+ updated_on,
+ type,
+ identity_url,
+ mail_notification,
+ salt,
+ manager_id,
+ digest
+  ) SELECT * FROM dblink('select * from users')
+AS t1(
+ id integer,
+ login character varying(255),
+ hashed_password character varying(40),
+ firstname character varying(30),
+ lastname character varying(255),
+ mail character varying(60),
+ admin boolean,
+ status integer,
+ last_login_on timestamp without time zone,
+ language character varying(5),
+ auth_source_id integer,
+ created_on timestamp without time zone,
+ updated_on timestamp without time zone,
+ type character varying(255),
+ identity_url character varying(255),
+ mail_notification character varying(255),
+ salt character varying(64),
+ manager_id integer,
+ digest boolean
+);
+
+-- wages  get it without amount_cents
+INSERT INTO wages (
+  id,
+  user_id,
+  created_at,
+  updated_at
+  ) SELECT * FROM dblink('select id,user_id,created_at,updated_at from wages')
+AS t1(
+ id integer,
+ user_id integer,
+ created_at timestamp without time zone,
+ updated_at timestamp without time zone
+);
+-- set amount_cents for manual assignment later
+UPDATE wages SET amount_cents = 1200;ß
+
 -- watchers
+INSERT INTO watchers SELECT * FROM dblink('select * from watchers')
+AS t1(
+ id integer,
+ watchable_type character varying(255),
+ watchable_id integer,
+ user_id integer
+);
+
 -- workflows .. some strangeness here
-
-
+INSERT INTO workflows SELECT * FROM dblink('select * from workflows')
+AS t1(
+ id integer,
+ tracker_id integer,
+ old_status_id integer,
+ new_status_id integer,
+ role_id integer,
+ assignee boolean,
+ author boolean
+);
+UPDATE workflows SET type = 'WorkflowTransition';
