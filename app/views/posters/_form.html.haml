@@ -3,7 +3,7 @@
     %legend Date/Time
     %p
       = f.label :pickup
-      = f.datetime_select :pickup, default: DateTime.now + 2.days
+      = f.datetime_select :pickup, default: DateTime.now + 2.days + 10.minutes
       Pickup Date/Time must be at least 48 hours from the submission of this form. Posters available for pickup during DMC hours ONLY!
   %fieldset#poster-patron
     %legend Patron Information
