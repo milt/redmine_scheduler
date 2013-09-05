@@ -23,6 +23,8 @@ class Poster < ActiveRecord::Base
             :deposit_cents,
             :quantity, presence: true
 
+  validates :patron_email, email: true
+
   validates :file_name, presence: { message: "You must choose a file for upload!"}
   validates :total_cents, :deposit_cents, numericality: { only_integer: true }
 
@@ -48,6 +50,8 @@ class Poster < ActiveRecord::Base
             :budget_email,
             :budget_phone,
             :presence => true, :if => Proc.new { |p| p.payment_type == "budget" }
+
+  validates :budget_email, :email => true, :if => Proc.new { |p| p.payment_type == "budget" }
 
   before_validation :build_issue_for_poster, :unless => :issue_id?
   after_save :move_attachments_to_issue

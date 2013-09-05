@@ -6,6 +6,7 @@ class Booking < ActiveRecord::Base
   attr_accessible :name, :phone, :email, :project_desc
   validates :name, :phone, :email, :project_desc, presence: true #all form fields must exist be non-nil 
   validates :name, :email, length: {maximum: 127} #name can't be over 127 chars
+  validates :email, email: true
   validates :phone, length: {maximum: 16} # phone max length of 16 chars
   validates :project_desc, length: {maximum: 4096}
   default_scope :order => 'apt_time ASC' #default sort order of Bookings
