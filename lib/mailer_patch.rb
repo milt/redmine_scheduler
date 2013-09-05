@@ -23,6 +23,26 @@ module MailerPatch
           mail :to => user.mail,
             :subject => "Squid Daily Digest"
         end
+
+        def poster_add_staff(poster)
+          @poster = poster 
+
+          mail :to => Group.posterstaff.first.users.map(&:mail),
+            :subject => "New Poster Print Order"
+        end
+
+        def poster_add_patron(poster)
+          @poster = poster
+
+          recipients = [poster.patron_email]
+
+          if poster.payment_type == "budget"
+            recipients << poster.budget_email
+          end
+
+          mail :to => recipients,
+            :subject => "Your DMC Poster Print Order"
+        end
     end
 
   end

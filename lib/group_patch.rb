@@ -12,6 +12,7 @@ module GroupPatch
       scope :stustaff, :conditions => {:lastname => "Stustaff"}
       scope :prostaff, :conditions => {:lastname => "Prostaff"}
       scope :admstaff, :conditions => {:lastname => "Manager"}
+      scope :posterstaff, :conditions => {:lastname => "Poster Print Team"}
     end
 
   end

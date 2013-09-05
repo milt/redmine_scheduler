@@ -36,7 +36,7 @@ Rails.configuration.to_prepare do
   Group.send(:include, GroupPatch) unless Group.included_modules.include? GroupPatch
   
   ActiveRecord::Base.observers << BookingObserver
-
+  ActiveRecord::Base.observers << PosterObserver
 end
 
 Redmine::Plugin.register :redmine_scheduler do
