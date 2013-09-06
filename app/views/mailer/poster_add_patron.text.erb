@@ -1,1 +1,29 @@
-New poster order info goes here.
+Thank you for your large-format poster order at the <%= Setting.plugin_redmine_scheduler['org_full_name'] %>!
+
+Order Info:
+
+Order No: <%= @poster.issue.id.to_s %>
+Dropoff Date/Time: <%= @poster.dropoff.strftime("%m/%d/%Y %l:%M %p") %>
+Pickup Date/Time: <%= @poster.pickup.strftime("%m/%d/%Y %l:%M %p") %>
+Name: <%= @poster.patron_name %>
+Email: <%= @poster.patron_email %>
+Phone: <%= @poster.patron_phone %>
+Department: <%= @poster.patron_dept %>
+Affiliation: <%= @poster.affiliation.capitalize %>
+Order Taken By: <%= @poster.user.name %>
+Print Dimensions: <%= @poster.print_width.round(2) %> in. X <%= @poster.print_height.round(2) %> in.
+File Name: <%= @poster.file_name %>
+Print Aspect Ratio: <%= @poster.aspect_ratio.round(2) %>
+File Size: <%= number_to_human_size(@poster.issue.attachments.first.filesize) %>
+Media: <%= @poster.paper_type.capitalize %>
+Border: <%= @poster.border.round(2) %> in.
+Quantity: <%= @poster.quantity %>
+Paid By: <% case @poster.payment_type %><% when "check" %><%= @poster.payment_type.capitalize %>: <%= @poster.payment_reference %><% when "budget" %><%= @poster.payment_type.capitalize %>: <%= @poster.budget_number %><% else %><%= @poster.payment_type.capitalize %><% end %>
+<% if @poster.payment_type == "budget" %>Budget Admin: <%= @poster.budget_name %>, <%= @poster.budget_email %>, <%= @poster.budget_phone %><% end %>
+
+Total: <%= humanized_money_with_symbol @poster.total %>
+Deposit: <%= humanized_money_with_symbol @poster.deposit %>
+Balance Due: <%= humanized_money_with_symbol @poster.balance_due %>
+
+You will recieve a notification when your poster is ready for pickup. Please feel free to contact us with any questions you may have:
+<%= render 'contact' %>

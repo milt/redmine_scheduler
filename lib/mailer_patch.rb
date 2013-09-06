@@ -21,7 +21,7 @@ module MailerPatch
           @digest = user.journal_digest
 
           mail :to => user.mail,
-            :subject => "Squid Daily Digest"
+            :subject => "#{Setting.app_title} Daily Digest"
         end
 
         def poster_add_staff(poster)
@@ -34,22 +34,22 @@ module MailerPatch
         def poster_add_admin(poster)
           @poster = poster 
 
-          mail :to => Group.admstaff.first.users.map(&:mail),
-            :subject => "Automatic Notification: DMC Poster Print Order via University Budget Number"
+          mail :to => Setting.plugin_redmine_scheduler["poster_admin_email"],
+            :subject => "Automatic Notification: #{Setting.plugin_redmine_scheduler['org_short_name']} Poster Print Order via University Budget Number"
         end
 
         def poster_add_patron(poster)
           @poster = poster
 
           mail :to => poster.patron_email,
-            :subject => "Your DMC Poster Print Order"
+            :subject => "Your #{Setting.plugin_redmine_scheduler['org_short_name']} Poster Print Order"
         end
 
         def poster_add_budget_admin(poster)
           @poster = poster
 
           mail :to => poster.budget_email,
-            :subject => "Automatic Notification: DMC Poster Print Order via University Budget Number"
+            :subject => "Automatic Notification: #{Setting.plugin_redmine_scheduler['org_short_name']} Poster Print Order via University Budget Number"
         end
     end
 
