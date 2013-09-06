@@ -177,6 +177,9 @@ namespace :redmine_scheduler do
 
     feature_tracker = Tracker.where(name: "Feature").first
 
+    IssueStatus.create!(name: "Printed", is_closed: false, is_default: false)
+    IssueStatus.create!(name: "Picked Up", is_closed: true, is_default: false)
+
     #add workflows
     WorkflowRule.copy_one(feature_tracker, manager_role, fd_tracker, manager_role)
     WorkflowRule.copy_one(feature_tracker, dev_role, fd_tracker, staff_role)
