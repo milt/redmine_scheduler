@@ -37,6 +37,7 @@ Rails.configuration.to_prepare do
   
   ActiveRecord::Base.observers << BookingObserver
   ActiveRecord::Base.observers << PosterObserver
+  ActiveRecord::Base.observers << JournalDetailObserver
 end
 
 Redmine::Plugin.register :redmine_scheduler do
@@ -55,6 +56,7 @@ Redmine::Plugin.register :redmine_scheduler do
               "org_phone" => "555-555-5555",
               "org_address" => "Address Line 1\nAddress Line 2\nAddress Line 3",
               "org_site" => "www.example.edu",
+              "org_biz_hours" => "Sunday - Thursday noon - midnight; Saturday & Sunday, noon - 10pm",
               "prostaff_group_id" => "2",
               "stustaff_group_id" => "3",
               "admstaff_group_id" => "4",
@@ -72,7 +74,8 @@ Redmine::Plugin.register :redmine_scheduler do
               "poster_glossy_student" => "4.00",
               "poster_glossy_staff" => "5.50",
               "poster_glossy_dmc" => "0.00",
-              "poster_admin_email" => "example@fake.edu"
+              "poster_admin_email" => "example@fake.edu",
+              "poster_check_make_out_to" => "Example University"
             }
 
   menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :first => true, :if => Proc.new { User.current.is_stustaff? }

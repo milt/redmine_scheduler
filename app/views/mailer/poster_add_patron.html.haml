@@ -29,8 +29,8 @@
   %tr
     %th Print Aspect Ratio:
     %td= @poster.aspect_ratio.round(2)
-    %th File Size:
-    %td= number_to_human_size(@poster.issue.attachments.first.filesize)
+    %th
+    %td
   %tr
     %th Media:
     %td= @poster.paper_type.capitalize

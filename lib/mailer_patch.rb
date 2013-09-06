@@ -51,6 +51,13 @@ module MailerPatch
           mail :to => poster.budget_email,
             :subject => "Automatic Notification: #{Setting.plugin_redmine_scheduler['org_short_name']} Poster Print Order via University Budget Number"
         end
+
+        def poster_printed(poster)
+          @poster = poster
+
+          mail :to => poster.patron_email,
+            :subject => "#{Setting.plugin_redmine_scheduler['org_short_name']} Print Job Ready for Pickup"
+        end
     end
 
   end

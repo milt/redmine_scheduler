@@ -1,0 +1,7 @@
+%p Your large format print of #{@poster.file_name} has been printed and is ready to be picked up during our business hours (see below).
+
+%p During the Fall and Spring academic semesters, our regular business hours are #{Setting.plugin_redmine_scheduler['org_biz_hours']}. All other times please check our web site, or call to confirm our hours.
+
+- if @poster.balance_due > 0
+  %p There is a remaining balance of #{humanized_money_with_symbol @poster.balance_due} for this order. Please bring this amount in J-Cash or personal check made out to #{Setting.plugin_redmine_scheduler['poster_check_make_out_to']} when you come to pick up your print.
+= render 'contact'
