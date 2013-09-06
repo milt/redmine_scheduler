@@ -1,0 +1,1 @@
+%p #{@poster.patron_name} has just submitted a large print order of #{@poster.file_name} and is using the University Budget Number #{@poster.budget_number.to_s} to pay for the print. Contact #{@poster.budget_name} at #{@poster.budget_email} or #{@poster.budget_phone}. You can view the order here: #{ link_to(issue_path(@poster.issue, only_path: false))}

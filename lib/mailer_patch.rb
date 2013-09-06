@@ -31,17 +31,25 @@ module MailerPatch
             :subject => "New Poster Print Order"
         end
 
+        def poster_add_admin(poster)
+          @poster = poster 
+
+          mail :to => Group.admstaff.first.users.map(&:mail),
+            :subject => "Automatic Notification: DMC Poster Print Order via University Budget Number"
+        end
+
         def poster_add_patron(poster)
           @poster = poster
 
-          recipients = [poster.patron_email]
-
-          if poster.payment_type == "budget"
-            recipients << poster.budget_email
-          end
-
-          mail :to => recipients,
+          mail :to => poster.patron_email,
             :subject => "Your DMC Poster Print Order"
+        end
+
+        def poster_add_budget_admin(poster)
+          @poster = poster
+
+          mail :to => poster.budget_email,
+            :subject => "Automatic Notification: DMC Poster Print Order via University Budget Number"
         end
     end
 
