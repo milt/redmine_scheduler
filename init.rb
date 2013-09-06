@@ -49,21 +49,30 @@ Redmine::Plugin.register :redmine_scheduler do
 
   settings  :partial => 'settings/redmine_scheduler_settings',
             :default => {
+              "org_full_name" => "Digital Media Center",
+              "org_short_name" => "DMC",
+              "org_email" => "example@fake.edu",
+              "org_phone" => "555-555-5555",
+              "org_address" => "Address Line 1\nAddress Line 2\nAddress Line 3",
+              "org_site" => "www.example.edu",
               "prostaff_group_id" => "2",
               "stustaff_group_id" => "3",
               "admstaff_group_id" => "4",
+              "poster_group_id" => "5",
               "fdshift_tracker_id" => "4",
               "lcshift_tracker_id" => "5",
               "task_tracker_id" => "7",
               "goal_tracker_id" => "8",
               "event_tracker_id" => "9",
               "repair_tracker_id" => "10",
+              "poster_tracker_id" => "11",
               "poster_matte_student" => "3.50",
               "poster_matte_staff" => "5.00",
               "poster_matte_dmc" => "0.00",
               "poster_glossy_student" => "4.00",
               "poster_glossy_staff" => "5.50",
-              "poster_glossy_dmc" => "0.00"
+              "poster_glossy_dmc" => "0.00",
+              "poster_admin_email" => "example@fake.edu"
             }
 
   menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :first => true, :if => Proc.new { User.current.is_stustaff? }
@@ -72,7 +81,6 @@ Redmine::Plugin.register :redmine_scheduler do
 
   menu :application_menu, :bookings, { :controller => 'bookings', :action => 'index' }, :caption => 'Bookings'
 
-  #menu :application_menu, :command, { :controller => 'command', :action => 'index' }, :caption => 'Anaylze Time', :if => Proc.new { User.current.is_admstaff? || User.current.is_prostaff? }
   menu :application_menu, :student_levels, {:controller=> 'prostaff', :action => 'student_levels'}, :caption => 'Student Levels', :if => Proc.new { User.current.is_prostaff? }
   menu :application_menu, :timesheets, { :controller => 'timesheets' }, :caption => 'Timesheets', :if => Proc.new { User.current.is_admstaff? || User.current.is_stustaff? }
   menu :application_menu, :levels, { :controller => 'levels' }, :caption => 'Skill Levels', :if => Proc.new { User.current.is_admstaff? }
@@ -82,6 +90,4 @@ Redmine::Plugin.register :redmine_scheduler do
   menu :application_menu, :repairs, {:controller => 'repairs', :action => 'new'}, :caption => 'New Repair'
   menu :application_menu, :posters, {:controller => 'posters', :action => 'new'}, :caption => 'New Poster Print'
   menu :application_menu, :reminders, { :controller => 'reminders', :action => 'index'}, :caption => 'Reminders', :if => Proc.new { User.current.is_admstaff? }
-
-  #config.active_record.observers = :booking_observer
 end
