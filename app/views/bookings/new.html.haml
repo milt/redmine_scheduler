@@ -8,4 +8,5 @@
 = link_to 'Return to index...', {:action => 'index'}
 
 - content_for :header_tags do
-  - javascript_include_tag 'bookings.js', plugin: 'redmine_scheduler'
+  = javascript_include_tag 'bookings.js', plugin: 'redmine_scheduler'
+  = stylesheet_link_tag 'bookings', :plugin => 'redmine_scheduler'

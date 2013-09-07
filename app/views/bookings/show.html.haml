@@ -32,3 +32,6 @@
 = button_to 'Cancel', {:action => :cancel, :id => @booking}, method: 'put', :confirm => "Do you really want to cancel this booking?"
 %hr/
 = link_to 'Return to index...', {:action => 'index'}
+
+- content_for :header_tags do
+  = stylesheet_link_tag 'bookings', :plugin => 'redmine_scheduler'

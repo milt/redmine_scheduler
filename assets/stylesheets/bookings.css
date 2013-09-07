@@ -1,0 +1,7 @@
+table.timeslot_results td {
+  text-align: center;
+  width: 60px;
+}
+td.timeslot_cell {
+  background-color: #E0E0E0;
+}

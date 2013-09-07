@@ -1,6 +1,6 @@
 - unless @bookings.active.empty?
   %h3 Active
-  %table.list
+  %table.list.booking_results_table
     %tr
       %th Id
       %th Patron
@@ -12,7 +12,7 @@
   = paginate @active, remote: true, param_name: 'active_page'
 - unless @bookings.cancelled.empty?
   %h3 Cancelled
-  %table.list
+  %table.list.booking_results_table
     %tr
       %th Id
       %th Patron
@@ -24,7 +24,7 @@
   = paginate @cancelled, remote: true, param_name: 'cancelled_page'
 - unless @bookings.orphaned.empty?
   %h3 Orphaned
-  %table.list
+  %table.list.booking_results_table
     %tr
       %th Id
       %th Patron

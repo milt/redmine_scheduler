@@ -3,15 +3,15 @@
     %tr
       %th
       - @coaches.each do |coach|
-        %th= coach.firstname
+        %th.coach_header= coach.firstname
     - @times_by_day.keys.each do |day|
-      %tr
-        %th= day.strftime('%b %d, %Y')
+      %tr.day_row
+        %th.day_header= day.strftime('%b %d, %Y')
       - @times_by_day[day].each do |time|
         %tr
-          %th= time.strftime('%l:%M %p')
+          %th.time_header= time.strftime('%l:%M %p')
           - @coaches.each do |coach|
-            %td
+            %td.timeslot_cell
               - slot = @timeslots_by_time[time].detect{|t| t.coach == coach}
               - if slot
                 - case action_name
