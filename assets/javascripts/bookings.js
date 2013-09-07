@@ -23,6 +23,25 @@ var bindTimeslotCheckbox = (function() {
   });
 });
 
+var limitToShift = (function() {
+  $(".timeslot_checkbox").on("click", function() {
+    var shiftCLass;
+    var classList = this.className.split(/\s+/);
+    for (var i = 0; i < classList.length; i++) {
+       if (classList[i].indexOf("shift_") != -1) {
+         shiftClass = "." + classList[i];
+       }
+    }
+    if ($(shiftClass + ":checked").not(this).length == 0)
+    {
+      $(".timeslot_checkbox").not($(shiftClass)).attr('disabled', this.checked);
+      // force closed timeslots disabled
+      $(".timeslot_checkbox.closed").attr("disabled", true);
+    }
+
+  });
+});
+
 
 $(document).ready(function(){
 

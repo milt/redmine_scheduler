@@ -16,8 +16,9 @@
               - if slot
                 - case action_name
                 - when 'new'
-                  = check_box_tag 'slot_ids[]', slot.id, false, :disabled => (!slot.open? ? true : false), :class => 'timeslot_checkbox', :data => render_timeslot_data(slot)
+                  = check_box_tag 'slot_ids[]', slot.id, false, :disabled => (!slot.open? ? true : false), :class => "timeslot_checkbox shift_#{slot.issue.id.to_s}" + (!slot.open? ? " closed" : ""), :data => render_timeslot_data(slot)
                 - when 'edit'
-                  = check_box_tag 'slot_ids[]', slot.id, (@booking.timeslots.include?(slot)), :disabled => (!slot.open? ? true : false) && !@booking.timeslots.include?(slot), :class => 'timeslot_checkbox', :data => render_timeslot_data(slot)
+                  = check_box_tag 'slot_ids[]', slot.id, (@booking.timeslots.include?(slot)), :disabled => (!slot.open? ? true : false) && !@booking.timeslots.include?(slot), :class => "timeslot_checkbox shift_#{slot.issue.id.to_s}" + ((!slot.open? && !@booking.timeslots.include?(slot)) ? " closed" : ""), :data => render_timeslot_data(slot)
 :javascript
   bindTimeslotCheckbox();
+  limitToShift();
