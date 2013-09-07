@@ -50,7 +50,7 @@ class BookingsController < ApplicationController
                     :location => @booking }
       else                                               
         flash[:warning] = 'Invalid options'
-        format.html { render :action => "new", :booking => params[:booking], :slot_ids => params[:slot_ids] }
+        format.html { redirect_to :action => "new", :booking => params[:booking], :slot_ids => params[:slot_ids] }
         format.xml  { render :xml => @booking.errors,
                     :status => :unprocessable_entity }
       end
@@ -98,8 +98,8 @@ class BookingsController < ApplicationController
       else
         @booking.timeslots = @old_slots #go back to orig slots
         flash[:warning] = 'Invalid options'
-        format.html { render :action => "edit", :booking => @booking, :slot_ids => params[:slot_ids] }
-        format.xml  { render :xml => @booking.errors,
+        format.html { redirect_to :action => "edit", :booking => @booking, :slot_ids => params[:slot_ids] }
+        format.xml  { redirect_to :xml => @booking.errors,
                     :status => :unprocessable_entity }
       end
     end
