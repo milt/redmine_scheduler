@@ -18,6 +18,7 @@ class RepairsController < ApplicationController
     @repair.user = User.current
     if params[:issue_id]
       @repair.issue = Issue.find(params[:issue_id].to_s)
+      @issue = @repair.issue
     end
 
     if @repair.save
@@ -29,7 +30,7 @@ class RepairsController < ApplicationController
       redirect_to :action => 'show', :id => @repair
     else                                               
       flash[:warning] = 'Invalid Options... Try again!'
-      redirect_to :action => 'new'
+      redirect_to :action => 'new', :repair => @repair
     end
   end
 
