@@ -156,7 +156,7 @@ $(document).ready(function(){
 
   //get user-configurable variables from redmine
 
-  $.getJSON( "/poster_settings", function( json ) {
+  $.getJSON( "/squid/poster_settings", function( json ) {
     posterSettings = json;
 
     //stuff to do after getting JSON data
