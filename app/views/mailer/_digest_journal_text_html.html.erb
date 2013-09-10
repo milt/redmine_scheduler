@@ -1,5 +1,5 @@
 <li>
-  <p><i><%= journal.created_at.strftime("%b %e, %l:%M %p") %> by <%= journal.user.name %>:</i></p>
+  <p><i><%= journal.created_on.strftime("%b %e, %l:%M %p") %> by <%= journal.user.name %>:</i></p>
   <ul>
   <% for detail in journal.renderable_details %>
       <li><%= journal.render_detail(detail, false) %></li>
