@@ -1,0 +1,6 @@
+%h3 Unpaid Fines
+= render 'table', fines: @unpaid
+= paginate @unpaid, remote: true, param_name: 'unpaid_page'
+%h3 Paid Fines
+= render 'table', fines: @paid
+= paginate @paid, remote: true, param_name: 'paid_page'

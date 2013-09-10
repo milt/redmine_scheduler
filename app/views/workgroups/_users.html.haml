@@ -1,0 +1,34 @@
+.splitcontentleft
+  - if @group.users.any?
+    %table.list.users
+      %thead
+        %tr
+          %th= l(:label_user)
+          %th{:style => "width:15%"}
+      %tbody
+        - @group.users.sort.each do |user|
+          %tr{:class => cycle 'odd', 'even', :id => "user-#{user.id}"}
+            %td.user= link_to_user user
+            %td.buttons
+              = link_to_remote l(:button_delete), { :url => { :controller => 'workgroups', :action => 'remove_user', :id => @group, :user_id => user }, |
+                :method => :post },                                                                                                                     |
+                :class => 'icon icon-del'                                                                                                               |
+  - else
+    %p.nodata= l(:label_no_data)
+.splitcontentright
+  - users = User.active.not_in_group(@group).all(:limit => 100)
+  - if users.any?
+    - remote_form_for(:group, @group, :url => {:controller => 'workgroups', :action => 'add_users', :id => @group}, :method => :post) do |f|
+      %fieldset
+        %legend= l(:label_user_new)
+        %p
+          = label_tag "user_search", l(:label_user_search)
+          = text_field_tag 'user_search', nil
+        = observe_field(:user_search,                                        |
+          :frequency => 0.5,                                                 |
+          :update => :users,                                                 |
+          :url => auto_complete_users_path(:remove_group_members => @group), |
+          :with => 'q')                                                      |
+        #users
+          = principals_check_box_tags 'user_ids[]', users
+        %p= submit_tag l(:button_add)

@@ -1,0 +1,24 @@
+%fieldset
+  %table.timeslot_results
+    %tr
+      %th
+      - @coaches.each do |coach|
+        %th.coach_header= coach.firstname
+    - @times_by_day.keys.each do |day|
+      %tr.day_row
+        %th.day_header= day.strftime('%b %d, %Y')
+      - @times_by_day[day].each do |time|
+        %tr
+          %th.time_header= time.strftime('%l:%M %p')
+          - @coaches.each do |coach|
+            %td.timeslot_cell
+              - slot = @timeslots_by_time[time].detect{|t| t.coach == coach}
+              - if slot
+                - case action_name
+                - when 'new'
+                  = check_box_tag 'slot_ids[]', slot.id, false, :disabled => (!slot.open? ? true : false), :class => "timeslot_checkbox shift_#{slot.issue.id.to_s}" + (!slot.open? ? " closed" : ""), :data => render_timeslot_data(slot)
+                - when 'edit'
+                  = check_box_tag 'slot_ids[]', slot.id, (@booking.timeslots.include?(slot)), :disabled => (!slot.open? ? true : false) && !@booking.timeslots.include?(slot), :class => "timeslot_checkbox shift_#{slot.issue.id.to_s}" + ((!slot.open? && !@booking.timeslots.include?(slot)) ? " closed" : ""), :data => render_timeslot_data(slot)
+:javascript
+  bindTimeslotCheckbox();
+  limitToShift();

@@ -8,37 +8,48 @@ module IssuePatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
-      has_many :timeslots, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
+      has_many :timeslots, :inverse_of => :issue, :dependent => :destroy # Establish a relationship with timeslots, destroy timeslot if issue destroyed
       has_many :bookings, :through => :timeslots, :dependent => :destroy
       has_one :repair, :dependent => :nullify
       safe_attributes 'start_time', 'end_time' #since our migration adds start_time and end_time to issues for use as shifts, we need to mark these as safe for editing.
-      alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
-      named_scope :today, lambda { { :conditions => { :start_date => Date.today } } }
-      named_scope :fdshift, lambda { { :conditions => { :tracker_id => Tracker.fdshift_track.first.id } } }
-      named_scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
-      named_scope :repairs, lambda { { :conditions => { :tracker_id => Tracker.repair_track.first.id } } }
-      named_scope :unassigned, lambda { { :conditions => { :assigned_to_id => nil } } }
-      #need to add a named_scope for development tracker?
-      named_scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
-      named_scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
-      named_scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
-      named_scope :for_author, lambda {|u| { :conditions => { :author_id => u.id } } }
-      named_scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
-      named_scope :by_start_date, lambda {|d| { :conditions => ["start_date = ?", d] } }
-      named_scope :from_date, lambda {|d| { :conditions => ["start_date >= ?", d] } }
-      named_scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
-      named_scope :from_start_time, lambda {|dt| {conditions => ["start_time >= ?", dt] } }
-      named_scope :until_start_time, lambda {|dt| {conditions => ["start_time <= ?", dt] } }
-      named_scope :omit_user, lambda {|u| { :conditions => ["assigned_to_id != ?", u.id] } } # not used
-      named_scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
+      #alias_method_chain :validate, :shift_times #patches validation to check for sane shift times. see validate_with_shift_times below
+      validate :validate_with_shift_times
+      scope :today, lambda { { :conditions => { :start_date => Date.today } } }
+      scope :fdshift, lambda { { :conditions => { :tracker_id => Tracker.fdshift_track.first.id } } }
+      scope :lcshift, lambda { { :conditions => { :tracker_id => Tracker.lcshift_track.first.id } } }
+      scope :repairs, lambda { { :conditions => { :tracker_id => Tracker.repair_track.first.id } } }
+      scope :unassigned, lambda { { :conditions => { :assigned_to_id => nil } } }
+      #need to add a scope for development tracker?
+      scope :tasks, lambda { { :conditions => { :tracker_id => Tracker.task_track.first.id } } }
+      scope :goals, lambda { { :conditions => { :tracker_id => Tracker.goal_track.first.id } } }
+      scope :foruser, lambda {|u| { :conditions => { :assigned_to_id => u.id } } }
+      scope :for_author, lambda {|u| { :conditions => { :author_id => u.id } } }
+      scope :events, lambda { { :conditions => { :tracker_id => Tracker.event_track.first.id } } }
+      scope :by_start_date, lambda {|d| { :conditions => ["start_date = ?", d] } }
+      scope :from_date, lambda {|d| { :conditions => ["start_date >= ?", d] } }
+      scope :until_date, lambda {|d| { :conditions => ["start_date <= ?", d] } }
+      scope :from_start_time, lambda {|dt| {conditions => ["start_time >= ?", dt] } }
+      scope :until_start_time, lambda {|dt| {conditions => ["start_time <= ?", dt] } }
+      scope :omit_user, lambda {|u| { :conditions => ["assigned_to_id != ?", u.id] } } # not used
+      scope :omit_user_id, lambda {|u| { :conditions => ["assigned_to_id != ?", u] } }
 
-      named_scope :updated_in_last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
-      named_scope :created_in_last_day, lambda { { :conditions => ["created_on >= ?", DateTime.now - 24.hours] } }
+      scope :updated_in_last_day, lambda { { :conditions => ["updated_on >= ?", DateTime.now - 24.hours] } }
+      scope :created_in_last_day, lambda { { :conditions => ["created_on >= ?", DateTime.now - 24.hours] } }
 
       after_create :create_timeslots, :if => :is_labcoach_shift?
       after_update :recreate_timeslots, :if => (:is_labcoach_shift? && :times_changed?)
-      named_scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
-      after_destroy :cancel_bookings 
+      scope :feedback, lambda { { :conditions => ["status_id = 4"] } }
+      after_destroy :cancel_bookings
+      belongs_to :user, foreign_key: 'assigned_to_id'
+      has_one :poster
+
+      def self.with_skills(*skills)
+        joins(:assigned_to).merge(User.with_skills(*skills))
+      end
+
+      def self.shifts
+        where("tracker_id = ? OR tracker_id = ?", Tracker.fdshift_track.first.id, Tracker.lcshift_track.first.id)
+      end
     end
 
   end
@@ -56,9 +67,12 @@ module IssuePatch
     def time_list #list of possible clock times a shift can start.
       list = []
       t = Time.local(0,1,1,0,15)
+
+      # indices = *(0..49)
+      # indices.rotate!(offset*2)
+
       for h in 0..49  
         list << [ (t + h*30.minutes).strftime("%I:%M:%S %p"), h ]
-        #list << (t + h*30.minutes).strftime("%I:%M:%S %p")
       end
       return list
     end
@@ -71,13 +85,13 @@ module IssuePatch
       self.assigned_to.skills
     end
           
-    def start_time=(time) #this method and the one below are used to write to the fields with the older write_attribute method. this is bad, and maybe is not necessary, need to look at it
-        write_attribute :start_time, (time)
-    end
+    # def start_time=(time) #this method and the one below are used to write to the fields with the older write_attribute method. this is bad, and maybe is not necessary, need to look at it
+    #     write_attribute :start_time, (time)
+    # end
     
-    def end_time=(time)
-        write_attribute :end_time, (time)
-    end
+    # def end_time=(time)
+    #     write_attribute :end_time, (time)
+    # end
     
     def shift_duration #get the duration of a shift
       ((self.start_time && self.end_time) ? self.end_time - self.start_time : 0)/60/60
@@ -96,6 +110,16 @@ module IssuePatch
       index = (end_time.hour * 2) + (end_time.min/30)
       index += 48 if index <= shift_start_index
       return index
+    end
+
+    def set_times_from_index(start, offset, start_index, end_index)
+      start += offset
+      self.start_time = start + (start_index * 30).minutes
+      self.end_time = start + (end_index * 30).minutes
+    end
+
+    def refresh_shift_subject
+      self.subject = assigned_to.name + start_time.in_time_zone.strftime(' %I:%M:%S %p - ') + end_time.in_time_zone.strftime('%I:%M:%S %p - ') + start_date.to_datetime.in_time_zone.strftime('%a, %b %d')
     end
     
     #this should fix the timing issue with confusing 12.15/12.45am today with 12.15/12.45am tomorrow
@@ -160,7 +184,8 @@ module IssuePatch
     end
     
     def create_timeslots #generate timeslots for this shift
-      self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
+      #self.shift_duration_index.times {|i| self.timeslots << Timeslot.create(:slot_time => i)}
+      self.shift_duration_index.times {|i| timeslots.create(slot_time: i)}
     end
     
     def recreate_timeslots # for now, just orphans all bookings and runs create again.

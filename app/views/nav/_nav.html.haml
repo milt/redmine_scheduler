@@ -1,0 +1,12 @@
+- unless User.current.anonymous?
+  #plugin-navbar
+    %p
+      %ul
+        - unless User.current.admin
+          = render 'nav/stustaff' if User.current.is_stustaff?
+          = render 'nav/prostaff' if User.current.is_prostaff?
+        - else
+          = render 'nav/stustaff'
+          = render 'nav/prostaff'
+- content_for :header_tags do
+  = stylesheet_link_tag 'nav', :plugin => 'redmine_scheduler'

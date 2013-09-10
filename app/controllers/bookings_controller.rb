@@ -1,36 +1,36 @@
 class BookingsController < ApplicationController
   unloadable
-  before_filter :find_timeslots, :only => [:new, :create]
+  before_filter :find_timeslots, :only => :create
   before_filter :find_booking, :only => [:show, :edit, :update, :cancel]
+  authorize_resource
 
   def index
-    find_params
+    find_index_params
 
-    if @date.nil?
-      @date = Date.today  #default selected date
-    end 
+    @bookings = Booking.between(@from,@until).with_coaches(*@coaches).search(params[:search])
+    @booking = Booking.new
 
-    @bookings = Booking.from_date(@from).until_date(@to)
+    @active = @bookings.active.page(params[:active_page]).per(10)
+    @cancelled = @bookings.cancelled.page(params[:cancelled_page]).per(10)
+    @orphaned = @bookings.orphaned.page(params[:orphaned_page]).per(10)
 
-    if params[:sort_by] == 'name'
-        @bookings = @bookings.sort_by(&:name)
-    end    
-    
-    if params[:sort_by] == 'coach'
-        @bookings = @bookings.sort_by(&:coach)
-    end    
-    
-    if params[:sort_by] == 'apt_time'
-        @bookings = @bookings.sort_by(&:apt_time)
-    end    
-    
-    filter_active(@bookings)
-    filter_orphaned(@bookings)
-    filter_cancelled(@bookings)
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def new
     @booking = Booking.new(params[:booking])
+    @timeslot = Timeslot.new
+
+    timeslot_search_params
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.xml { render :xml => @times }
+      format.js
+    end
   end
 
   def create
@@ -50,7 +50,7 @@ class BookingsController < ApplicationController
                     :location => @booking }
       else                                               
         flash[:warning] = 'Invalid options'
-        format.html { render :action => "new", :booking => params[:booking], :slot_ids => params[:slot_ids] }
+        format.html { redirect_to :action => "new", :booking => params[:booking], :slot_ids => params[:slot_ids] }
         format.xml  { render :xml => @booking.errors,
                     :status => :unprocessable_entity }
       end
@@ -61,6 +61,12 @@ class BookingsController < ApplicationController
   end
 
   def edit
+    timeslot_search_params
+
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def update
@@ -71,7 +77,6 @@ class BookingsController < ApplicationController
       @timeslots = params[:slot_ids].map {|id| Timeslot.find(id)}
     end
 
-    #TODO.. process the changes in timeslot
     @booking.attributes = params[:booking]
 
     if params[:me].present?
@@ -79,6 +84,11 @@ class BookingsController < ApplicationController
     end
     
     @booking.timeslots = @timeslots
+
+    unless @booking.timeslots.empty?
+      @booking.cancelled = nil
+    end
+    
     respond_to do |format|
       if @booking.save
         flash[:notice] = 'Booking was successfully updated.'
@@ -88,8 +98,8 @@ class BookingsController < ApplicationController
       else
         @booking.timeslots = @old_slots #go back to orig slots
         flash[:warning] = 'Invalid options'
-        format.html { render :action => "edit", :booking => @booking, :slot_ids => params[:slot_ids] }
-        format.xml  { render :xml => @booking.errors,
+        format.html { redirect_to :action => "edit", :booking => @booking, :slot_ids => params[:slot_ids] }
+        format.xml  { redirect_to :xml => @booking.errors,
                     :status => :unprocessable_entity }
       end
     end
@@ -113,34 +123,87 @@ class BookingsController < ApplicationController
 
   private
 
-  def find_params
-    if params[:from].present?
+  def timeslot_search_params
+    if params[:from]
+      @from = DateTime.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i, params[:from][:hour].to_i, params[:from][:minute].to_i, 0, DateTime.now.zone)
+      @from = DateTime.now if @from < DateTime.now
+    else
+      if @booking.timeslots.empty? #handle use on new + edit
+        @from = DateTime.now + 30.minutes
+      elsif @booking.timeslots.empty? && @booking.apt_time.present?
+        @from = @booking.apt_time - 1.day
+      else
+        @from = @booking.timeslots.order(:slot_time).first.start_time - 1.hour
+      end
+    end
+
+    if params[:until]
+      @until = DateTime.new(params[:until][:year].to_i, params[:until][:month].to_i, params[:until][:day].to_i, params[:until][:hour].to_i, params[:until][:minute].to_i, 0, DateTime.now.zone)
+    else
+      if @booking.new_record?
+        @until = DateTime.now + 2.days
+      elsif @booking.timeslots.empty? && @booking.apt_time.present?
+        @until = @booking.apt_time + 1.day
+      else
+        @until = @booking.timeslots.order(:slot_time).last.end_time + 1.hour
+      end
+    end
+
+    if @from > @until
+      @until = @from
+    end
+
+    @all_coaches = Group.stustaff.first.users
+    @all_skills = Skill.all
+
+    if params[:skill_ids]
+      @skills = Skill.find(params[:skill_ids])
+    else
+      @skills = @all_skills
+    end
+
+    if params[:coach_ids]
+      @coaches = User.find(params[:coach_ids])
+    else
+      @coaches = @all_coaches
+    end
+
+    @all_skills_by_skillcat = @all_skills.group_by(&:skillcat)
+    @timeslots = Timeslot.from_date_time(@from).until_date_time(@until).limit_to_coaches(*@coaches).limit_to_skills(*@skills) #.order_for_form.uniq
+
+    @timeslots_by_time = @timeslots.group_by(&:start_time)
+    @times = Kaminari.paginate_array(@timeslots_by_time.keys).page(params[:page]).per(20)
+    @times_by_day = @times.group_by(&:to_date)
+
+  end
+
+  def find_index_params
+    if params[:from]
       @from = Date.new(params[:from][:year].to_i, params[:from][:month].to_i, params[:from][:day].to_i)
     else
       @from = Date.today
     end
 
-    if params[:to].present?
-      @to = Date.new(params[:to][:year].to_i, params[:to][:month].to_i, params[:to][:day].to_i)
+    if params[:until]
+      @until = Date.new(params[:until][:year].to_i, params[:until][:month].to_i, params[:until][:day].to_i)
     else
-      @to = Date.today + 2.weeks
+      @until = Date.today + 2.weeks
     end
+
+    @all_coaches = Group.stustaff.first.users
+
+    if params[:coach_ids]
+      @coaches = User.find(params[:coach_ids])
+    else
+      @coaches = @all_coaches
+    end
+
   end
 
-  def filter_date(bookings, date)
-    @bookings = bookings.select {|b| b.apt_time.to_date >= date}
-  end
-
-  def filter_orphaned(bookings)
-    @orph_bookings = bookings.select {|b| b.cancelled == false}.paginate(:page => params[:page], :per_page => 4)
-  end
-
-  def filter_cancelled(bookings)
-    @canc_bookings = bookings.select {|b| b.cancelled == true}.paginate(:page => params[:page], :per_page => 4)
-  end
-
-  def filter_active(bookings)
-    @act_bookings = bookings.select {|b| b.cancelled == nil}.paginate(:page => params[:page], :per_page => 4)
+  def get_pages
+    params[:active_page] ? @active_page = params[:active_page].to_i : @active_page = 1
+    params[:cancelled_page] ? @cancelled_page = params[:cancelled_page].to_i : @cancelled_page = 1
+    params[:orphaned_page] ? @orphaned_page = params[:orphaned_page].to_i : @orphaned_page = 1
   end
 
   def find_timeslots
@@ -148,16 +211,17 @@ class BookingsController < ApplicationController
       @timeslots = params[:slot_ids].map {|id| Timeslot.find(id)}
       if @timeslots.detect {|slot| slot.booked?}
         flash[:warning] = 'One or more timeslots is already booked. Please select available slots here and click "Book..."'
-        redirect_to :controller => 'timeslots', :action => 'find'
+        redirect_to :controller => 'bookings', :action => 'new'
       end
       # send user back if the timeslots cover more than one shift. Suspenders and a belt.
       if @timeslots.map(&:issue_id).uniq.count > 1
         flash[:warning] = 'You can not make a booking that covers more than one shift. Please try again.'
-        redirect_to :controller => 'timeslots', :action => 'find'
+        redirect_to :controller => 'bookings', :action => 'new'
       end
     else
-      flash[:warning] = 'Cannot make a new Booking without some timeslots. Pick some here and click "Book..."'
-      redirect_to :controller => 'timeslots', :action => 'find'
+      @timeslots = []
+      # flash[:warning] = 'Cannot make a new Booking without some timeslots. Pick some here and click "Book..."'
+      # redirect_to :controller => 'timeslots', :action => 'find'
     end
   end
 

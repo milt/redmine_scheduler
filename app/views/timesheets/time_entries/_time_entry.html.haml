@@ -1,0 +1,11 @@
+%tr
+  %td= time_entry.id.to_s
+  %td= time_entry.project ? time_entry.project.name : "No Project"
+  %td= time_entry.issue ? time_entry.issue.subject.truncate(20) : "No Shift/Issue"
+  %td= time_entry.hours.to_s
+  %td= time_entry.activity.name
+  %td= time_entry.comments.truncate(20)
+  - if controller.action_name == ("new" || "edit")
+    %td
+      = link_to image_tag('edit.png'), edit_time_entry_path(time_entry, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}")
+      = link_to image_tag('delete.png'), {:controller => 'timelog', :action => 'destroy', :id => time_entry, :back_url => "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}, :confirm => l(:text_are_you_sure), :method => :delete

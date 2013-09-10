@@ -10,21 +10,53 @@ module MailerPatch
       unloadable # Send unloadable so it will not be unloaded in development
 
         def booking_add(booking)
-            recipients	booking.coach.mail
-            from	"DMC Lab Coach Notifier <notification@redmine.com>"
-            subject	"You have a Lab Coach Signup!"
-            sent_on	Time.now
-            body	("Booking scheduled with " + booking.name + " on " + booking.apt_time.strftime("%m/%d/%Y at %I:%M:%S %p") + "\nYou can contact this patron at " + booking.phone + " or " + booking.email + "\n\nProject Description:\n" + booking.project_desc + "\n\n\n\n*Do Not Reply to this Email\nThis email is an auto-generated message.  Replies to automated messages are not monitored.")
+          @booking = booking
+
+          mail :to => booking.coach.mail,
+            :subject => "New Booking Added"
         end
 
         def daily_digest(user)
-          recipients user.mail
-          from "Squid Digest <digitalmedia@jhu.edu>"
-          subject 'Squid Daily Digest'
-          sent_on Time.now
-          body :user => user,
-               :digest => user.journal_digest
-          render_multipart('digest', body)
+          @user = user
+          @digest = user.journal_digest
+
+          mail :to => user.mail,
+            :subject => "#{Setting.app_title} Daily Digest"
+        end
+
+        def poster_add_staff(poster)
+          @poster = poster 
+
+          mail :to => Group.posterstaff.first.users.map(&:mail),
+            :subject => "New Poster Print Order"
+        end
+
+        def poster_add_admin(poster)
+          @poster = poster 
+
+          mail :to => Setting.plugin_redmine_scheduler["poster_admin_email"],
+            :subject => "Automatic Notification: #{Setting.plugin_redmine_scheduler['org_short_name']} Poster Print Order via University Budget Number"
+        end
+
+        def poster_add_patron(poster)
+          @poster = poster
+
+          mail :to => poster.patron_email,
+            :subject => "Your #{Setting.plugin_redmine_scheduler['org_short_name']} Poster Print Order"
+        end
+
+        def poster_add_budget_admin(poster)
+          @poster = poster
+
+          mail :to => poster.budget_email,
+            :subject => "Automatic Notification: #{Setting.plugin_redmine_scheduler['org_short_name']} Poster Print Order via University Budget Number"
+        end
+
+        def poster_printed(poster)
+          @poster = poster
+
+          mail :to => poster.patron_email,
+            :subject => "#{Setting.plugin_redmine_scheduler['org_short_name']} Print Job Ready for Pickup"
         end
     end
 
@@ -39,4 +71,3 @@ module MailerPatch
       
   end
 end
-

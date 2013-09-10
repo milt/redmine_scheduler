@@ -1,0 +1,7 @@
+%tr
+  %td= shift.id.to_s
+  %td= shift.tracker.name
+  %td= shift.start_time.strftime("%I:%M:%S %p")
+  %td= shift.end_time.strftime("%I:%M:%S %p")
+  %td= shift.user.name
+  %td= link_to image_tag('time_add.png'), {controller: 'timelog', action: 'new', time_entry: {issue_id: shift, spent_on: day}, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}

@@ -1,0 +1,29 @@
+= form_for @booking, :url => { :action => "create" } do |f|
+  #booking_attributes{style: "float:left"}
+    %fieldset
+      %table
+        %tr
+          %th= f.label :name
+          %td
+            = f.text_field :name
+            = check_box_tag('me')
+            = label_tag 'Me'
+        %tr
+          %th= f.label :phone
+          %td= f.text_field :phone
+        %tr
+          %th= f.label :email
+          %td= f.text_field :email
+        %tr
+          %th= f.label :project_desc
+          %td= f.text_area :project_desc
+      %p= submit_tag "Create"
+  #timeslot_selector{style: "float:left"}
+    #no_results
+    .page
+      #results
+        = render 'bookings/timeslots/results'
+    #paginator
+      = paginate @times, remote: true
+  #timeslot_info{style: "float:left"}
+    = render 'bookings/timeslots/timeslot'

@@ -1,0 +1,11 @@
+%li= link_to 'Book Student Time', { :controller => 'timeslots', :action => 'find' }
+%li= link_to 'Manage Bookings', { :controller => 'bookings', :action => 'index' }
+%li= link_to 'Timesheets', { :controller => 'timesheets' }
+%li= link_to 'Skill Levels', { :controller => 'levels' }
+%li= link_to 'Assign Wages', {:controller => 'wages', :action => 'index'}
+%li= link_to 'Edit Skills', {:controller => 'skills', :action => 'index'}
+- dev_proj = Project.find(:first, :conditions=>["name = 'Development'"])
+- tracker_bug = dev_proj.trackers.find(:first,:conditions=>["name = 'Bug'"]).id
+- tracker_feature = dev_proj.trackers.find(:first,:conditions=>["name = 'Feature'"]).id
+%li= link_to 'Add Development Bug', {:controller=>'issues', :action=>'new', :project_id=>dev_proj.id, :tracker_id=>tracker_bug}
+%li= link_to 'Submit Development Feature', {:controller=>'issues', :action=>'new', :project_id=>dev_proj.id,:tracker_id=>tracker_feature}

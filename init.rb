@@ -1,25 +1,15 @@
 require 'redmine'
 
-# Patches to the redmine core
-require 'journal_patch'
-require 'issue_observer_patch'
-require 'project_patch'
-require 'tracker_patch'
-require 'issue_patch'
-require 'user_patch'
-require 'mailer_patch'
-require 'time_entry_patch'
-require 'group_patch'
-require_dependency 'redmine_scheduler/hooks'
-require 'dispatcher'
 
- Dispatcher.to_prepare :redmine_scheduler do
+require_dependency 'redmine_scheduler/hooks'
+
+Rails.configuration.to_prepare do
+
+  require_dependency 'application_controller'
+  ApplicationController.send(:include, ApplicationControllerPatch) unless ApplicationController.included_modules.include? ApplicationControllerPatch
 
   require_dependency 'journal'
   Journal.send(:include, JournalPatch) unless Journal.included_modules.include? JournalPatch
-
-  require_dependency 'issue_observer'
-  IssueObserver.send(:include, IssueObserverPatch) unless IssueObserver.included_modules.include? IssueObserverPatch
 
   require_dependency 'project'
   Project.send(:include, ProjectPatch) unless Project.included_modules.include? ProjectPatch
@@ -45,24 +35,62 @@ require 'dispatcher'
   require_dependency 'group'
   Group.send(:include, GroupPatch) unless Group.included_modules.include? GroupPatch
   
- end
+  ActiveRecord::Base.observers << BookingObserver
+  ActiveRecord::Base.observers << PosterObserver
+  ActiveRecord::Base.observers << JournalDetailObserver
+end
 
 Redmine::Plugin.register :redmine_scheduler do
   name 'Redmine Scheduler plugin'
   author 'Milton Reder'
-  description 'This is a plugin for Redmine that allows unauthenticated users to book shift time.'
+  description 'This is a plugin for Redmine that we use at the DMC.'
   version '0.0.1'
   url 'http://'
   author_url 'http://digitalmedia.jhu.edu'
 
-  # permission :view_skills, :skills => :index
-  # permission :edit_skills, { :skills => [:new, :create, :edit, :update, :assign, :link, :unlink, :destroy] }
-  # permission :manage_wages, :wages => :all
-  menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :if => Proc.new { User.current.is_stustaff? || User.current.admin? }
-  menu :application_menu, :prostaff, { :controller => 'prostaff', :action => 'index' }, :caption => 'ProStaff', :if => Proc.new { User.current.is_prostaff? || User.current.admin? }
-  menu :application_menu, :admstaff, { :controller => 'admstaff', :action => 'index' }, :caption => 'Administrator', :if => Proc.new { User.current.is_admstaff? || User.current.admin? }
-  #menu :application_menu, :manage_bookings, { :controller => 'manage', :action => 'index' }, :caption => 'Manage Bookings'
-  #menu :application_menu, :booking, { :controller => 'booking', :action => 'index' }, :caption => 'Booking'
-  menu :admin_menu, :skills, { :controller => 'skills', :action => 'index' }, :caption => 'Skills'
-    #config.active_record.observers = :booking_observer
+  settings  :partial => 'settings/redmine_scheduler_settings',
+            :default => {
+              "org_full_name" => "Digital Media Center",
+              "org_short_name" => "DMC",
+              "org_email" => "example@fake.edu",
+              "org_phone" => "555-555-5555",
+              "org_address" => "Address Line 1\nAddress Line 2\nAddress Line 3",
+              "org_site" => "www.example.edu",
+              "org_biz_hours" => "Sunday - Thursday noon - midnight; Saturday & Sunday, noon - 10pm",
+              "prostaff_group_id" => "2",
+              "stustaff_group_id" => "3",
+              "admstaff_group_id" => "4",
+              "poster_group_id" => "5",
+              "fdshift_tracker_id" => "4",
+              "lcshift_tracker_id" => "5",
+              "task_tracker_id" => "7",
+              "goal_tracker_id" => "8",
+              "event_tracker_id" => "9",
+              "repair_tracker_id" => "10",
+              "poster_tracker_id" => "11",
+              "poster_matte_student" => "3.50",
+              "poster_matte_staff" => "5.00",
+              "poster_matte_dmc" => "0.00",
+              "poster_glossy_student" => "4.00",
+              "poster_glossy_staff" => "5.50",
+              "poster_glossy_dmc" => "0.00",
+              "poster_admin_email" => "example@fake.edu",
+              "poster_check_make_out_to" => "Example University"
+            }
+
+  menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :first => true, :if => Proc.new { User.current.is_stustaff? }
+  menu :application_menu, :prostaff, { :controller => 'prostaff', :action => 'index' }, :caption => 'ProStaff', :first => true, :if => Proc.new { User.current.is_prostaff? }
+  menu :application_menu, :admstaff, { :controller => 'admstaff', :action => 'index' }, :caption => 'Administrator', :first => true, :if => Proc.new { User.current.is_admstaff? }
+
+  menu :application_menu, :bookings, { :controller => 'bookings', :action => 'index' }, :caption => 'Bookings'
+
+  menu :application_menu, :student_levels, {:controller=> 'prostaff', :action => 'student_levels'}, :caption => 'Student Levels', :if => Proc.new { User.current.is_prostaff? }
+  menu :application_menu, :timesheets, { :controller => 'timesheets' }, :caption => 'Timesheets', :if => Proc.new { User.current.is_admstaff? || User.current.is_stustaff? }
+  menu :application_menu, :levels, { :controller => 'levels' }, :caption => 'Skill Levels', :if => Proc.new { User.current.is_admstaff? }
+  menu :application_menu, :wages, {:controller => 'wages', :action => 'index'}, :caption => 'Wages', :if => Proc.new { User.current.is_admstaff? }
+  menu :application_menu, :skills, {:controller => 'skills', :action => 'index'}, :caption => 'Skills', :if => Proc.new { User.current.is_admstaff? }
+  menu :application_menu, :fines, {:controller => 'fines', :action => 'index'}, :caption => 'Fines', :if => Proc.new { User.current.is_admstaff? }
+  menu :application_menu, :repairs, {:controller => 'repairs', :action => 'new'}, :caption => 'New Repair'
+  menu :application_menu, :posters, {:controller => 'posters', :action => 'new'}, :caption => 'New Poster Print'
+  menu :application_menu, :reminders, { :controller => 'reminders', :action => 'index'}, :caption => 'Reminders', :if => Proc.new { User.current.is_admstaff? }
 end

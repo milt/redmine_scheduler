@@ -1,0 +1,12 @@
+%tr.fine-table-row{url: "#{fine_path(fine)}"}
+  %td= fine.patron_name
+  %td= fine.patron_phone
+  %td= fine.patron_email
+  %td= fine.patron_jhed
+  %td= fine.amount
+  %td= fine.notes
+  - unless controller.controller_name == 'repairs'
+    %td
+      - if fine.repair.present?
+        = link_to fine.repair.issue.id.to_s, issue_path(fine.repair.issue)
+

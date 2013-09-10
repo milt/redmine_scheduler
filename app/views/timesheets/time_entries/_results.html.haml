@@ -1,0 +1,64 @@
+%h3 Timesheet for #{@user.name} : Week of Monday, #{@weekof.strftime('%b %d, %Y')}
+- unless @previous_sheets.empty?
+  #previous-sheets
+    %h4 Previous Timesheets for this Week:
+    %table.list
+      %tr
+        %th Staff Name
+        %th Week Of
+        %th Notes
+        %th Hours
+        %th Submitted At
+        %th Approved At
+        %th Actions
+      = render @previous_sheets
+
+- days_in_week.each do |day|
+  .box.day
+    .day-left
+      %h3= day.strftime('%A, %b %d, %Y')
+      - if @shifts.by_start_date(day).empty?
+        %p No shifts found.
+      - else
+        %p
+          = content_tag :a, "Show/Hide #{(@fd_shifts.by_start_date(day).count + @lc_shifts.by_start_date(day).count).to_s} Shift(s)", {onclick: "$('#shifts_on#{day.to_s}').toggle();"}
+        .box{id: "shifts_on#{day.to_s}", style: 'display:none;'}
+          %table.list
+            %tr
+              %th ID
+              %th Type
+              %th From
+              %th Until
+              %th Staff Member
+              %th Log time
+            - @fd_shifts.by_start_date(day).each do |shift|
+              = render 'shift', shift: shift, day: day
+            - @lc_shifts.by_start_date(day).each do |shift|
+              = render 'shift', shift: shift, day: day
+      .time-entries-on-day.box
+        - if @time_entries.ondate(day).empty?
+          %p No entries for this day.
+        - else
+          %h4 Time Entries
+          %table.list
+            %tr
+              %th ID
+              %th Project
+              %th Shift/Issue
+              %th Hours
+              %th Activity
+              %th Comments
+              %th Actions
+            - @time_entries.ondate(day).each do |entry|
+              = render 'timesheets/time_entries/time_entry', time_entry: entry
+        - unless User.current.is_admstaff?
+          .add-time
+            %p
+              Log time on #{day.strftime('%A')}
+              = link_to image_tag('time_add.png'), {controller: 'timelog', action: 'new', time_entry: {user_id: @user.id, project_id: nil, spent_on: day}, back_url: "#{request.protocol}#{request.host_with_port}#{request.fullpath}"}
+    .day-right
+      .hours-on-day
+        %h3= @time_entries.ondate(day).sum(&:hours).to_s + " Hours"
+.total-hours
+  %h3 Total: #{@time_entries.sum(&:hours).to_s} Hours
+  %h3 Wage: $#{@user.wage.amount.to_s}0/hr

@@ -1,8 +1,17 @@
-<div>
-	<% case @issue.tracker.name
-	when "Equipment Problem" %>
-      <%= render 'repairs/repair', :repair => @issue.repair unless @issue.repair.nil? %>
+<% case @issue.tracker.name
+   when "Equipment Problem" %>
+    <% if @issue.repair.present? %>
+    <div class="box">
+      <h4>Repair Info:</h4>
+      <%= render 'repairs/repair', :repair => @issue.repair %>
+    </div>
     <% else %>
-      <h3>No Special Info</h3>
+      <p><em>Equiupment Problem does not have additional repair/patron data.</em><%= link_to "(Add)", {controller: 'repairs', action: 'new', issue_id: @issue} %></p>
     <% end %>
-</div>
+<% when "Poster Print" %>
+    <% if @issue.poster.present? %>
+      <%= render @issue.poster %>
+    <% else %>
+      <p><em>Poster Print does not have any poster data!</em><%= link_to "(Add)", {controller: 'posters', action: 'new', issue: @issue} %></p>
+    <% end %>
+<% end %>

@@ -1,0 +1,8 @@
+%tr
+  %td= booking.id.to_s
+  %td= booking.name
+  %td= booking.coach.name
+  %td= booking.project_desc.truncate(60)
+  %td= booking.apt_time.strftime('%l:%M %p') + ", " + booking.apt_time.strftime('%b %d, %Y')
+  %td
+    = render "actions", booking: booking

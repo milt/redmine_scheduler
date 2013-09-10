@@ -1,5 +1,0 @@
-<ul>
-  <% levels.each do |level| %>
-    <li><% unless level.skillcat.name == "Authorization" %>Level <em><%= level.rating.to_s %></em> in <% end %><em><%= level.skill.name %></em>, Updated: <%= level.updated_at.strftime("%D") %></li>
-  <% end %>
-</ul>

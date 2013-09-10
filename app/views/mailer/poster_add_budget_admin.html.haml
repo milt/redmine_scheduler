@@ -1,0 +1,2 @@
+%p #{@poster.patron_name} has just submitted a large-print order of the file #{@poster.file_name} to the #{Setting.plugin_redmine_scheduler['org_full_name']} and is paying #{humanized_money_with_symbol(@poster.total)} using the university budget number #{@poster.budget_number.to_s}.  Please expect to be contacted by the #{Setting.plugin_redmine_scheduler['org_full_name']} to arrange a budget transfer.  Please contact us with any questions you may have:
+= render 'contact'

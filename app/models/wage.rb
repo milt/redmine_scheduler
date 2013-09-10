@@ -1,7 +1,8 @@
 class Wage < ActiveRecord::Base
   unloadable
   has_one :user
-  default_scope :order => 'amount ASC'
+  monetize :amount_cents
+  default_scope :order => 'amount_cents ASC'
   attr_accessible :amount
   
 end

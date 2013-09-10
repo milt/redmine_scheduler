@@ -1,0 +1,12 @@
+%div
+  %table.list.issues
+  %h3
+    Week of #{@weekof.to_s}
+  - (1..7).each do |day|
+    - date = Date.commercial(@year_selected, @cweek, day)
+    %th= date.strftime("%A, %b %d")
+    %td
+      %p Time Entries This Day
+      = render 'time_entries', {:entries_by_day=>@entries_by_day, :date=>date}
+      %hr/
+      = render 'shifts_nonsorted', {:shifts_by_day=> @shifts_by_day,:date=>date}

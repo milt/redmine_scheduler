@@ -3,89 +3,60 @@ class Timesheet < ActiveRecord::Base
   has_many :time_entries, :dependent => :nullify
   belongs_to :user       # possible to divide user between employee and staff/boss?
   has_one :wage, :through => :user
-  attr_accessible :submitted, :approved    #not sure if necessary
+  monetize :approve_time_wage_cents, allow_nil: true
+  attr_accessible :submitted, :approved, :user_id, :weekof, :notes    #not sure if necessary
 
-  validates_uniqueness_of :user_id, :scope => :weekof,:message => "User can only have one timesheet per pay period"
+  #validates :user_id, uniqueness: {scope: :weekof, message: "User can only have one timesheet per pay period"}
   #validates_presence_of :user_id, :pay_period #, :print_date
-  validates_presence_of :user_id, :weekof
+  validates :user_id, :weekof, presence: true
   # validates_presence_of :print_date,
   #   :on => :update,
   #   :if => "submitted.present?",
   #   :message => "Cannot submit before print."
 
-  validates_presence_of :submitted,
-    :on => :update,
-    :if => "approved.present?",
-    :message => "Cannot approve before submission."
+  validates :submitted, presence: true, :on => :update, if: "approved.present?"
+
+  before_create :submit_now
 
   default_scope :order => 'weekof ASC'
-  named_scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
+  scope :for_user, lambda {|u| { :conditions => { :user_id => u.id } } }
   #named scopes for submitted
-  named_scope :is_submitted, lambda { { :conditions => "submitted IS NOT NULL" } }
-  named_scope :is_not_submitted, lambda { { :conditions => "submitted IS NULL" } }
-  named_scope :submitted_from, lambda {|d| { :conditions => ["submitted >= ?", d] } }
-  named_scope :submitted_to, lambda {|d| { :conditions => ["submitted <= ?", d] } }
-  named_scope :submitted_on, lambda {|d| { :conditions => ["submitted = ?", d] } }
+  scope :is_submitted, lambda { { :conditions => "submitted IS NOT NULL" } }
+  scope :is_not_submitted, lambda { { :conditions => "submitted IS NULL" } }
+  scope :submitted_from, lambda {|d| { :conditions => ["submitted >= ?", d] } }
+  scope :submitted_to, lambda {|d| { :conditions => ["submitted <= ?", d] } }
+  scope :submitted_on, lambda {|d| { :conditions => ["submitted = ?", d] } }
   #named scopes for printed
-  named_scope :is_printed, lambda { { :conditions => "print_date IS NOT NULL" } }
-  named_scope :is_not_printed, lambda { { :conditions => "print_date IS NULL" } }
-  named_scope :printed_from, lambda {|d| { :conditions => ["print_date >= ?", d] } }
-  named_scope :printed_to, lambda {|d| { :conditions => ["print_date <= ?", d] } }
-  named_scope :printed_on, lambda {|d| { :conditions => ["print_date = ?", d] } }
+  scope :is_printed, lambda { { :conditions => "print_date IS NOT NULL" } }
+  scope :is_not_printed, lambda { { :conditions => "print_date IS NULL" } }
+  scope :printed_from, lambda {|d| { :conditions => ["print_date >= ?", d] } }
+  scope :printed_to, lambda {|d| { :conditions => ["print_date <= ?", d] } }
+  scope :printed_on, lambda {|d| { :conditions => ["print_date = ?", d] } }
   #named scopes for approved
-  named_scope :is_approved, lambda { { :conditions => "approved IS NOT NULL" } }
-  named_scope :is_not_approved, lambda { { :conditions => "approved IS NULL" } }
-  named_scope :approved_from, lambda {|d| { :conditions => ["approved >= ?", d] } }
-  named_scope :approved_to, lambda {|d| { :conditions => ["approved <= ?", d] } }
-  named_scope :approved_on, lambda {|d| { :conditions => ["approved = ?", d] } }
+  scope :is_approved, lambda { { :conditions => "approved IS NOT NULL" } }
+  scope :is_not_approved, lambda { { :conditions => "approved IS NULL" } }
+  scope :approved_from, lambda {|d| { :conditions => ["approved >= ?", d] } }
+  scope :approved_to, lambda {|d| { :conditions => ["approved <= ?", d] } }
+  scope :approved_on, lambda {|d| { :conditions => ["approved = ?", d] } }
   #named scopes for weekof
-  named_scope :weekof_from, lambda {|d| {:conditions => ["weekof >= ?", d] } }
-  named_scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
-  named_scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
+  scope :weekof_from, lambda {|d| {:conditions => ["weekof >= ?", d] } }
+  scope :weekof_to, lambda {|d| { :conditions => ["weekof <= ?", d] } }
+  scope :weekof_on, lambda {|d| { :conditions => ["weekof = ?", d] } }
 
-  @@state_actions = {
-    :draft      => {
-      :admin => [['Edit', :edit], ['Delete', :delete], ['Submit', :submit]],
-      :staff => [['Edit', :edit], ['Delete', :delete], ['Submit', :submit]]
-    },
-    :submitted  => {
-      :admin => [['Print', :print], ['Show', :show], ['Approve', :approve], ['Delete', :delete], ['Reject', :reject]],
-      :staff => [['Print', :print], ['Show', :show]]
-    },
-    :approved       => {
-      :admin => [['Print', :print], ['Show', :show]],
-      :staff => [['Print', :print], ['Show', :show]]
-    }
-  }
+  def self.rejected
+    where(submitted: nil, approved: nil)
+  end
 
-  #status bools
+  def rejected?
+    !submitted? && !approved?
+  end
+
   def printed?
     self.print_date.present?
   end
 
-  def submitted?
-    self.submitted.present?
-  end
-
-  def approved?
-    self.approved.present?
-  end
-
-  #status checker
-  def status
-    if !self.submitted? && !self.approved?
-      return :draft
-    elsif self.submitted? && !self.approved?
-      return :submitted
-    elsif self.submitted? && self.approved?
-      return :approved
-    else
-      return nil
-    end
-  end
-  
-  def actions
-    @@state_actions[self.status]
+  def submitted_not_approved?
+    submitted? && !approved?
   end
 
   #methods used before time entries are attached.
@@ -151,13 +122,8 @@ class Timesheet < ActiveRecord::Base
   end
 
   #commit time entries to timesheet:
-  def commit
-    if self.time_entries.empty? && !self.entries_for_week.empty?
-      self.time_entries += self.entries_for_week
-      return true
-    else
-      return false
-    end
+  def commit_time_entries
+    self.time_entries = user.time_entries.not_on_timesheet.on_week(weekof)
   end
   
   #release entries from the sheet.
@@ -207,27 +173,35 @@ class Timesheet < ActiveRecord::Base
     self.print_date = DateTime.now
   end
 
+  # def submit_now
+  #   if self.commit
+  #     self.submitted = DateTime.now
+  #     return true
+  #   else
+  #    return false
+  #   end
+  # end
+
   def submit_now
-    if self.commit
-      self.submitted = DateTime.now
-      return true
-    else
-     return false
-    end
+    self.submitted = DateTime.now
   end
 
   def reject_now
-    if self.release
-      self.submitted = nil
-      return true
-    else
-      return false
-    end
+    self.time_entries.clear
+    self.submitted = self.approved = nil
   end
+  # def reject_now
+  #   if self.release
+  #     self.submitted = nil
+  #     return true
+  #   else
+  #     return false
+  #   end
+  # end
 
   def approve_now
     self.approved = DateTime.now
-    self.approve_time_wage = self.user.wage.amount
+    self.approve_time_wage_cents = self.user.wage.amount_cents
   end
 
   def delete_now

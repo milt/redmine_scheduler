@@ -1,0 +1,10 @@
+= form_for @timesheet, :url => { action: "update" } do |f|
+  %fieldset
+    %p
+      = f.label :notes
+    %p
+      = f.text_area :notes
+    %p
+      = label_tag :agreement, "I understand that once I submit this timesheet, I will not be able to log time for this week until it is approved or rejected."
+      = check_box_tag :agreement, 1, false, :onchange => "$('#submit-button').toggleDisabled();"
+    = f.submit 'Submit', id: 'submit-button', disabled: true

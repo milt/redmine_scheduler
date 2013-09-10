@@ -1,0 +1,4 @@
+= form_for @skill, html: {class: 'nifty_form'} do |f|
+  = f.text_field :name
+  = f.select :skillcat_id, Skillcat.all.collect {|s| [s.name, s.id ] }
+  = f.submit 'Create'

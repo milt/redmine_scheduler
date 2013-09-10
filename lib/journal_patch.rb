@@ -8,11 +8,11 @@ module JournalPatch
     # Same as typing in the class 
     base.class_eval do
       unloadable # Send unloadable so it will not be unloaded in development
-      named_scope :last_day, lambda { { :conditions => ["created_at >= ?", DateTime.now - 24.hours] } }
-      named_scope :from_issue, lambda { |i| { :conditions => { :type => 'IssueJournal', :journaled_id => i[:id] } } }
-      named_scope :from_time_entry, lambda { |t| { :conditions => { :type => 'TimeEntryJournal', :journaled_id => t[:id] } } }
-      named_scope :not_initial, lambda { { :conditions => ["version > ?", 1]} }
-      named_scope :order_for_display, lambda { {:order => 'created_at ASC'}}
+      scope :last_day, lambda { { :conditions => ["created_on >= ?", DateTime.now - 24.hours] } }
+      scope :from_issue, lambda { |i| { :conditions => { :journalized_type => 'Issue', :journalized_id => i[:id] } } }
+      scope :from_time_entry, lambda { |t| { :conditions => { :journalized_type => 'TimeEntry', :journalized_id => t[:id] } } }
+      #scope :not_initial, lambda { { :conditions => ["version > ?", 1]} }
+      scope :order_for_display, lambda { {:order => 'created_on ASC'}}
     end
 
   end

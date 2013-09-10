@@ -1,0 +1,40 @@
+#repair-info
+  %table
+    %tr
+      %td Submitted By:
+      %td= repair.user.name
+    %tr
+      %td Item Number
+      %td= repair.item_number
+    %tr
+      %td Item Description
+      %td= repair.item_desc
+    %tr
+      %td Problem Description
+      %td= repair.problem_desc
+    - if repair.patron_name.present?
+      %tr
+        %td Patron Name
+        %td= repair.patron_name
+      %tr
+        %td Patron Phone
+        %td= repair.patron_phone
+      %tr
+        %td Patron Email
+        %td= repair.patron_email
+      %tr
+        %td Patron JHED:
+        %td= repair.patron_jhed
+      %tr
+        %td Checkout #:
+        %td= repair.checkout
+  %p Notes (Not visible to Patron):
+  %p= repair.notes
+- if repair.fines.present?
+  #repair-fines
+    %h4 #{repair.fines.count} Fines, Total of $#{repair.fines.sum(&:amount)}, $#{repair.fines.paid.sum(&:amount)} Paid, $#{repair.fines.unpaid.sum(&:amount)} Due
+    = render 'fines/mini_list', fines: repair.fines
+#repair-actions
+  - unless controller.controller_name == "fines"
+    %p
+      = link_to "New Fine...", {controller: 'fines', action: 'new', repair_id: repair}

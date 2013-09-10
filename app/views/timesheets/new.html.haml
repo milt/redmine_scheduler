@@ -1,0 +1,12 @@
+%h2 New Timesheet
+
+#search_form
+  = render 'timesheets/time_entries/search_form'
+#results
+  = render 'timesheets/time_entries/results'
+#submit-form
+  = render 'form_submit'
+
+- content_for :header_tags do
+  = stylesheet_link_tag 'timesheets', :plugin => 'redmine_scheduler'
+  = javascript_include_tag 'redmine_scheduler', :plugin => 'redmine_scheduler'

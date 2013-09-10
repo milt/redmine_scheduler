@@ -1,0 +1,5 @@
+%h2 New Booking Added!
+%p You have a new booking scheduled with #{@booking.name} on #{@booking.apt_time.strftime("%m/%d/%Y at %I:%M:%S %p")} by #{@booking.author.name}
+%p You can contact this patron at #{@booking.phone} or #{@booking.email}
+%p Project Description: #{@booking.project_desc}
+%p Do not reply to this email. Or else.

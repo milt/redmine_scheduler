@@ -1,0 +1,14 @@
+%div
+  %h3 My Training Goals
+  %table.list.issues
+    %thead
+      %tr
+        %th Description
+        %th Due
+        %th Log Time
+    - @mygoals.each do |goal|
+      %tbody
+        %tr
+          %td= link_to goal.subject, {:controller => 'issues', :action => 'show', :id => goal[:id] }
+          %td= link_to goal.due_date, {:controller => 'issues', :action => 'show', :id => goal[:id] } unless goal.due_date.nil?
+          %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => goal[:id]}

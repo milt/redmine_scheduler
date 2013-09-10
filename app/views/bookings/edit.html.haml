@@ -1,0 +1,11 @@
+%h2 Edit Booking
+= error_messages_for @booking
+#search_form
+  = render 'bookings/timeslots/search_form'
+= render 'form_update'
+
+%hr
+= link_to 'Return to index...', {:action => 'index'}
+- content_for :header_tags do
+  = javascript_include_tag 'bookings.js', plugin: 'redmine_scheduler'
+  = stylesheet_link_tag 'bookings', :plugin => 'redmine_scheduler'

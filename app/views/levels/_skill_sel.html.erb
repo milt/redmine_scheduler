@@ -1,9 +1,0 @@
-<% form_for :level, @level, :url => { :action => "bulk_create" }, :html => {:class => "nifty_form"} do |f| %>
-  <%= f.select :user_id, @users.active.map {|u| [u.name, u.id] } %>
-  <br><br/>
-  <% @skillcats.each do |cat| %>
-    <h3><%= cat.name %></h3>
-    <%= render :partial => "skill_sel_form", :locals => {:skills => cat.skills} %>
-  <% end %>
-  <%= submit_tag "Create" %>
-<% end %>

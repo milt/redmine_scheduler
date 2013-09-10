@@ -1,0 +1,3 @@
+$("#no_results").html("<% if @bookings.count < 1 %><div class='alert'>No Bookings found!</div><% end %>");
+$("#results").html("<div class='page'><%= escape_javascript(render 'results') if @bookings.count >= 1 %></div>");
+$("#search_form").html("<%= escape_javascript(render 'search_form') %>");

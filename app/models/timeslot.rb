@@ -1,10 +1,40 @@
 class Timeslot < ActiveRecord::Base #timeslots are 30 minute periods during which a lab coach is available
-  belongs_to :issue #timeslots belong to shifts, which we are using redmine "issues" for
+  belongs_to :issue, :inverse_of => :timeslots #timeslots belong to shifts, which we are using redmine "issues" for
   belongs_to :booking
+  has_one :user, through: :issue
 
-  named_scope :booked, lambda { { :conditions => "booking_id IS NOT NULL" } }
-  named_scope :open, lambda { { :conditions => "booking_id IS NULL" } }
+  scope :booked, lambda { { :conditions => "booking_id IS NOT NULL" } }
+  scope :open, lambda { { :conditions => "booking_id IS NULL" } }
+  scope :order_for_form, joins(:issue, :user).order('issues.start_time ASC, slot_time ASC, users.id ASC')
+  before_save :set_slot_datetime
+  #validate :slot_datetime_equals_calculated
 
+  def self.limit_to_skills(*skills)
+    joins(issue: {user: :skills}).where("skills.id IN (?)", skills.map(&:id))
+  end
+
+  def self.limit_to_coaches(*coaches)
+    joins(:issue).where("issues.assigned_to_id IN (?)", coaches.map(&:id))
+  end
+
+  def self.from_date_time(date_time)
+    where("slot_datetime >= ?", date_time)
+  end
+
+  def self.until_date_time(date_time)
+    where("slot_datetime <= ?", date_time)
+  end
+
+
+  def slot_datetime_equals_calculated
+    if slot_datetime != (self.issue.start_time + (slot_time * 30).minutes)
+      errors.add(:slot_datetime, "differs from calculated start")
+    end
+  end
+
+  def set_slot_datetime
+    self.slot_datetime = self.issue.start_time + (self.slot_time * 30).minutes
+  end
 
   def start_time #timeslots only have an integer, slot_time, to express their lenth in 30 minute increments from the start of the shift (issue)
     self.issue.start_time + (slot_time * 30).minutes #so, the start time is the start of the shift advanced by slot_time. minutes is a native ruby method for datetime

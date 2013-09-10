@@ -1,0 +1,92 @@
+%h1 Plugin Settings
+.box
+  %h2 Organization
+  %p
+    = label_tag "Organization Full Name"
+    = text_field_tag "settings[org_full_name]", @settings["org_full_name"]
+  %p
+    = label_tag "Organization Short Name"
+    = text_field_tag "settings[org_short_name]", @settings["org_short_name"]
+  %p
+    = label_tag "Organization Email"
+    = text_field_tag "settings[org_email]", @settings["org_email"]
+  %p
+    = label_tag "Organization Phone"
+    = text_field_tag "settings[org_phone]", @settings["org_phone"]
+  %p
+    = label_tag "Organization Address"
+    = text_area_tag "settings[org_address]", @settings["org_address"]
+  %p
+    = label_tag "Organization Site"
+    = text_field_tag "settings[org_site]", @settings["org_site"]
+  %p
+    = label_tag "Organization Business Hours"
+    = text_field_tag "settings[org_biz_hours]", @settings["org_biz_hours"]
+.box
+  %h2 Posters
+  %p
+    = label_tag "Admin Email"
+    = text_field_tag "settings[poster_admin_email]", @settings["poster_admin_email"]
+  .box
+    %h3 Cost
+    %p Enter these like: 3.50 or 0.00 for free. Make sure to always have two decimal places, and only use numbers. You've been warned!
+    %h4 Student
+    %p
+      = label_tag "Matte Cost"
+      = text_field_tag "settings[poster_matte_student]", @settings["poster_matte_student"]
+    %p
+      = label_tag "Glossy Cost"
+      = text_field_tag "settings[poster_glossy_student]", @settings["poster_glossy_student"]
+    %h4 Staff
+    %p
+      = label_tag "Matte Cost"
+      = text_field_tag "settings[poster_matte_staff]", @settings["poster_matte_staff"]
+    %p
+      = label_tag "Glossy Cost"
+      = text_field_tag "settings[poster_glossy_staff]", @settings["poster_glossy_staff"]
+    %h4= @settings["org_short_name"]
+    %p
+      = label_tag "Matte Cost"
+      = text_field_tag "settings[poster_matte_dmc]", @settings["poster_matte_dmc"]
+    %p
+      = label_tag "Glossy Cost"
+      = text_field_tag "settings[poster_glossy_dmc]", @settings["poster_glossy_dmc"]
+.box
+  %h2 Groups & Trackers (DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING)
+  .box
+    %h3 Groups
+    %p
+      = label_tag "Prostaff Group"
+      = select_tag "settings[prostaff_group_id]", options_from_collection_for_select(Group.all, :id, :name, @settings["prostaff_group_id"])
+    %p
+      = label_tag "Stustaff Group"
+      = select_tag "settings[stustaff_group_id]", options_from_collection_for_select(Group.all, :id, :name, @settings["stustaff_group_id"])
+    %p
+      = label_tag "Admstaff Group"
+      = select_tag "settings[admstaff_group_id]", options_from_collection_for_select(Group.all, :id, :name, @settings["admstaff_group_id"])
+    %p
+      = label_tag "Poster Group"
+      = select_tag "settings[poster_group_id]", options_from_collection_for_select(Group.all, :id, :name, @settings["poster_group_id"])
+  .box
+    %h3 Trackers
+    %p
+      = label_tag "Front Desk Shift Tracker"
+      = select_tag "settings[fdshift_tracker_id]", options_from_collection_for_select(Tracker.all, :id, :name, @settings["fdshift_tracker_id"])
+    %p
+      = label_tag "Lab Coach Shift Tracker"
+      = select_tag "settings[lcshift_tracker_id]", options_from_collection_for_select(Tracker.all, :id, :name, @settings["lcshift_tracker_id"])
+    %p
+      = label_tag "Task Tracker"
+      = select_tag "settings[task_tracker_id]", options_from_collection_for_select(Tracker.all, :id, :name, @settings["task_tracker_id"])
+    %p
+      = label_tag "Training Goal Tracker"
+      = select_tag "settings[goal_tracker_id]", options_from_collection_for_select(Tracker.all, :id, :name, @settings["goal_tracker_id"])
+    %p
+      = label_tag "Event Tracker"
+      = select_tag "settings[event_tracker_id]", options_from_collection_for_select(Tracker.all, :id, :name, @settings["event_tracker_id"])
+    %p
+      = label_tag "Repair Tracker"
+      = select_tag "settings[repair_tracker_id]", options_from_collection_for_select(Tracker.all, :id, :name, @settings["repair_tracker_id"])
+    %p
+      = label_tag "Poster Tracker"
+      = select_tag "settings[poster_tracker_id]", options_from_collection_for_select(Tracker.all, :id, :name, @settings["poster_tracker_id"])

@@ -1,11 +1,21 @@
 class TimeslotsController < ApplicationController
   unloadable
+  authorize_resource
 
   def index
     @timeslots = Timeslot.after_now
   end
 
   def book
+  end
+
+  def show
+    @timeslot = Timeslot.find(params[:id])
+
+    respond_to do |format|
+      format.html { render :layout => !request.xhr? }
+      format.xml { render :xml => @timeslot }
+    end
   end
 
   def find

@@ -1,9 +1,0 @@
-<%= render 'nav/nav' %>
-
-<h2>Timeslots#index</h2>
-
-<ul>
-  <% @timeslots.each do |slot| %>
-    <li><%= slot.coach.name + " " + slot.start_time.strftime("%I:%M:%S %p") %></li>
-  <% end %>
-</ul>

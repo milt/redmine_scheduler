@@ -1,9 +1,9 @@
-<%= error_messages_for :group %>
+<%= error_messages_for @group %>
 
 <div class="box tabular">
-	<p><%= f.text_field :lastname, :label => :field_name %></p>
-	<p><%= f.select :manager_id, (User.all.map {|u| [u.firstname + " " + u.lastname, u.id]}) << ["None", nil], :label => :field_manager %></p>
-	<% @group.custom_field_values.each do |value| %>
-	<p><%= custom_field_tag_with_label :group, value %></p>
+  <p><%= f.text_field :name, :required => true, :size => 60 %></p>
+  <p><%= f.select :manager_id, (User.all.map {|u| [u.firstname + " " + u.lastname, u.id]}) << ["None", nil], :label => :field_manager %></p>
+  <% @group.custom_field_values.each do |value| %>
+    <p><%= custom_field_tag_with_label :group, value %></p>
   <% end %>
 </div>

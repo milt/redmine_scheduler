@@ -1,18 +1,24 @@
 class RepairsController < ApplicationController
   unloadable
-
-  before_filter :role_check
+  authorize_resource
 
   def index
     @repairs = Repair.all
   end
 
   def new
+    if params[:issue_id]
+      @issue = Issue.find(params[:issue_id].to_i)
+    end
+    @repair = Repair.new
   end
 
   def create
     @repair = Repair.new(params[:repair])
     @repair.user = User.current
+    if params[:issue_id]
+      @repair.issue = Issue.find(params[:issue_id].to_s)
+    end
 
     if @repair.save
       if @repair.patron_name.present?
@@ -23,7 +29,7 @@ class RepairsController < ApplicationController
       redirect_to :action => 'show', :id => @repair
     else                                               
       flash[:warning] = 'Invalid Options... Try again!'
-      redirect_to :action => 'new'
+      redirect_to :action => 'new', :repair => @repair, :issue_id => @repair.issue if @repair.issue.present?
     end
   end
 
@@ -38,13 +44,5 @@ class RepairsController < ApplicationController
   end
 
   private
-
-  def role_check
-    if User.current.anonymous?
-      render_403
-      return false
-    end
-    true
-  end
   
 end

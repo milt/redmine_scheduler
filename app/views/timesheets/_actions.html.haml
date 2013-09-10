@@ -1,0 +1,39 @@
+.timesheet-actions
+  - if timesheet.submitted_not_approved?
+    - if (can? :show, timesheet) && (controller.action_name != "show")
+      .timesheet-show-action
+        = link_to "Show", timesheet_path(timesheet)
+
+    - if can? :print, timesheet
+      .timesheet-print-action
+        = link_to "Print", print_timesheet_path(timesheet)
+
+    - if can? :approve, timesheet
+      .timesheet-approve-action
+        = link_to "Approve", approve_timesheet_path(timesheet), method: :put
+
+    - if can? :reject, timesheet
+      .timesheet-reject-action
+        = link_to "Reject", reject_timesheet_path(timesheet), method: :put, confirm: "Are you sure you want to reject #{timesheet.user.name}'s timesheet for #{timesheet.weekof.to_s}?"
+
+  - if timesheet.approved?
+    - if (can? :show, timesheet) && (controller.action_name != "show")
+      .timesheet-show-action
+        = link_to "Show", timesheet_path(timesheet)
+
+    - if can? :print, timesheet
+      .timesheet-print-action
+        = link_to "Print", print_timesheet_path(timesheet)
+
+  - if timesheet.rejected?
+    - if (can? :show, timesheet) && (controller.action_name != "show")
+      .timesheet-show-action
+        = link_to "Show", timesheet_path(timesheet)
+
+    - if can? :edit, timesheet
+      .timesheet-edit-action
+        = link_to "Edit", edit_timesheet_path(timesheet)
+
+    - if can? :delete, timesheet
+      .timesheet-delete-action
+        = link_to "Delete", delete_timesheet_path(timesheet), method: :delete, confirm: "Are you sure you want to delete #{timesheet.user.name}'s timesheet for #{timesheet.weekof.to_s}?"

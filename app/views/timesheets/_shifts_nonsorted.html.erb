@@ -1,9 +1,0 @@
-
-<p>Shifts This Day</p>
-	<% if !shifts_by_day[date].nil? %>
-		<% shifts_by_day[date].each do |shift| %>
-			<%= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id]} %>
-			<%= shift.tracker.name %>
-			<%= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id], :time_entry => {:spent_on => shift[:start_date]}} %><br />
-		<%end%>
-	<%end%>

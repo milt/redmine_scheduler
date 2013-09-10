@@ -19,8 +19,16 @@ module UserPatch
       has_many :timesheets
       has_many :bookings, :foreign_key => "coach_id"
       has_many :authored_bookings, :class_name => "Booking", :foreign_key => "author_id"
-      named_scope :gets_digest, lambda { { :conditions => {:digest => true} } }
+      scope :gets_digest, lambda { { :conditions => {:digest => true} } }
       safe_attributes 'digest'
+      has_many :issues, :foreign_key => 'assigned_to_id'
+      has_many :timeslots, :through => :issues
+      has_many :reminders, dependent: :destroy
+      has_many :posters
+
+      def self.with_skills(*skills)
+        joins(:skills).where("skills.id IN (?)", skills.map(&:id))
+      end
 
     end
 
@@ -49,10 +57,10 @@ module UserPatch
       authored_hash = {}
       repair_hash = {}
 
-      owned_issues.each {|i| owned_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
-      watched_issues.each {|i| watched_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
-      new_issues.each {|i| new_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
-      authored_issues.each {|i| authored_hash[i] = Journal.last_day.not_initial.from_issue(i).order_for_display}
+      owned_issues.each {|i| owned_hash[i] = Journal.last_day.from_issue(i).order_for_display}
+      watched_issues.each {|i| watched_hash[i] = Journal.last_day.from_issue(i).order_for_display}
+      new_issues.each {|i| new_hash[i] = Journal.last_day.from_issue(i).order_for_display}
+      authored_issues.each {|i| authored_hash[i] = Journal.last_day.from_issue(i).order_for_display}
       repair_issues.each {|i| repair_hash[i] = []}
 
       return { :owned => owned_hash.delete_if {|k,v| v.empty? && k.time_entries.last_day.empty?},
@@ -77,6 +85,16 @@ module UserPatch
 
     def is_admstaff?
       self.groups.include?(Group.admstaff.first)
+    end
+
+    def timesheet_role
+      case
+      when self.is_stustaff?
+        role = :staff
+      when self.is_admstaff?
+        role = :admin
+      end
+      return role
     end
 
     def analyze_time(hours)

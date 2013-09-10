@@ -1,0 +1,75 @@
+%p Thank you for your large-format poster order at the #{Setting.plugin_redmine_scheduler['org_full_name']}!
+%p Order Info:
+%table{border: "1", bordercolor: "#000000", style: "background-color:#FFFFFF", width: "100%", cellpadding: "3", cellspacing: "3"}
+  %tr
+    %th Dropoff Date/Time:
+    %td= @poster.dropoff.strftime("%m/%d/%Y %l:%M %p")
+    %th Pickup Date/Time:
+    %td= @poster.pickup.strftime("%m/%d/%Y %l:%M %p")
+  %tr
+    %th Name:
+    %td= @poster.patron_name
+    %th Email:
+    %td= @poster.patron_email
+  %tr
+    %th Phone:
+    %td= @poster.patron_phone
+    %th Department:
+    %td= @poster.patron_dept
+  %tr
+    %th Affiliation:
+    %td= @poster.affiliation.capitalize
+    %th Order Taken By:
+    %td= @poster.user.name
+  %tr
+    %th Print Dimensions:
+    %td #{@poster.print_width.round(2)} in. X #{@poster.print_height.round(2)} in.
+    %th File Name:
+    %td= @poster.file_name
+  %tr
+    %th Print Aspect Ratio:
+    %td= @poster.aspect_ratio.round(2)
+    %th
+    %td
+  %tr
+    %th Media:
+    %td= @poster.paper_type.capitalize
+    %th Border:
+    %td #{@poster.border.round(2)} in.
+  %tr
+    %th Quantity:
+    %td= @poster.quantity
+    %th
+    %td
+  %tr
+    %th Paid By:
+    %td
+      - case @poster.payment_type
+      - when "check"
+        #{@poster.payment_type.capitalize}: #{@poster.payment_reference}
+      - when "budget"
+        #{@poster.payment_type.capitalize}: #{@poster.budget_number}
+      - else
+        = @poster.payment_type.capitalize
+    %th Total:
+    %td= humanized_money_with_symbol @poster.total
+  %tr
+    - if @poster.payment_type == "budget"
+      %th Budget Admin:
+      %td #{@poster.budget_name} #{@poster.budget_email}
+    - else
+      %th
+      %td
+    %th Deposit:
+    %td= humanized_money_with_symbol @poster.deposit
+  %tr
+    - if @poster.payment_type == "budget"
+      %th Phone:
+      %td= @poster.budget_phone
+    - else
+      %th
+      %td
+    %th Balance Due:
+    %td= humanized_money_with_symbol @poster.balance_due
+%p You will recieve a notification when your poster is ready for pickup. Please feel free to contact us with any questions you may have:
+= render 'contact'

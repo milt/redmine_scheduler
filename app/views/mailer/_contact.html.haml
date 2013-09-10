@@ -1,0 +1,5 @@
+%p= Setting.plugin_redmine_scheduler['org_phone']
+%p= Setting.plugin_redmine_scheduler['org_email']
+%p= Setting.plugin_redmine_scheduler['org_full_name']
+- Setting.plugin_redmine_scheduler['org_address'].each_line do |line|
+  %p= line

@@ -1,0 +1,15 @@
+%div
+  %table.list.issues
+    %th Details
+    %th Shift
+    %th Log Time
+    - fdshifts.each do |shift|
+      %tr
+        %td= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] }
+        %td= shift.tracker.name
+        %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]}
+    - lcshifts.each do |shift|
+      %tr
+        %td= link_to shift.subject, {:controller => 'issues', :action => 'show', :id => shift[:id] }
+        %td= shift.tracker.name
+        %td= link_to image_tag('time_add.png'), {:controller => 'timelog', :action => 'new', :issue_id => shift[:id]}

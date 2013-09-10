@@ -1,0 +1,10 @@
+%h2 Edit Timesheet
+
+#results
+  = render 'timesheets/time_entries/results'
+#submit-form
+  = render 'form_update'
+
+- content_for :header_tags do
+  = stylesheet_link_tag 'timesheets', :plugin => 'redmine_scheduler'
+  = javascript_include_tag 'redmine_scheduler', :plugin => 'redmine_scheduler'

@@ -2,30 +2,14 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
   
   def controller_issues_new_before_save(context={}) #runs before a new issue saves
     if context[:issue].is_shift? # if the issue is a shift,
-      #get times and date from form params
-      # s_time = DateTime.parse(context[:params][:issue][:start_time])
-      # e_time = DateTime.parse(context[:params][:issue][:end_time])
-      # s_date = Date.parse(context[:params][:issue][:start_date])
-      # context[:issue].write_attribute :due_date, DateTime.parse(context[:params][:issue][:start_date]) if context[:issue].is_shift? # limits shifts to only have a due_date on the same day as the start, or none
-      # context[:issue].write_attribute :start_time, Time.local(s_date.year,s_date.month,s_date.day,s_time.hour,s_time.min) #format and set start_time
-      # context[:issue].write_attribute :end_time, Time.local(s_date.year,s_date.month,s_date.day,e_time.hour,e_time.min) #format and set end_time
-      # context[:issue].write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).firstname + s_time.strftime(' %l:%M -') + e_time.strftime('%l:%M %p - ') + s_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
       @issue = context[:issue] 
-      s_date = Date.parse(context[:params][:issue][:start_date]) + 15.minutes
+      s_date = Date.parse(context[:params][:issue][:start_date])
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
       
-      #this should fix the time error when updating the shift??
-      #if s_time >= e_time
-      #  e_time = e_time + 48
-      #end
-
-      @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
-      @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
-
-      @issue.write_attribute :due_date, @issue.start_date
-      @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %l:%M -') + @issue.end_time.strftime('%l:%M %p - ') + @issue.start_date.strftime('%a, %b %d') rescue "No staff member selected. Please assign!" #set the subject field of shifts on update to indicate the staff member and datetime. rescue prevents shift issues without a staff member 
-
+      @issue.set_times_from_index(s_date, 15.minutes, s_time, e_time)
+      @issue.due_date = @issue.start_date
+      @issue.refresh_shift_subject
     end
   end
   
@@ -45,7 +29,7 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
           i.due_date = context[:issue].due_date + (rep + 1).week
           i.start_time = context[:issue].start_time + (rep + 1).week
           i.end_time = context[:issue].end_time + (rep + 1).week
-          i.subject = User.find(i.assigned_to_id).firstname + i.start_time.strftime(' %I:%M:%S %p -') + i.end_time.strftime('%I:%M:%S %p - ') + i.start_date.strftime('%a, %b %d')
+          i.refresh_shift_subject
           i.description = "Created by repeater"
           i.save
       end
@@ -56,16 +40,15 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
     if context[:issue].is_shift?
       #get times and date from form params
       @issue = context[:issue] 
-      s_date = Date.parse(context[:params][:issue][:start_date]) + 15.minutes
+      s_date = Date.parse(context[:params][:issue][:start_date])
       s_time = context[:params][:issue][:start_time].to_i
       e_time = context[:params][:issue][:end_time].to_i
  
-        @issue.write_attribute :start_time, s_date + (s_time * 30).minutes
-        @issue.write_attribute :end_time, s_date + (e_time * 30).minutes
+      @issue.set_times_from_index(s_date, 15.minutes, s_time, e_time)
 
       if @issue.start_time_changed? || @issue.end_time_changed? || @issue.start_date_changed? || @issue.due_date_changed?
-        @issue.write_attribute :due_date, @issue.start_date
-        @issue.write_attribute :subject, User.find(context[:params][:issue][:assigned_to_id]).name + @issue.start_time.strftime(' %I:%M:%S %p -') + @issue.end_time.strftime('%I:%M:%S %p - ') + @issue.start_date.strftime('%a, %b %d')
+        @issue.due_date = @issue.start_date
+        @issue.refresh_shift_subject
       end
     end
   end
@@ -73,28 +56,35 @@ class Hooks < Redmine::Hook::ViewListener #this is where we hook into redmine co
   def controller_issues_edit_after_save(context={}) #runs after save on issue edit
   end
 
+
   #prevent edits ot time entries locked to sheets, and prevent creation of new entries when a user already has a non-draft sheet
   #def controller_timelog_edit_before_save(context={})
   #  if context[:time_entry].safe_to_edit?
   #  end
   #end
-
+    #TODO reenable useful view hooks
     #render_on :view_layouts_base_html_head,
     #          :partial => 'hooks/redmine_scheduler/google'
 
-    render_on :view_issues_form_details_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
-              :partial => 'hooks/redmine_scheduler/extras'
+    # render_on :view_issues_form_details_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
+    #           :partial => 'hooks/redmine_scheduler/extras'
 
     render_on :view_issues_show_description_bottom,
               :partial => 'hooks/redmine_scheduler/show_extras'
-              
-    render_on :view_timelog_edit_form_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
-              :partial => 'hooks/redmine_scheduler/timex'
 
-    render_on :view_projects_form,
-              :partial => 'hooks/redmine_scheduler/project_form_extras'
-    render_on :view_users_form,
-              :partial => 'hooks/redmine_scheduler/user_form_extras'
-    render_on :view_my_account,
-              :partial => 'hooks/redmine_scheduler/user_form_extras'
+    render_on :view_welcome_index_left,
+              :partial => 'hooks/redmine_scheduler/home_additions'
+              
+    render_on :view_layouts_base_html_head,
+              :partial => 'hooks/redmine_scheduler/head'
+              
+    # render_on :view_timelog_edit_form_bottom, #this is how you attach stuff to views. you can also overwrite them by putting them in the /app/ tree of the plugin
+    #           :partial => 'hooks/redmine_scheduler/timex'
+
+    # render_on :view_projects_form,
+    #           :partial => 'hooks/redmine_scheduler/project_form_extras'
+    # render_on :view_users_form,
+    #           :partial => 'hooks/redmine_scheduler/user_form_extras'
+    # render_on :view_my_account,
+    #           :partial => 'hooks/redmine_scheduler/user_form_extras'
 end

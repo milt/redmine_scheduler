@@ -3,7 +3,7 @@ class BookingObserver < ActiveRecord::Observer
     
     def after_create(booking)
         if self.send_notification
-            Mailer.deliver_booking_add(booking) #if Setting.notified_events.include?
+            Mailer.booking_add(booking).deliver #if Setting.notified_events.include?
         end
         clear_notification
     end

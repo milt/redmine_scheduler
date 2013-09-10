@@ -1,21 +1,13 @@
 module TimesheetsHelper
-  def render_actions(timesheet)
-  	if User.current.is_admstaff?
-      timesheet.actions[:admin].map {|a| 
-      	if a[0] == 'Delete'; 
-      		link_to(a[0], {:action => a[1], :id => timesheet}, :confirm => "Are you sure?");
-      	elsif a[0] == 'Reject'; link_to(a[0], {:action => a[1], :id => timesheet}, :confirm => "Are you sure?");
-      	else link_to(a[0], :action => a[1], :id => timesheet);
-      	end + " "}
-    elsif User.current.is_stustaff?
-      timesheet.actions[:staff].map {|a| 
-      	if a[0] == 'Delete'; 
-      		link_to(a[0], {:action => a[1], :id => timesheet}, :confirm => "Are you sure?"); 
-      	else link_to(a[0], :action => a[1], :id => timesheet); 
-      	end + " "}
-    else
-    	"nope"
-    end
+  
+  def weeks_for_select
+    weeks = []
+    (Date.today - 52.weeks).step(Date.today, 7) {|d| weeks << d.beginning_of_week }
+    return weeks
+  end
+
+  def days_in_week
+    (@weekof.to_date..(@weekof.to_date + 6.days)).to_a
   end
 
 end

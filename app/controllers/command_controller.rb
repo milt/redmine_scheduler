@@ -1,7 +1,9 @@
 class CommandController < ApplicationController
   unloadable
 
+
   def index
+    authorize! :index, :command
     
     if params[:hours].present?
       @hours = params[:hours].to_f
@@ -19,6 +21,7 @@ class CommandController < ApplicationController
   end
   
   def grab
+    authorize! :grab, :command
     if params[:coach_id].present?
       @coach = User.find(params[:coach_id])
     end

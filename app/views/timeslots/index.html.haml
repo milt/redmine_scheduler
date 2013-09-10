@@ -1,0 +1,4 @@
+%h2 Timeslots#index
+%ul
+  - @timeslots.each do |slot|
+    %li= slot.coach.name + " " + slot.start_time.strftime("%I:%M:%S %p")

@@ -1,0 +1,6 @@
+- if User.current.is_admstaff?
+  = form_tag( {}, method: 'get', remote: true, update: ['timesheets-table', 'search-form'], id: "timesheets-search-form") do
+    %p
+      = label_tag :enable_user, "Filter for user:"
+      = check_box_tag 'enable_user', 1, params[:enable_user], onchange: "$('#user').toggleDisabled();$('#timesheets-search-form').submit();"
+      = select_tag :user, options_from_collection_for_select(Group.stustaff.first.users, :id, :name, params[:user]), onchange: "$('#timesheets-search-form').submit();", disabled: ( true unless params[:enable_user] )

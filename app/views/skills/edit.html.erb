@@ -1,9 +1,0 @@
-<h1>Edit Skill</h1>
-
-<% form_for @skill, :url => { :action => "update", :id => @skill.id } do |f| %>
-  <%= f.text_field :name, :value => @skill.name %>
-  <%= f.select :skillcat_id, Skillcat.all.collect {|s| [ s.name, s.id ]}, :selected => @skill.skillcat_id %>
-  <%= submit_tag "Update" %>
-<% end %>
-<br></br>
-<%= link_to 'Cancel and return to Skill Index', { :action => 'index' } %>

@@ -1,14 +1,14 @@
 class SkillcatsController < ApplicationController #management of skill categories. pretty boring
   unloadable
-
-  before_filter :require_admstaff
+  authorize_resource
 
   def index #index of skill cats
     @skillcats = Skillcat.all #find all skill categories
+    @skillcat = Skillcat.new
   end
 
   def new
-    @skill = Skillcat.new
+    @skillcat = Skillcat.new
   end
 
   def create
@@ -38,12 +38,4 @@ class SkillcatsController < ApplicationController #management of skill categorie
 
   private
 
-  def require_admstaff
-    return unless require_login
-    if !User.current.is_admstaff?
-      render_403
-      return false
-    end
-    true
-  end
 end

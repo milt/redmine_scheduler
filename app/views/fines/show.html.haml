@@ -1,0 +1,37 @@
+%h2 Fine # #{@fine.id}
+#fine-show
+  #fine-show-info.box
+    %h3 Info (#{link_to "Edit...", edit_fine_path(@fine)})
+    %table
+      %tr
+        %th Patron Name
+        %td= @fine.patron_name
+      %tr
+        %th Patron Phone
+        %td= @fine.patron_phone
+      %tr
+        %th Patron Email
+        %td= @fine.patron_email
+      %tr
+        %th Patron JHED
+        %td= @fine.patron_jhed
+      - unless @fine.paid?
+        %tr
+          %th Amount Due
+          %td= @fine.amount
+      %tr
+        %th Notes
+        %td= @fine.notes
+        - unless controller.controller_name == 'repairs'
+          - if @fine.repair.present?
+            %tr
+              %th Repair
+              %td
+                = link_to @fine.repair.issue.subject, issue_path(@fine.repair.issue)
+  #fine-show-payment.box
+    %h3 Payment
+    - if @fine.paid?
+      %p Fine was paid on #{@fine.paid}. Payment Method: #{@fine.payment_method}
+    - else
+      = render 'payment_form'
+= link_to "Fines Index...", fines_path

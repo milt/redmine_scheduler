@@ -1,8 +1,9 @@
 class LevelsController < ApplicationController
   unloadable
-  before_filter :role_check, :except => :my_levels
+  authorize_resource
 
   def index
+    @level = Level.new
     @users = Group.stustaff.first.users.active
     @skills = Skill.all
 
@@ -33,6 +34,10 @@ class LevelsController < ApplicationController
         flash[:warning] = 'Invalid Options... Try again!'
         redirect_to :action => "index"
       end
+  end
+
+  def show
+    @level = Level.find(params[:id])
   end
 
   def new
@@ -114,11 +119,4 @@ class LevelsController < ApplicationController
     
   end
 
-  def role_check
-    if !User.current.is_admstaff?
-      render_403
-      return false
-    end
-    true
-  end
 end

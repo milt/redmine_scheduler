@@ -1,27 +1,23 @@
 class Repair < ActiveRecord::Base
   belongs_to :issue
   belongs_to :user
-  validates_presence_of :item_number, :item_desc, :problem_desc
-  validates_numericality_of :item_number
-  validates_length_of :item_desc, :maximum => 128
-  validates_length_of :problem_desc, :maximum => 1024
-  validates_length_of :notes, :maximum => 2048
-  after_validation_on_create :create_issue_after_validation
-  named_scope :for_issue, lambda {|i| { :conditions => ["issue_id = ?", i.id] } }
+  has_many :fines
+  validates :item_number, :item_desc, :problem_desc, presence: true
+  validates :item_number, numericality: true
+  validates :item_desc, length: {maximum: 128}
+  validates :problem_desc, length: {maximum: 1024}
+  validates :notes, length: {maximum: 2048}
+  validates :issue_id, uniqueness: true
+  validates_associated :issue
+  before_validation :build_issue_for_repair, :unless => :issue_id?
+  scope :for_issue, lambda {|i| { :conditions => ["issue_id = ?", i.id] } }
 
-  def create_issue_after_validation
-  	  i = Issue.new
-      i.tracker = Tracker.repair_track.first
-      i.project = Project.repair_project.first
-      i.subject = "#{self.item_number} | #{self.item_desc} : #{self.problem_desc[0..200]}"
-      i.author = User.current
-      i.start_date = Date.today
-      if i.save
-      	self.issue_id = i.id
-      	return true
-      else
-      	return false
-      end
+  def build_issue_for_repair
+    i = self.build_issue
+    i.tracker = Tracker.repair_track.first
+    i.project = Project.repair_project.first
+    i.subject = "#{self.item_number} | #{self.item_desc} : #{self.problem_desc[0..200]}"
+    i.author = User.current
+    i.start_date = Date.today
   end
-  
 end

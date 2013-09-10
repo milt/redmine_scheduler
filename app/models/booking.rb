@@ -4,19 +4,41 @@ class Booking < ActiveRecord::Base
   has_many :timeslots, :dependent => :nullify
   has_many :issues, :through => :timeslots
   attr_accessible :name, :phone, :email, :project_desc
-  validates_presence_of :name, :phone, :email, :project_desc #all form fields must exist be non-nil 
-  validates_length_of :name, :email, :maximum => 127 #name can't be over 127 chars
-  validates_length_of :phone, :maximum => 16 # phone max length of 16 chars
-  validates_length_of :project_desc, :maximum => 4096, :allow_blank => true #allow blank is not working
+  validates :name, :phone, :email, :project_desc, presence: true #all form fields must exist be non-nil 
+  validates :name, :email, length: {maximum: 127} #name can't be over 127 chars
+  validates :email, email: true
+  validates :phone, length: {maximum: 16} # phone max length of 16 chars
+  validates :project_desc, length: {maximum: 4096}
   default_scope :order => 'apt_time ASC' #default sort order of Bookings
-  named_scope :future, lambda { { :conditions => ["apt_time >= ?", Date.today] } }
-  named_scope :cancelled, lambda {{:conditions => {:cancelled => true }}}
-  named_scope :orphaned, lambda {{:conditions => {:cancelled => false }}}
-  named_scope :from_date, lambda {|d| {:conditions => ["apt_time >= ?", d]}}    #similar to from/until date in issue_patch.rb
-  named_scope :until_date, lambda {|d| {:conditions => ["apt_time <= ?", d+1]}}  #weird occurrance when using d, misses bookings on the until date
-  validate_on_create :cannot_create_across_issues, :cannot_create_without_timeslots
-  validate_on_update :cannot_update_active_without_timeslots
-  after_validation_on_create :set_apt_time, :set_coach, :set_author
+  scope :future, lambda { { :conditions => ["apt_time >= ?", Date.today] } }
+  scope :cancelled, lambda {{:conditions => {:cancelled => true }}}
+  scope :orphaned, lambda {{:conditions => {:cancelled => false }}}
+  scope :active, where( cancelled: nil )
+  scope :from_date, lambda {|d| {:conditions => ["apt_time >= ?", d]}}    #similar to from/until date in issue_patch.rb
+  scope :until_date, lambda {|d| {:conditions => ["apt_time <= ?", d+1]}}  #weird occurrance when using d, misses bookings on the until date
+  validate :cannot_create_across_issues, :cannot_create_without_timeslots, on: :create
+  validate :cannot_update_active_without_timeslots, on: :update
+  after_validation :set_apt_time, :set_coach, :set_author, on: :create
+
+  def active?
+    !self.cancelled? && self.timeslots.present?
+  end
+
+  def orphaned?
+    !self.cancelled? && self.timeslots.empty?
+  end
+
+  def self.search(search)
+    where("name LIKE ? OR project_desc LIKE ?", "%#{search}%", "%#{search}%")
+  end
+
+  def self.between(from_date,until_date)
+    where( apt_time: from_date..until_date )
+  end
+
+  def self.with_coaches(*coaches)
+    where("coach_id IN (?)", coaches.map(&:id))
+  end
 
   def cannot_create_across_issues
     errors.add_to_base("Bookings cannot span multiple shifts.") if

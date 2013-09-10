@@ -1,0 +1,9 @@
+%h2 Find a Timeslot
+= render 'search_form'
+= form_tag(:controller => 'bookings', :action => 'new') do
+  %h3 Select a time or times below and click "Book..." to make a new Booking
+  = submit_tag("Book...")
+  - @dates.each do |date|
+    %h3= date.strftime("%D")
+    - @shifts_by_date[date].each do |shift|
+      = render 'shift', :shift => shift unless shift.end_time <= DateTime.now

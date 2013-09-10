@@ -1,0 +1,32 @@
+%h2 Student Skill Levels
+- @students.each do |student|
+  %h4
+    = student.name
+    \: #{link_to 'Assign Training Goal...', {:controller => 'issues', :action => 'new', :issue => {:project_id => @training_project.id, :assigned_to_id => student} }}
+  #student-levels
+    %table
+      %tr
+        %th Skill/Auth
+        %th Level
+        %th Updated
+      - student.levels.sort_by(&:rating).each do |level|
+        %tr
+          %td= level.skill.name
+          %td= level.rating
+          %td= level.updated_at.strftime("%D")
+  - if !@goals_by_student[student].nil?
+    %h5 Goals:
+    #student-goals
+      %table
+        %tr
+          %th Goal
+          %th Assigned By
+          %th Assigned
+        - @goals_by_student[student].each do |goal|
+          %tr
+            %td= link_to goal.subject, goal
+            %td= link_to goal.author.name, goal.author
+            %td= goal.created_on.strftime("%D")
+  %hr/
+- content_for :header_tags do
+  = stylesheet_link_tag 'prostaff', :plugin => 'redmine_scheduler'

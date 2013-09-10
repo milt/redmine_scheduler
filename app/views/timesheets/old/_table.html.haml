@@ -1,0 +1,21 @@
+%table
+  %tr
+    %th ID
+    %th Staffer
+    %th Week Of
+    %th Hours
+    %th Printed
+    %th Submitted
+    %th Approved
+    %th Actions
+  - timesheets.each do |sheet|
+    %tr
+      %td= sheet.id.to_s
+      %td= sheet.user.name
+      %td= sheet.weekof.strftime("%D")
+      %td= sheet.find_total_hours.to_s
+      %td= sheet.print_date.strftime("%D") if sheet.printed?
+      %td= sheet.submitted.strftime("%D") if sheet.submitted?
+      %td= sheet.approved.strftime("%D") if sheet.approved?
+      %td
+        = render 'actions', sheet: sheet

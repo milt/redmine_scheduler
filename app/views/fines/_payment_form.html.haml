@@ -1,0 +1,6 @@
+= form_for @fine, url: {controller: 'fines', action: 'pay'}, method: 'post' do |f|
+  %p
+    = f.label :payment_method
+    = f.text_field :payment_method
+  %p
+    = f.submit "Pay Now", confirm: "Are you sure? You will not be able to edit the fine or remove the payment once you do this!"

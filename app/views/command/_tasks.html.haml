@@ -1,0 +1,21 @@
+.task-title-container
+  .task-title-left Tasks
+  .task-title-right
+    New task in:
+    - form_for :issue, @issue, :url => { :controller => 'issues', :action => "new", :tracker_id => Tracker.task_track.first.id, :coach_id => user.id}, :html => {:class => "nifty_form"} do |f|
+      = f.select :project_id, Tracker.task_track.first.projects.map {|p| [p.name, p.id]}, :label => :field_quicktask
+      = submit_tag "Go!"
+- if Issue.open.tasks.foruser(user).empty?
+  %p
+    %em No tasks assigned
+- else
+  %table.list.issues
+    %tr
+      %th Project
+      %th Task
+      %th Due?
+    - Issue.open.tasks.foruser(user).each do |task|
+      %tr
+        %td= task.project.name
+        %td= link_to task.subject, task
+        %td= task.due_date.to_s
