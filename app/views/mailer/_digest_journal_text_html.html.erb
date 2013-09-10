@@ -1,11 +1,13 @@
 <li>
   <p><i><%= journal.created_on.strftime("%b %e, %l:%M %p") %> by <%= journal.user.name %>:</i></p>
   <ul>
-  <% for detail in journal.renderable_details %>
-      <li><%= journal.render_detail(detail, false) %></li>
+  <% details_to_strings(journal.details, false, :only_path => false).each do |string| %>
+    <li><%= string %></li>
   <% end %>
   <% if journal.notes.present? %>
     <li><strong>Comment:</strong> <i><%= journal.notes %></i></li>
   <% end %>
   </ul>
 </li>
+
+

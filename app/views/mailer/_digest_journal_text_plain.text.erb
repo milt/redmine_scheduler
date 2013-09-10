@@ -1,3 +1,4 @@
   <%= journal.created_on.strftime("%b %e, %l:%M %p") %> by <%= journal.user.name %>:
-<% for detail in journal.renderable_details %>    - <%= journal.render_detail(detail, true) %>
-<% end %><% if journal.notes.present? %>    - Comment: <%= journal.notes %><% end %>
+<% details_to_strings(journal.details, true).each do |string| -%>
+<%= string %>
+<% end -%><% if journal.notes.present? %>    - Comment: <%= journal.notes %><% end %>
