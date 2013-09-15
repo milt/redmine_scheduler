@@ -1,0 +1,4 @@
+
+Does not work if themes are placed within the plugin redmine_scheduler, but works if placed within redmine's themes directory
+
+
