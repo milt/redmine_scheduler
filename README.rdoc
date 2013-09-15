@@ -46,3 +46,6 @@ A skill-aware lab coach/tutor scheduling plugin for Redmine. Developed for inter
 
   <tt>$ rails r plugins/redmine_scheduler/script/add_shifts.rb</tt>
 
+* For console testing, use this within redmine_scheduler: 
+  
+  <tt>$ rails c </tt>
