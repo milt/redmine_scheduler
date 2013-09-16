@@ -1,4 +1,7 @@
 
 Does not work if themes are placed within the plugin redmine_scheduler, but works if placed within redmine's themes directory
 
+How to update theme in redmine:
+As administrator, administration>>settings>>display>>change theme>>save
+
 
