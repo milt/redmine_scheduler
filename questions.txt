@@ -1,0 +1,10 @@
+
+
+Questions:
+
+#  in load_default_data.rake
+WorkflowRule.copy_one(...) ??
+
+# in load_default_data.rake, what are pam authorization used for??
+pam_auth_source = AuthSource.new(auth_params)
+

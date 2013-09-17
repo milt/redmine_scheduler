@@ -1,0 +1,9 @@
+
+
+Useful commands 
+
+
+Class   # lists all params
+Class.all   # lists all instances of Class
+Class.where(name:"").first
+ = Class.find(:all,:conditions=>[]).first

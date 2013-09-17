@@ -172,6 +172,8 @@ namespace :redmine_scheduler do
     }
 
     staff_role = Role.create(staff_role_params)
+
+    # roles created under redmine>>lib>>redmine>>default_data>>loader.rb
     manager_role = Role.where(name: "Manager").first
     dev_role = Role.where(name: "Developer").first
 
