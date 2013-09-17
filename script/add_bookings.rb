@@ -3,6 +3,7 @@
 # use crontab for periodic updates?
 
 stustaff = Group.find(:all, :conditions => ["lastname = ?","Stustaff"]).first.users
+manager = User.find(:all, :conditions => ["lastname = ?", "Manager"]).first
 
 # from_date_time = DateTime.now - 3.weeks
 # from_date = Date.today - 3.weeks
