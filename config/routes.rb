@@ -53,5 +53,8 @@ RedmineApp::Application.routes.draw do
   get 'prostaff', to: 'prostaff#index'
   get 'student_levels', to: 'prostaff#student_levels'
   get 'admstaff', to: 'admstaff#index'
+
+  get 'polls', :to => 'polls#index'
+  post 'post/:id/vote', :to => 'polls#vote'  #don't know why this line is still needed
 end
 

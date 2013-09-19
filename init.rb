@@ -93,4 +93,6 @@ Redmine::Plugin.register :redmine_scheduler do
   menu :application_menu, :repairs, {:controller => 'repairs', :action => 'new'}, :caption => 'New Repair'
   menu :application_menu, :posters, {:controller => 'posters', :action => 'new'}, :caption => 'New Poster Print'
   menu :application_menu, :reminders, { :controller => 'reminders', :action => 'index'}, :caption => 'Reminders', :if => Proc.new { User.current.is_admstaff? }
+
+  menu :application_menu, :polls, { :controller => 'polls', :action => 'index' }, :caption => 'Polls'
 end

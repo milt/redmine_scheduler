@@ -1,5 +1,7 @@
 
 # TODO link this with add_shifts and add_bookings at runtime
+# TODO need to add time_entries...how did timesheets get created without any time_entries??
+
 
 stustaff = Group.find(:all, :conditions => ["lastname = ?","Stustaff"]).first.users
 manager = User.find(:all, :conditions => ["lastname = ?", "Manager"]).first
