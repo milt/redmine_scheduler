@@ -49,3 +49,14 @@ A skill-aware lab coach/tutor scheduling plugin for Redmine. Developed for inter
 * For console testing, use this within redmine_scheduler: 
   
   <tt>$ rails c </tt>
+
+* To uninstall the redmine_scheduler plugin (remove database):
+  
+  <tt>$ rake redmine:plugins:migrate NAME=redmine_scheduler VERSION=0</tt>
+
+* Fresh database install (for redmine/plugins):
+
+  <tt>$ rake db:drop </tt>
+  <tt>$ rake db:create </tt>
+  <tt>$ rake db:migrate </tt>
+  <tt>$ rake redmine:plugins:migrate NAME=redmine_scheduler</tt>

@@ -95,4 +95,5 @@ Redmine::Plugin.register :redmine_scheduler do
   menu :application_menu, :reminders, { :controller => 'reminders', :action => 'index'}, :caption => 'Reminders', :if => Proc.new { User.current.is_admstaff? }
 
   menu :application_menu, :polls, { :controller => 'polls', :action => 'index' }, :caption => 'Polls'
+  menu :application_menu, :lc_ratings, { :controller => 'lc_ratings', :action => 'index' }, :caption => 'Lab Coach Ratings'
 end

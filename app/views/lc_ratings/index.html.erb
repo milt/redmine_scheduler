@@ -1,0 +1,12 @@
+
+<h2>My Ratings</h2>
+
+<% @rating_display.each do |display| %>
+  <p>
+  Rater: <%= display[:rater_fullname] %>
+  <br>
+  Rating: <%= display[:star_power] %>
+  <br>
+  Comment: <%= display[:comment] %>
+  </p>
+<% end %>

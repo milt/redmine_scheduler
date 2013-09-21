@@ -56,5 +56,6 @@ RedmineApp::Application.routes.draw do
 
   get 'polls', :to => 'polls#index'
   post 'post/:id/vote', :to => 'polls#vote'  #don't know why this line is still needed
+  get 'lc_ratings', :to => 'lc_ratings#index'
 end
 

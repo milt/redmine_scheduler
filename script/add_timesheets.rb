@@ -16,7 +16,7 @@ for p in 0..3 do
       i.user_id = staffer.id
       i.weekof = week_start
       i.notes = "this is gibberish..."
-	  i.created_at = DateTime.now
+  	  i.created_at = DateTime.now
       # i.approve_time_wage_cents = staffer.amount_cents  #apparently this can be left nil??
       i.save
   end
