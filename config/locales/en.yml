@@ -5,6 +5,7 @@ en:
   label_my_levels: "My Skill Levels"
   label_my_repairs: "List of unassigned repair tasks"
   label_latest_news: "Latest News"
+  label_my_lc_ratings: "My Lab Coach Ratings"
   field_start_time: "Start Time"
   field_end_time: "End Time"
   field_manager: "Group Manager"
