@@ -3,11 +3,10 @@ class LcRatingsController < ApplicationController
 
   def index
   	my_id = User.current.id
-  	my_ratings = LcRating.where(rated_user_id:10)  #used for testing
-    # my_ratings = LcRating.where(rated_user_id:my_id)
+  	my_ratings = LcRating.where(rated_user_id:my_id)
     @rating_display = display_ratings(my_ratings)
   end
-  
+
   # action taken during rating
   def rate
 	rating = LcRating.new(:rated_user_id=>params[:id])

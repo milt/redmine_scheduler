@@ -1,5 +1,16 @@
 <h3><%=l(:label_my_lc_ratings)%></h3>
 
-<%= render :partial => 'lc_ratings/list', :locals => {:rating_display => @rating_display} %>
-<!--A list of assigned skill levels should go here.-->
+<% my_id = User.current.id %>
+<% my_ratings = LcRating.where(rated_user_id:my_id) %>
+
+<% my_ratings.each do |my_rating| %>
+  <p>
+  Rater: <%= User.find(my_rating.rater_user_id).firstname + ' ' + User.find(my_rating.rater_user_id).lastname %>
+  <br>
+  Rating: <%= my_rating.rating %>
+  <br>
+  Comment: <%= my_rating.comment %>
+  </p>
+<% end %>
+
 
