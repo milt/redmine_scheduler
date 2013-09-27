@@ -25,7 +25,7 @@ class Poster < ActiveRecord::Base
 
   validates :patron_email, email: true
 
-  validates :file_name, presence: { message: "You must choose a file for upload!"}
+  # validates :file_name, presence: { message: "You must choose a file for upload!"}
   validates :total_cents, :deposit_cents, numericality: { only_integer: true }
 
   validate :width_and_border_limit

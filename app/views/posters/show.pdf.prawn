@@ -33,7 +33,6 @@ end
 
 pdf.bounding_box([340, 640], :width => 200, :height => 100) do
   pdf.text "<b>Order Date:</b> #{@poster.dropoff.strftime("%m/%d/%Y %l:%M %p")}", :align => :right, :inline_format => true
-  pdf.text "<b>Filename:</b> #{@poster.file_name}", :align => :right, :inline_format => true
   pdf.text "<b>Staff Entering:</b> #{@poster.user.name}", :align => :right, :inline_format => true
 end
 
