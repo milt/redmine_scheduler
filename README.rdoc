@@ -56,7 +56,7 @@ A skill-aware lab coach/tutor scheduling plugin for Redmine. Developed for inter
 
 * Fresh database install (for redmine/plugins):
 
-  <tt>$ rake db:drop </tt>
-  <tt>$ rake db:create </tt>
-  <tt>$ rake db:migrate </tt>
-  <tt>$ rake redmine:plugins:migrate NAME=redmine_scheduler</tt>
+  <tt>$ rake db:drop </tt><br>
+  <tt>$ rake db:create </tt><br>
+  <tt>$ rake db:migrate </tt><br>
+  <tt>$ rake redmine:plugins:migrate NAME=redmine_scheduler</tt><br>
