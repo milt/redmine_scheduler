@@ -1,7 +1,0 @@
-
-
-add styling to show timeslot in view
-generate dummy bookings,timesheets to the development environment for testing
-
-
-
