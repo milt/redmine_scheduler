@@ -54,6 +54,10 @@ A skill-aware lab coach/tutor scheduling plugin for Redmine. Developed for inter
   
   <tt>$ rake redmine:plugins:migrate NAME=redmine_scheduler VERSION=0</tt>
 
+* To revert to a certain point of database configuration (check number infront of migrate file):
+
+  <tt>$ rake redmine:plugins:migrate NAME=redmine_scheduler VERSION=**enter desired number here**</tt>
+
 * Fresh database install (for redmine/plugins):
 
   <tt>$ rake db:drop </tt><br>
