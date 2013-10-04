@@ -22,10 +22,10 @@
     %p
       = f.label :affiliation
       = f.select :affiliation, [['Student', 'student'],['Staff', 'staff'],['DMC Staff', 'dmc']]
-  / %fieldset#poster-document
-  /   %legend Document Information
-  /   #poster-attachment
-  /     = render :partial => 'attachments/form', :locals => {:container => @poster}
+  %fieldset#poster-document
+    %legend Document Information
+    #poster-attachment
+      = render :partial => 'attachments/form', :locals => {:container => @poster}
   %fieldset#poster-print
     %legend Print Information
     %p
