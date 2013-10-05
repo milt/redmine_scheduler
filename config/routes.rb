@@ -4,6 +4,10 @@ RedmineApp::Application.routes.draw do
   resources :posters, :except => [:settings]
   get "poster_settings", to: "posters#settings"
 
+  # following without knowing what's going on here...
+  resources :printing3d, :except => [:settings]
+  get "printing3d_settings", to: "printing3d#settings"
+
   resources :fines do
     member do
       post 'pay'
