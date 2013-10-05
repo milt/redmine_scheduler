@@ -1,5 +1,6 @@
 class Printing3dsController < ApplicationController
   unloadable
+  # load_and_authorize_resource   #needed?
 
   def index
   end
