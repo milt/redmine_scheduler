@@ -52,6 +52,18 @@
       = label_tag "Glossy Cost"
       = text_field_tag "settings[poster_glossy_dmc]", @settings["poster_glossy_dmc"]
 .box
+  %h2 3D Printing
+  %p
+    = label_tag "Admin Email"
+    = text_field_tag "settings[printing3d_admin_email]", @settings["printing3d_admin_email"]
+  .box
+    %h3 Cost
+    %p Enter these like: 3.50 or 0.00 for free. Make sure to always have two decimal places, and only use numbers. You've been warned!
+    %h4 Student
+    %p
+      = label_tag "ABS Cost"
+      = text_field_tag "settings[printing3d_abs_student]", @settings["printing3d_abs_student"]
+.box
   %h2 Groups & Trackers (DO NOT CHANGE UNLESS YOU KNOW WHAT YOU ARE DOING)
   .box
     %h3 Groups

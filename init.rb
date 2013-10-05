@@ -75,7 +75,12 @@ Redmine::Plugin.register :redmine_scheduler do
               "poster_glossy_staff" => "5.50",
               "poster_glossy_dmc" => "0.00",
               "poster_admin_email" => "example@fake.edu",
-              "poster_check_make_out_to" => "Example University"
+              "poster_check_make_out_to" => "Example University",
+              "printing3d_group_id" => "6",
+              "printing3d_tracker_id" => "12",
+              "printing3d_abs_student" => "0.00",   #need to set this correctly
+              "printing3d_admin_email" => "example@fake.edu",
+              "printing3d_check_make_out_to" => "Example University"
             }
 
   menu :application_menu, :stustaff, { :controller => 'stustaff', :action => 'index' }, :caption => 'StuStaff', :first => true, :if => Proc.new { User.current.is_stustaff? }
@@ -96,4 +101,5 @@ Redmine::Plugin.register :redmine_scheduler do
 
   menu :application_menu, :polls, { :controller => 'polls', :action => 'index' }, :caption => 'Polls'
   menu :application_menu, :lc_ratings, { :controller => 'lc_ratings', :action => 'index' }, :caption => 'Lab Coach Ratings'
+  menu :application_menu, :printing3ds, {:controller => 'printing3ds', :action => 'new'}, :caption => 'New 3D Print'
 end
