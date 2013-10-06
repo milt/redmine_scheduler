@@ -73,6 +73,17 @@ namespace :redmine_scheduler do
 
     poster_project = Project.create(poster_project_params)
 
+    printing3d_project_params = {
+      :name => "3D Printing",
+      :description => "Project for 3D printing.",
+      :homepage => "",
+      :is_public => false,
+      :identifier => "printing3d",  # where is this needed?
+      :status => 1
+    }
+
+    printing3d_project = Project.create(printing3d_project_params)
+
     #Required Trackers
 
     fd_tracker_params = {
@@ -138,6 +149,14 @@ namespace :redmine_scheduler do
     }
 
     poster_print_tracker = Tracker.create(poster_print_tracker_params)
+
+    printing3d_tracker_params = {
+      :name => "3D Printing",
+      :is_in_chlog => false,
+      :is_in_roadmap => false
+    }
+
+    printing3d_tracker = Tracker.create(printing3d_tracker_params)
 
     #add staff role
     staff_role_params = {
@@ -223,6 +242,7 @@ namespace :redmine_scheduler do
     development_project.activities << activities
     repair_project.activities << activities
     poster_project.activities << activities
+    printing3d_project.activities << activities
 
     #make default modules
     shift_module_params = [
@@ -258,6 +278,9 @@ namespace :redmine_scheduler do
 
     poster_project.trackers.clear
     poster_project.trackers << poster_print_tracker
+
+    printing3d_project.trackers.clear
+    printing3d_project.trackers << printing3d_tracker
 
     #Default skillcat
     skillcat_general_params = {
@@ -328,6 +351,7 @@ namespace :redmine_scheduler do
     stustaffgroup = Group.create!(:lastname => "Stustaff", :type => "Group")
     managergroup = Group.create!(:lastname => "Manager", :type => "Group")
     postergroup = Group.create!(:lastname => "Poster Print Team", :type => "Group")
+    printing3dgroup = Group.create!(:lastname => "3D Print Team", :type => "Group")
 
     #add groups to project roles
     fd_managermember = Member.new(:principal => managergroup, :project => front_desk_project)
@@ -378,7 +402,13 @@ namespace :redmine_scheduler do
     print_staffmember.member_roles << MemberRole.new(:role => staff_role)
     print_staffmember.save
 
+    printing3d_managermember = Member.new(:principal => managergroup, :project => printing3d_project)
+    printing3d_managermember.member_roles << MemberRole.new(:role => manager_role)
+    printing3d_managermember.save
 
+    printing3d_staffmember = Member.new(:principal => printing3dgroup, :project => printing3d_project)
+    printing3d_staffmember.member_roles << MemberRole.new(:role => staff_role)
+    printing3d_staffmember.save
 
   end
 end

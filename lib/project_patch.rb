@@ -10,6 +10,7 @@ module ProjectPatch
       unloadable # Send unloadable so it will not be unloaded in development
       scope :repair_project, :conditions => { :name => "Repair & Replace" }
       scope :poster_project, :conditions => { :name => "Poster Printing" }
+      scope :printing3d_project, :conditions => { :name => "3D Printing" }
       safe_attributes 'suppress_email'
     end
 

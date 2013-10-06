@@ -15,7 +15,7 @@ module TrackerPatch
       scope :event_track, :conditions => { :name => "Event" }
       scope :repair_track, :conditions => { :name => "Equipment Problem" }
       scope :poster_track, :conditions => { :name => "Poster Print" }
-
+      scope :printing3d_track, :conditions => { :name => "3D Printing" }
     end
 
   end

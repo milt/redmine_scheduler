@@ -5,8 +5,8 @@ RedmineApp::Application.routes.draw do
   get "poster_settings", to: "posters#settings"
 
   # following without knowing what's going on here...
-  resources :printing3d, :except => [:settings]
-  get "printing3d_settings", to: "printing3d#settings"
+  resources :printing3ds, :except => [:settings]
+  get "printing3ds_settings", to: "printing3ds#settings"
 
   resources :fines do
     member do
