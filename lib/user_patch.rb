@@ -25,6 +25,7 @@ module UserPatch
       has_many :timeslots, :through => :issues
       has_many :reminders, dependent: :destroy
       has_many :posters
+      has_many :printing3ds
 
       def self.with_skills(*skills)
         joins(:skills).where("skills.id IN (?)", skills.map(&:id))
