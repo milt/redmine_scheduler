@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm db/redmine_development.sqlite3
+#rm db/redmine_development.sqlite3
 rake db:migrate
 rake redmine:load_default_data
 rake redmine:plugins:migrate NAME=redmine_scheduler

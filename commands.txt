@@ -9,8 +9,9 @@ Class.where(name:"").first
  = Class.find(:all,:conditions=>[]).first
 
 
-to remove a plugin's database
+to remove a plugin's database:
+>>rake redmine:plugins:migrate NAME=redmine_scheduler VERSION=0
 
-rake redmine:plugins:migrate NAME=redmine_scheduler VERSION=0
-
+to remove redmine database:
+>>rake db:drop
 
