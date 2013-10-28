@@ -79,16 +79,16 @@ class LevelsController < ApplicationController
     redirect_to :action => "index"
   end
 
-    def delete
-      @level = Level.find(params[:id])
-      if @level.delete
-        flash[:notice] = "Level was successfully deleted."
-        redirect_to :action => "index"
-      else
-        flash[:warning] = 'Could not Delete!'
-        redirect_to :action => "index"
-      end
+  def delete
+    @level = Level.find(params[:id])
+    if @level.delete
+      flash[:notice] = "Level was successfully deleted."
+      redirect_to :action => "index"
+    else
+      flash[:warning] = 'Could not Delete!'
+      redirect_to :action => "index"
     end
+  end
 
   def user_new_skill
     if params[:search]
