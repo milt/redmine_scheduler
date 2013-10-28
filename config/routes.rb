@@ -23,7 +23,8 @@ RedmineApp::Application.routes.draw do
 
   resources :levels do
     member do
-      delete 'delete'
+      # delete 'delete'
+      post 'delete'
     end
 
     collection do
