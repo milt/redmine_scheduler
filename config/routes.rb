@@ -23,8 +23,8 @@ RedmineApp::Application.routes.draw do
 
   resources :levels do
     member do
-      # delete 'delete'
-      post 'delete'
+      delete 'delete'
+      # post 'delete'  #refer to previous commit, will also work under previous button_to call
     end
 
     collection do
