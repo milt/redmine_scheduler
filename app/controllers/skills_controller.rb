@@ -2,7 +2,7 @@ class SkillsController < ApplicationController #define skills, assign them to us
   unloadable
   authorize_resource
 
-  before_filter :find_skill, :only => [:edit, :update, :destroy]
+  before_filter :find_skill, :only => [:edit, :update, :destroy, :delete]
   
   def index
     @skill = Skill.new
@@ -10,6 +10,9 @@ class SkillsController < ApplicationController #define skills, assign them to us
 
   def edit
     #@skill = Skill.find(params[:id])
+  end
+
+  def show
   end
 
   def create #make a new skill from user input
@@ -33,8 +36,8 @@ class SkillsController < ApplicationController #define skills, assign them to us
     redirect_to :action => 'index'
   end
   
-  def destroy
-    if @skill.destroy
+  def delete
+    if @skill.delete
       flash[:notice] = "Skill deleted."
     else
       flash[:warning] = "An error has occurred when deleting the skill.."
