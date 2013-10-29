@@ -119,7 +119,7 @@ module IssuePatch
     end
 
     def refresh_shift_subject
-      self.subject = assigned_to.name + start_time.in_time_zone.strftime(' %I:%M:%S %p - ') + end_time.in_time_zone.strftime('%I:%M:%S %p - ') + start_date.to_datetime.in_time_zone.strftime('%a, %b %d')
+      self.subject = assigned_to.name + start_time.strftime(' %I:%M:%S %p - ') + end_time.strftime('%I:%M:%S %p - ') + start_date.to_datetime.strftime('%a, %b %d')
     end
     
     #this should fix the timing issue with confusing 12.15/12.45am today with 12.15/12.45am tomorrow
