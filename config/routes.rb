@@ -21,6 +21,12 @@ RedmineApp::Application.routes.draw do
     end
   end
 
+  resources :skills do
+    member do
+      delete 'delete'
+    end
+  end
+
   resources :levels do
     member do
       delete 'delete'

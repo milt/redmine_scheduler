@@ -9,4 +9,4 @@
       %li
         = skill.name + ":"
         = link_to 'Edit', edit_skill_path(skill)
-        = link_to 'Delete', {:action => 'destroy', :id => skill.id}, :confirm => 'Delete skill? All associated users will lose it.'
+        = link_to 'Delete', delete_skill_path(skill), method: :delete, :confirm => 'Delete skill? All associated users will lose it.'
