@@ -27,7 +27,7 @@
       %tr
         %td= level.skill.name
         %td= render 'form_update', :level => level
-        %td= button_to 'Delete', {:action => 'delete', :id => level}, :confirm => "Really?"
+        %td= button_to 'Delete', delete_level_path(level), method: :delete, :confirm => "Really?"
   %p
     Quick Add Skill:#{render :partial => 'form_create', :locals => {:user => user}}
 %br
