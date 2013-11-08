@@ -11,6 +11,7 @@ class Ability
       can :manage, Wage
       can [:read, :create, :print], Timesheet
       can :manage, Poster
+      can :manage, Printing3d
       can [:approve, :reject], Timesheet do |timesheet|
         timesheet.submitted_not_approved?
       end
@@ -28,6 +29,7 @@ class Ability
       can :manage, Reminder
     elsif user.is_prostaff?
       can :manage, Poster
+      can :manage, Printing3d
       can :manage, Timeslot
       can :manage, Booking
       can :manage, Level
@@ -37,6 +39,7 @@ class Ability
       can :read, Reminder
     elsif user.is_stustaff?
       can :manage, Poster
+      can :manage, Printing3d
       can [:create, :read, :print], Timesheet, :user_id => user.id
 
       can [:edit, :update, :submit, :delete], Timesheet do |timesheet|

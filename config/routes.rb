@@ -4,7 +4,6 @@ RedmineApp::Application.routes.draw do
   resources :posters, :except => [:settings]
   get "poster_settings", to: "posters#settings"
 
-  # following without knowing what's going on here...
   resources :printing3ds, :except => [:settings]
   get "printing3ds_settings", to: "printing3ds#settings"
 
